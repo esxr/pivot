@@ -35,4 +35,4 @@ output.json
 obj/
 .externalNativeBuild
 
-googleservices.json
+google-services.json
