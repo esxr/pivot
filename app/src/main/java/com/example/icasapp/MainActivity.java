@@ -6,6 +6,8 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
 
@@ -16,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
         //This is our viewPager
         private ViewPager viewPager;
 
-        //Fragments
+        //4 Fragments
         HomeFragment homeFragment;
         NotesFragment notesFragment;
         ForumFragment forumFragment;
@@ -33,7 +35,8 @@ public class MainActivity extends AppCompatActivity {
             //Initializing viewPager
             viewPager = (ViewPager) findViewById(R.id.viewPager);
 
-            //Initializing the bottomNavigationView
+            //Initializing the bottomNavigationView. It changes depending on the button clicked.
+
             bottomNavigationView = (BottomNavigationView)findViewById(R.id.navigation);
             bottomNavigationView.setOnNavigationItemSelectedListener(
 
@@ -62,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
                         }});
 
 
+            //Listening for right or left swipes
 
             viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
@@ -110,4 +114,32 @@ public class MainActivity extends AppCompatActivity {
 
             viewPager.setAdapter(adapter);
         }
-    }
+
+        //Action Bar Menu Architecture.
+        @Override
+        public boolean onCreateOptionsMenu(Menu menu) {
+
+            MenuInflater menuInflater = getMenuInflater();
+            menuInflater.inflate(R.menu.action_menu,menu);
+
+            return super.onCreateOptionsMenu(menu);
+        }
+
+        @Override
+        public boolean onOptionsItemSelected(MenuItem item) {
+            super.onOptionsItemSelected(item);
+
+            switch (item.getItemId()){
+                case R.id.signOut:
+                    //User sign out functionality goes here.
+                    Log.i("Item Selected" , "Sign Out");
+                    return true;
+                case R.id.Help:
+                    //Help Functionality. Reporting Bugs Functionality goes here. Vital for debugging and maintainance.
+                    return true;
+                default:
+                    //In the case where something went wrong.
+                    return false;
+            }
+        }
+}
