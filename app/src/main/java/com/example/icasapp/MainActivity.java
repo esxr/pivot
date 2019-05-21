@@ -1,15 +1,21 @@
 package com.example.icasapp;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,10 +32,12 @@ public class MainActivity extends AppCompatActivity {
 
         MenuItem prevMenuItem;
 
+        private FirebaseAuth mAuth;
+
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-
+//NOTE: ENTRY POINT OF THE APPLICATION CHANGED TO LOGIN ACTIVITY.
             setContentView(R.layout.activity_main);
 
             //Initializing viewPager
@@ -118,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
         //Action Bar Menu Architecture.
         @Override
         public boolean onCreateOptionsMenu(Menu menu) {
-
+            //Makes the menu visible
             MenuInflater menuInflater = getMenuInflater();
             menuInflater.inflate(R.menu.action_menu,menu);
 
@@ -131,15 +139,52 @@ public class MainActivity extends AppCompatActivity {
 
             switch (item.getItemId()){
                 case R.id.signOut:
-                    //User sign out functionality goes here.
+                    //sign out functionality
+                    signOut();
                     Log.i("Item Selected" , "Sign Out");
                     return true;
+
                 case R.id.Help:
                     //Help Functionality. Reporting Bugs Functionality goes here. Vital for debugging and maintainance.
                     return true;
+
+                case R.id.profile:
+                    //OPEN AN ACTIVITY  OR DIALOG INTERFACE WHICH SHOWS USER PROFILE
+                    return true;
+
                 default:
                     //In the case where something went wrong.
                     return false;
             }
         }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        if(FirebaseHelper.checkLoginStatus() == false){
+             setLoginActivity();
+        }
+    }
+
+    public void signOut(){
+        new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle("ARE YOU SURE?")
+                .setMessage("You will be shifted to the login screen and will have to sign in in order to continue using the app.")
+                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        FirebaseHelper.signOut();
+                        setLoginActivity();
+                    }
+                })
+                .setNegativeButton("NO" , null)
+                .show();
+
+    }
+
+    public void setLoginActivity(){
+            startActivity(new Intent(getApplicationContext() , LoginActivity.class));
+    }
 }
