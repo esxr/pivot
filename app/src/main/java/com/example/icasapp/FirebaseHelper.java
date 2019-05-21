@@ -5,7 +5,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class FirebaseHelper {
 
-    private static FirebaseAuth mAuth;
+    private static FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private static FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     public static void signOut(){
