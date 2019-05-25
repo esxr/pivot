@@ -185,6 +185,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setLoginActivity(){
+            finish();
             startActivity(new Intent(getApplicationContext() , LoginActivity.class));
     }
 }
