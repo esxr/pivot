@@ -6,6 +6,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +38,8 @@ public class NotesFragment extends Fragment {
 
     EditText inputFileName;
     Button uploadButton;
+    Button viewButton;
+
     String NAME;
     String URL;
 
@@ -59,6 +64,7 @@ public class NotesFragment extends Fragment {
 
         inputFileName = notesView.findViewById(R.id.inputFileName);
         uploadButton = notesView.findViewById(R.id.uploadButton);
+        viewButton = notesView.findViewById(R.id.viewButton);
 
         storageReference = FirebaseStorage.getInstance().getReference();
         databaseReference = FirebaseDatabase.getInstance().getReference("uploads");
@@ -70,9 +76,19 @@ public class NotesFragment extends Fragment {
             }
         });
 
+        viewButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity() , ViewNotesActivity.class);
+                startActivity(intent);
+            }
+        });
+
         // Inflate the layout for this fragment
         return notesView;
     }
+
+
 
 
 
@@ -133,4 +149,6 @@ public class NotesFragment extends Fragment {
                  ;
 
     }
+
+
 }

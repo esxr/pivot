@@ -115,10 +115,13 @@ public class MainActivity extends AppCompatActivity {
             forumFragment        =new ForumFragment();
             feedFragment         =new FeedFragment();
 
+
+
             adapter.addFragment(homeFragment);
             adapter.addFragment(notesFragment);
             adapter.addFragment(forumFragment);
             adapter.addFragment(feedFragment);
+
 
             viewPager.setAdapter(adapter);
         }
