@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 
 public class FeedFragment extends Fragment {
 
-
     public FeedFragment() {
         // Required empty public constructor
     }
