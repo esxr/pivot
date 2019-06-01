@@ -1,4 +1,4 @@
-package com.example.icasapp;
+package com.example.icasapp.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +12,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.icasapp.Activities.CommentsActivity;
 import com.example.icasapp.ObjectClasses.DiscussionTopic;
+import com.example.icasapp.R;
 
 import java.util.List;
 
@@ -52,7 +54,7 @@ public class DiscussionRecyclerAdapter extends RecyclerView.Adapter<DiscussionRe
         viewHolder.CommentBtn.setOnClickListener(new View.OnClickListener() {
                                                      @Override
                                                      public void onClick(View v) {
-                                                         Intent commentIntent=new Intent(context,CommentsActivity.class);
+                                                         Intent commentIntent=new Intent(context, CommentsActivity.class);
                                                          commentIntent.putExtra("post_id", blogPostId);
                                                          context.startActivity(commentIntent);
                                                      }

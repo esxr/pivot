@@ -1,4 +1,4 @@
-package com.example.icasapp;
+package com.example.icasapp.Fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

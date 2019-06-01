@@ -1,4 +1,4 @@
-package com.example.icasapp.com.example.icasapp.ObjectClasses;
+package com.example.icasapp.ObjectClasses;
 
 import android.support.annotation.NonNull;
 

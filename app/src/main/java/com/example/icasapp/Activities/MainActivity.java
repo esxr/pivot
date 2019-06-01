@@ -1,4 +1,4 @@
-package com.example.icasapp;
+package com.example.icasapp.Activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,6 +14,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.example.icasapp.Adapters.ViewPagerAdapter;
+import com.example.icasapp.ObjectClasses.FirebaseHelper;
+import com.example.icasapp.Fragments.FeedFragment;
+import com.example.icasapp.Fragments.ForumFragment;
+import com.example.icasapp.Fragments.HomeFragment;
+import com.example.icasapp.Fragments.NotesFragment;
+import com.example.icasapp.R;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {

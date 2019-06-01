@@ -1,8 +1,8 @@
-package com.example.icasapp.com.example.icasapp.ObjectClasses;
+package com.example.icasapp.ObjectClasses;
 
 import java.util.Date;
 
-public class DiscussionTopic extends com.example.icasapp.com.example.icasapp.ObjectClasses.DiscussionPostid {
+public class DiscussionTopic extends com.example.icasapp.ObjectClasses.DiscussionPostid {
 
     public String user_id, image_url, content, image_thumb;
     public Date timestamp;

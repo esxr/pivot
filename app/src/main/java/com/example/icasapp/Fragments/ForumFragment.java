@@ -1,4 +1,4 @@
-package com.example.icasapp;
+package com.example.icasapp.Fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import com.example.icasapp.Activities.NewDiscussionActivity;
 import com.example.icasapp.Adapters.DiscussionRecyclerAdapter;
 import com.example.icasapp.ObjectClasses.DiscussionTopic;
+import com.example.icasapp.R;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
