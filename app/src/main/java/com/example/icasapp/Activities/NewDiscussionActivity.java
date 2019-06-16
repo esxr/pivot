@@ -93,7 +93,7 @@ public class NewDiscussionActivity extends AppCompatActivity {
         //data is stored in storage folder thread image
         // If the image is put successfully.
         // Details of the image. The upload uri, user uid, timestamp etc are stored in a collection thread in firestore
-     /*   newPostBtn.setOnClickListener(new View.OnClickListener() {
+     /*  newPostBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 

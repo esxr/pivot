@@ -1,4 +1,4 @@
-package com.example.icasapp.Fragments;
+package com.example.icasapp;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -100,7 +100,8 @@ public class ForumFragment extends Fragment {
                 for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
                     if (doc.getType() == DocumentChange.Type.ADDED) {
                         //this is the part where every item in teh firebase document gets stored in DiscussionTopic list
-                        DiscussionTopic discussionTopic = doc.getDocument().toObject(DiscussionTopic.class);
+                        String blogPostId=doc.getDocument().getId();
+                        DiscussionTopic discussionTopic = doc.getDocument().toObject(DiscussionTopic.class).withId(blogPostId);
                         if (isFirstPageFirstLoad) {
 
                             discussion_list.add(discussionTopic);

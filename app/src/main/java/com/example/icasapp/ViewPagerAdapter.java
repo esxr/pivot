@@ -1,4 +1,4 @@
-package com.example.icasapp.Adapters;
+package com.example.icasapp;
 
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.Fragment;

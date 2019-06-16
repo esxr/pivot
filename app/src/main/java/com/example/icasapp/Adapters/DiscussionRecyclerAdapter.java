@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.example.icasapp.Activities.CommentsActivity;
 import com.example.icasapp.ObjectClasses.DiscussionTopic;
+import com.example.icasapp.Activities.QuestionsActivity;
 import com.example.icasapp.R;
 
 import java.util.List;
@@ -38,9 +37,14 @@ public class DiscussionRecyclerAdapter extends RecyclerView.Adapter<DiscussionRe
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-
+         //On Bind View is mostly used to get stuff from array list
         //getting discussion id
         final String blogPostId = discussionTopicList.get(i).DiscussionPostid;
+      //  holder.itemView.setOnClickListener(v -> {
+      //      DocumentSnapshot snapshot = getSnapshots().getSnapshot(holder.getAdapterPosition());
+       //    docId= snapshot.getId();
+            // ...
+       // });
 
         //calling method from Discussion Topic class
     String content=discussionTopicList.get(i).getContent();
@@ -49,16 +53,17 @@ public class DiscussionRecyclerAdapter extends RecyclerView.Adapter<DiscussionRe
 
     String url=discussionTopicList.get(i).getImage_url();
         viewHolder.setUrl(url);
-        Log.i("Avijit",url);
+
 
         viewHolder.CommentBtn.setOnClickListener(new View.OnClickListener() {
                                                      @Override
                                                      public void onClick(View v) {
-                                                         Intent commentIntent=new Intent(context, CommentsActivity.class);
+                                                         Intent commentIntent=new Intent(context, QuestionsActivity.class);
                                                          commentIntent.putExtra("post_id", blogPostId);
                                                          context.startActivity(commentIntent);
                                                      }
                                                  });
+
 
                 // String id=discussionTopicList.get(i).getId();
                 // Log.i("Avijit",id);
@@ -73,6 +78,7 @@ public class DiscussionRecyclerAdapter extends RecyclerView.Adapter<DiscussionRe
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
+        //used to put values in card view elements
         private View mView;
         private TextView contentView;
         private ImageView imageView;

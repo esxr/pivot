@@ -5,7 +5,7 @@
     android:id="@+id/notesLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragments.NotesFragment">
+    tools:context=".NotesFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
