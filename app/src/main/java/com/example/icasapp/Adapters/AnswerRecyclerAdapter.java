@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,12 +18,25 @@ import com.example.icasapp.ObjectClasses.Answers;
 import com.example.icasapp.ObjectClasses.Questions;
 import com.example.icasapp.R;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
+import static android.support.constraint.Constraints.TAG;
 import static com.example.icasapp.Activities.AnswersActivity.ans_id;
 import static com.example.icasapp.Activities.QuestionsActivity.docId;
 
@@ -32,6 +46,7 @@ public class AnswerRecyclerAdapter extends RecyclerView.Adapter<AnswerRecyclerAd
     public Context context;
     private FirebaseFirestore firebaseFirestore;
     private boolean FirstTime=true;
+    private FirebaseAuth firebaseAuth;
 
     public AnswerRecyclerAdapter(List<Answers> answerList){
         this.answersList=answerList;
@@ -43,38 +58,88 @@ public class AnswerRecyclerAdapter extends RecyclerView.Adapter<AnswerRecyclerAd
         //inflating the view holder with xml objects
         context=viewGroup.getContext();
         View view=LayoutInflater.from(context).inflate(R.layout.answer_list_item,viewGroup,false);
+        firebaseAuth=firebaseAuth.getInstance();
         return new AnswerRecyclerAdapter.ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
 
-        final Answers answers=answersList.get(i);
-        firebaseFirestore=firebaseFirestore.getInstance();
+        final Answers answers = answersList.get(i);
+        firebaseFirestore = firebaseFirestore.getInstance();
+        final String currentUser = firebaseAuth.getCurrentUser().getUid();
 
-        final String id =answersList.get(i).AnswerPostId;
+        final String id = answersList.get(i).AnswerPostId;
         viewHolder.setupvote(answersList.get(i).getUpvotes());
+
+        firebaseFirestore.collection("Posts").document(docId).collection("Questions").document(ans_id).collection("Answers").document(id).collection("Upvotes")
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot snapshots,
+                                        @Nullable FirebaseFirestoreException e) {
+                        if (snapshots.isEmpty()) {
+                            viewHolder.setupvote("0");
+                            answersList.get(i).setUpvotes("0");
+
+                      //      modi(id);
+                            return;
+                        } else {
+                            String count = Integer.toString(snapshots.size());
+                            viewHolder.setupvote(count);
+                            answersList.get(i).setUpvotes(count);
+                       //     modi(id);
+                        }
+                    }
+                });
+
 
 
         viewHolder.upvotes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String upVote=viewHolder.getupvote();
-                if(upVote.equals("")||upVote.equals("0")){
+                            @Override
+                            public void onClick(View v) {
+                                firebaseFirestore.collection("Posts").document(docId).collection("Questions").document(ans_id).collection("Answers").document(id).collection("Upvotes")
+                                        .document(currentUser).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                        if (documentSnapshot.exists()) {
+                                            firebaseFirestore.collection("Posts").document(docId).collection("Questions").document(ans_id).collection("Answers").document(id).collection("Upvotes")
+                                                    .document(currentUser).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Toast.makeText(context, "Down-voted", Toast.LENGTH_LONG).show();
+                                                    firebaseFirestore.collection("Posts").document(docId).collection("Questions").document(ans_id).collection("Answers").document(id).update("dirty bit",1);
+                                                }
+                                            });
+                                        } else {
+                                            HashMap<String, Object> postMap = new HashMap<>();
+                                            postMap.put("timestamp", FieldValue.serverTimestamp());
+                                            firebaseFirestore.collection("Posts").document(docId).collection("Questions").document(ans_id).collection("Answers").document(id).collection("Upvotes")
+                                                    .document(currentUser).set(postMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    firebaseFirestore.collection("Posts").document(docId).collection("Questions").document(ans_id).collection("Answers").document(id).update("dirty bit",0);
+                                                    Toast.makeText(context, "Upvoted", Toast.LENGTH_LONG).show();
+                                                }
+                                            });
+                                        }
+                                    }
+                                });
 
-                    viewHolder.setupvote("1");
-                    answersList.get(i).setUpvotes("1");
-                    firebaseFirestore.collection("Posts").document(docId).collection("Questions").document(ans_id).collection("Answers").document(id)
-                            .update("upvotes","1");
-                }
-                else{
-                    viewHolder.setupvote("0");
-                    answersList.get(i).setUpvotes("0");
-                    firebaseFirestore.collection("Posts").document(docId).collection("Questions").document(ans_id).collection("Answers").document(id)
-                            .update("upvotes","0");
-                }
-            }
-        });
+                                Log.i("POP", id);
+                                String upVote = viewHolder.getupvote();
+                             /*   if (upVote.equals("") || upVote.equals("0")) {
+
+                                    viewHolder.setupvote("1");
+                                    answersList.get(i).setUpvotes("1");
+
+                                } else {
+                                    viewHolder.setupvote("0");
+                                    answersList.get(i).setUpvotes("0");
+                                    firebaseFirestore.collection("Posts").document(docId).collection("Questions").document(ans_id).collection("Answers").document(id)
+                                            .update("upvotes", "0");
+                                }*/
+                            }
+                        });
 
         String answer= answers.getAnswer();
         viewHolder.setAnswer(answer);
@@ -111,5 +176,7 @@ public class AnswerRecyclerAdapter extends RecyclerView.Adapter<AnswerRecyclerAd
         public void setupvote(String upvote){
             upVotes.setText(upvote);
         }
+
     }
+
 }

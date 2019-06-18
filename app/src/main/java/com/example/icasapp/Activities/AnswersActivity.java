@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -20,6 +21,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -41,6 +43,7 @@ import static com.example.icasapp.Activities.QuestionsActivity.docId;
 public class AnswersActivity extends AppCompatActivity {
 
     private FloatingActionButton addAnswer;
+    private FloatingActionButton refresh;
     private FirebaseAuth firebaseAuth;
     private FirebaseFirestore firebaseFirestore;
 
@@ -51,6 +54,7 @@ public class AnswersActivity extends AppCompatActivity {
     boolean isFirstPageLoad=false;
 
     private List<Answers> answersList;
+    private AnswerRecyclerAdapter answerRecyclerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,13 +62,14 @@ public class AnswersActivity extends AppCompatActivity {
         setContentView(R.layout.activity_answers);
 
         answersList=new ArrayList<>();
-        final AnswerRecyclerAdapter answerRecyclerAdapter=new AnswerRecyclerAdapter(answersList);
+        answerRecyclerAdapter=new AnswerRecyclerAdapter(answersList);
 
         RecyclerView answerView=findViewById(R.id.answersView);
         answerView.setLayoutManager(new LinearLayoutManager(AnswersActivity.this));
         answerView.setAdapter(answerRecyclerAdapter);
 
         addAnswer=findViewById(R.id.add);
+        refresh=findViewById(R.id.refresh);
 
         firebaseAuth=FirebaseAuth.getInstance();
         currentUserId=firebaseAuth.getCurrentUser().getUid();
@@ -91,14 +96,17 @@ public class AnswersActivity extends AppCompatActivity {
                             Answers answers = doc.getDocument().toObject(Answers.class).withId(post_id);
                             if(isFirstPageLoad==true){
                                 answersList.add(answers);
+                                shuffle();
+                                answerRecyclerAdapter.notifyDataSetChanged();
                             }
                             else{
                                 answersList.add(0,answers);
+                                shuffle();
+                                answerRecyclerAdapter.notifyDataSetChanged();
                             }
-                            answerRecyclerAdapter.notifyDataSetChanged();
                             break;
                         case MODIFIED:
-                            shuffle(doc);
+                            shuffle();
                             Toast.makeText(AnswersActivity.this, "Success", Toast.LENGTH_LONG).show();
                             answerRecyclerAdapter.notifyDataSetChanged();
                             break;
@@ -114,7 +122,14 @@ public class AnswersActivity extends AppCompatActivity {
 
             }
         });
+    refresh.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            shuffle();
+            answerRecyclerAdapter.notifyDataSetChanged();
 
+        }
+    });
 
     }
 
@@ -160,21 +175,8 @@ public class AnswersActivity extends AppCompatActivity {
         alert.show();
 
     }
-    public void shuffle(DocumentChange doc)
+    public void shuffle()
     {
-       /*Answers answers= doc.getDocument().toObject(Answers.class);
-       String upVotes= answers.getupVotes();
-       int c=0;
-
-       for(Answers Answers : answersList){
-           if(Integer.parseInt(upVotes)<Integer.parseInt(Answers.getupVotes())){
-               answersList.remove(2);
-               answersList.add(c,answers);
-               break;
-
-           }
-           c=c+1;
-       }*/
 
         Collections.sort(answersList, new Comparator<Answers>() {
             @Override public int compare(Answers u1, Answers u2) {
