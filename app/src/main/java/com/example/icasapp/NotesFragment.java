@@ -6,6 +6,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +38,8 @@ public class NotesFragment extends Fragment {
 
     EditText inputFileName;
     Button uploadButton;
+    Button viewButton;
+
     String NAME;
     String URL;
 
@@ -59,6 +64,7 @@ public class NotesFragment extends Fragment {
 
         inputFileName = notesView.findViewById(R.id.inputFileName);
         uploadButton = notesView.findViewById(R.id.uploadButton);
+        viewButton = notesView.findViewById(R.id.viewButton);
 
         storageReference = FirebaseStorage.getInstance().getReference();
         databaseReference = FirebaseDatabase.getInstance().getReference("uploads");
@@ -70,27 +76,34 @@ public class NotesFragment extends Fragment {
             }
         });
 
+        viewButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), ViewNotesActivity.class);
+                startActivity(intent);
+            }
+        });
+
         // Inflate the layout for this fragment
         return notesView;
     }
 
 
-
     //SELECT DOCUMENT FROM DEVIC FROM LOCAL DIRECTORY.
-    private void selectDocument(){
+    private void selectDocument() {
         Intent intent = new Intent();
         //FOR PDF FILES
         intent.setType("application/pdf");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent , "SELECT PDF FILE"), 1);
+        startActivityForResult(Intent.createChooser(intent, "SELECT PDF FILE"), 1);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == 1 && resultCode == RESULT_OK
-                &&data!=null && data.getData()!=null){
+        if (requestCode == 1 && resultCode == RESULT_OK
+                && data != null && data.getData() != null) {
             uploadPDFFile(data.getData());
         }
     }
@@ -98,39 +111,47 @@ public class NotesFragment extends Fragment {
     private void uploadPDFFile(Uri data) {
         //MANAGING PROGRESS AND STORAGE OF UPLOADED FILE INTO CLOUD
 
-        StorageReference reference = storageReference.child("uploads/"+System.currentTimeMillis()+".pdf");
+        StorageReference reference = storageReference.child("uploads/" + System.currentTimeMillis() + ".pdf");
         NAME = inputFileName.getText().toString();
 
-        final ProgressDialog progressDialog = new ProgressDialog(this.getContext());
-                             progressDialog.setTitle("UPLOADING.....");
-                             progressDialog.show();
+        if (NAME.equals("")) {
+            Toast.makeText(getContext(), "GIVE A FILE NAME TO THE PDF", Toast.LENGTH_LONG).show();
+            inputFileName.requestFocus();
+        } else {
 
-        reference.putFile(data)
-                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                     @Override
-                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                         Task<Uri> uri= taskSnapshot.getStorage().getDownloadUrl();
-                         while(!uri.isComplete());
-                         Uri url = uri.getResult(); //URL OF FILE STORED IN DATABASE
-                         URL = url.toString();
+            final ProgressDialog progressDialog = new ProgressDialog(this.getContext());
+            progressDialog.setTitle("UPLOADING.....");
+            progressDialog.show();
 
-                         DocumentHelper documentHelper = new DocumentHelper(NAME , URL);
-                         databaseReference.child(databaseReference.push().getKey()).setValue(documentHelper);
+            reference.putFile(data)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Task<Uri> uri = taskSnapshot.getStorage().getDownloadUrl();
+                            while (!uri.isComplete()) ;
+                            Uri url = uri.getResult(); //URL OF FILE STORED IN DATABASE
+                            URL = url.toString();
 
-                         Toast.makeText(getContext() , "UPLOADED SUCCESSFULLY" , Toast.LENGTH_LONG).show();
-                         progressDialog.dismiss();
+                            DocumentHelper documentHelper = new DocumentHelper(NAME, URL);
+                            databaseReference.child(databaseReference.push().getKey()).setValue(documentHelper);
 
-                     }
-                 })
-                 .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                     @Override
-                     public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                            Toast.makeText(getContext(), "UPLOADED SUCCESSFULLY", Toast.LENGTH_LONG).show();
+                            progressDialog.dismiss();
 
-                         double progress = (100 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                         progressDialog.setMessage("UPLOADED :" + (int)progress+"%");
-                     }
-                 })
-                 ;
+                        }
+                    })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+
+                            double progress = (100 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                            progressDialog.setMessage("UPLOADED :" + (int) progress + "%");
+                        }
+                    })
+            ;
+
+        }
+
 
     }
 }

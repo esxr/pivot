@@ -5,6 +5,10 @@ public class DocumentHelper {
     public String name;
     public String url;
 
+    public DocumentHelper(){
+
+    }
+
     public DocumentHelper(String name, String url){
         this.name = name;
         this.url = url;
