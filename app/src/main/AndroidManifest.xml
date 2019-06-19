@@ -20,6 +20,7 @@
             android:theme="@style/Base.Theme.AppCompat" />
         <activity android:name=".Activities.NewDiscussionActivity" />
         <activity android:name=".RegisterActivity" />
+        <activity android:name=".ViewNotesActivity"/>
         <activity android:name=".MainActivity" />
         <activity
             android:name=".LoginActivity"
