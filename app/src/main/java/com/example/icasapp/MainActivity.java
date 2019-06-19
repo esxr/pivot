@@ -12,9 +12,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.TextView;
 
-import com.example.icasapp.ObjectClasses.FirebaseHelper;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -184,6 +185,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setLoginActivity(){
+            finish();
             startActivity(new Intent(getApplicationContext() , LoginActivity.class));
     }
 }
