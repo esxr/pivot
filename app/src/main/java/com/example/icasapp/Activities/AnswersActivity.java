@@ -96,7 +96,6 @@ public class AnswersActivity extends AppCompatActivity {
                             Answers answers = doc.getDocument().toObject(Answers.class).withId(post_id);
                             if(isFirstPageLoad==true){
                                 answersList.add(answers);
-                                shuffle();
                                 answerRecyclerAdapter.notifyDataSetChanged();
                             }
                             else{
@@ -153,7 +152,7 @@ public class AnswersActivity extends AppCompatActivity {
                 postMap.put("answer", answer);
                 postMap.put("user_id", currentUserId);
                 postMap.put("timestamp", FieldValue.serverTimestamp());
-                postMap.put("upvotes","0");
+                postMap.put("dirty bit","0");
 
                 firebaseFirestore.collection("Posts").document(docId).collection("Questions").document(ans_id).collection("Answers").add(postMap)
                         .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
@@ -177,14 +176,20 @@ public class AnswersActivity extends AppCompatActivity {
     }
     public void shuffle()
     {
+try {
+    Collections.sort(answersList, new Comparator<Answers>() {
+        @Override
+        public int compare(Answers u1, Answers u2) {
+            return u2.upvotes.compareTo(u1.upvotes); // Ascending
+        }
 
-        Collections.sort(answersList, new Comparator<Answers>() {
-            @Override public int compare(Answers u1, Answers u2) {
-                return u2.upvotes.compareTo(u1.upvotes); // Ascending
-            }
+    });
+}
+catch(Exception e){
 
-        });
+}
     }
+
 
 
 
