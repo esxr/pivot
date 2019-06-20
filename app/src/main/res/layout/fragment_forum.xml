@@ -5,7 +5,7 @@
     android:id="@+id/forumLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ForumFragment">
+    tools:context=".Forums.ForumFragment">
 
     <!-- TODO: Update blank fragment layout -->
 

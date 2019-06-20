@@ -1,4 +1,4 @@
-package com.example.icasapp;
+package com.example.icasapp.Notes;
 
 public class DocumentHelper {
 //FOR INTEGRATION WITH THE NOTES FRAGMENT AND THE INTENDED ACTIVITIES

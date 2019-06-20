@@ -1,4 +1,4 @@
-package com.example.icasapp.Activities;
+package com.example.icasapp.Forums.ForumActivities;
 
 import android.Manifest;
 import android.content.Intent;

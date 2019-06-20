@@ -1,4 +1,4 @@
-package com.example.icasapp.ObjectClasses;
+package com.example.icasapp.Firebase;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;

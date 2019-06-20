@@ -1,4 +1,4 @@
-package com.example.icasapp.Adapters;
+package com.example.icasapp.Forums.ForumAdapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.icasapp.Activities.AnswersActivity;
+import com.example.icasapp.Forums.ForumActivities.AnswersActivity;
 import com.example.icasapp.ObjectClasses.Questions;
 import com.example.icasapp.R;
 
