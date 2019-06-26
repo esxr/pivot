@@ -3,6 +3,6 @@
 
     <item android:title="Sign Out"         android:id="@+id/signOut"></item>
     <item android:title="Help"             android:id="@+id/Help"></item>
-    <item android:title="View Profile"     android:id="@+id/profile"></item>
+    <item android:title="Edit Profile"     android:id="@+id/profile"></item>
 
 </menu>

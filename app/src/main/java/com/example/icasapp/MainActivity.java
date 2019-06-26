@@ -12,9 +12,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.TextView;
 
-import com.example.icasapp.ObjectClasses.FirebaseHelper;
+import com.example.icasapp.Auth.LoginActivity;
+import com.example.icasapp.Feed.FeedFragment;
+import com.example.icasapp.Forums.ForumFragment;
+import com.example.icasapp.Home.HomeFragment;
+import com.example.icasapp.Firebase.FirebaseHelper;
+import com.example.icasapp.Menu_EditProfile.EditProfileActivity;
+import com.example.icasapp.Notes.NotesFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -35,11 +40,15 @@ public class MainActivity extends AppCompatActivity {
 
         private FirebaseAuth mAuth;
 
+        FirebaseUser user;
+
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-//NOTE: ENTRY POINT OF THE APPLICATION CHANGED TO LOGIN ACTIVITY.
+            //NOTE: ENTRY POINT OF THE APPLICATION CHANGED TO LOGIN ACTIVITY.
             setContentView(R.layout.activity_main);
+
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
             //Initializing viewPager
             viewPager = (ViewPager) findViewById(R.id.viewPager);
@@ -151,6 +160,7 @@ public class MainActivity extends AppCompatActivity {
 
                 case R.id.profile:
                     //OPEN AN ACTIVITY  OR DIALOG INTERFACE WHICH SHOWS USER PROFILE
+                    startActivity(new Intent(MainActivity.this , EditProfileActivity.class));
                     return true;
 
                 default:

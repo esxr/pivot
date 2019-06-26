@@ -1,7 +1,6 @@
-package com.example.icasapp.Activities;
+package com.example.icasapp.Forums.ForumActivities;
 
 import android.content.DialogInterface;
-import android.provider.DocumentsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -9,19 +8,16 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.icasapp.Adapters.AnswerRecyclerAdapter;
-import com.example.icasapp.Adapters.QuestionRecyclerAdapter;
+import com.example.icasapp.Forums.ForumAdapters.AnswerRecyclerAdapter;
 import com.example.icasapp.ObjectClasses.Answers;
 import com.example.icasapp.R;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -37,7 +33,7 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
-import static com.example.icasapp.Activities.QuestionsActivity.docId;
+import static com.example.icasapp.Forums.ForumActivities.QuestionsActivity.docId;
 
 
 public class AnswersActivity extends AppCompatActivity {

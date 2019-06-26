@@ -1,8 +1,7 @@
-package com.example.icasapp.Adapters;
+package com.example.icasapp.Forums.ForumAdapters;
 
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -13,14 +12,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.icasapp.Activities.AnswersActivity;
 import com.example.icasapp.ObjectClasses.Answers;
-import com.example.icasapp.ObjectClasses.Questions;
 import com.example.icasapp.R;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
@@ -29,16 +24,13 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Nullable;
 
-import static android.support.constraint.Constraints.TAG;
-import static com.example.icasapp.Activities.AnswersActivity.ans_id;
-import static com.example.icasapp.Activities.QuestionsActivity.docId;
+import static com.example.icasapp.Forums.ForumActivities.AnswersActivity.ans_id;
+import static com.example.icasapp.Forums.ForumActivities.QuestionsActivity.docId;
 
 public class AnswerRecyclerAdapter extends RecyclerView.Adapter<AnswerRecyclerAdapter.ViewHolder>{
 

@@ -1,4 +1,4 @@
-package com.example.icasapp;
+package com.example.icasapp.Forums;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,8 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.icasapp.Activities.NewDiscussionActivity;
-import com.example.icasapp.Adapters.DiscussionRecyclerAdapter;
+import com.example.icasapp.Forums.ForumActivities.NewDiscussionActivity;
+import com.example.icasapp.Forums.ForumAdapters.DiscussionRecyclerAdapter;
 import com.example.icasapp.ObjectClasses.DiscussionTopic;
 import com.example.icasapp.R;
 import com.google.firebase.firestore.DocumentChange;
@@ -39,7 +39,6 @@ public class ForumFragment extends Fragment {
     private boolean isFirstPageFirstLoad =false;
     int c=0;
     public ForumFragment() {
-
 
     }
 

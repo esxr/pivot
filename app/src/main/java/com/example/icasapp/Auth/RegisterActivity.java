@@ -1,4 +1,4 @@
-package com.example.icasapp;
+package com.example.icasapp.Auth;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -9,13 +9,15 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.icasapp.MainActivity;
+import com.example.icasapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class LoginActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity {
 
     private EditText inputEmail;
     private EditText inputPassword;
@@ -28,9 +30,9 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_register);
 
-        getSupportActionBar().setTitle("LOGIN");
+        getSupportActionBar().setTitle("REGISTER");
 
         inputEmail = findViewById(R.id.inputEmail);
         inputPassword = findViewById(R.id.inputPassword);
@@ -38,9 +40,11 @@ public class LoginActivity extends AppCompatActivity {
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
+
     }
 
-    public void onLogin(View view){
+    public void onRegister(View view){
+
         try {
 
             email = inputEmail.getText().toString().trim();
@@ -56,55 +60,52 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "BOTH FIELDS ARE EMPTY", Toast.LENGTH_LONG).show();
                 inputEmail.requestFocus();
             } else
-                FirebaseLogin();
-        } catch(IllegalArgumentException e){
-            Toast.makeText(getApplicationContext() , "EMPTY FIELDS" , Toast.LENGTH_LONG).show();
-        }
-        catch(Exception e){
+                FirebaseRegister();
+        }catch(IllegalArgumentException e){
+            Toast.makeText(getApplicationContext() , "INVALID CREDENTIALS OR EMPTY FIELDS" , Toast.LENGTH_LONG).show();
+            }
+         catch(Exception e){
             Toast.makeText(getApplicationContext() , "AUTHENTICATION NOT SUCCESSFUL. RE-ENTER CREDENTIALS" , Toast.LENGTH_LONG).show();
-        }
+         }
+
 
     }
 
-    public void FirebaseLogin(){
-
+    public void FirebaseRegister(){
         try {
 
-            mAuth.signInWithEmailAndPassword(email, password)
+            mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 // Sign in success, update UI with the signed-in user's information
-                                Log.d("msg", "signInWithEmail:success");
+                                Log.d("msg", "createUserWithEmail:success");
                                 FirebaseUser user = mAuth.getCurrentUser();
-                                finish();
                                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
-
                             } else {
                                 // If sign in fails, display a message to the user.
-                                Log.w("msg", "signInWithEmail:failure", task.getException());
+                                Log.w("msg", "createUserWithEmail:failure", task.getException());
                                 Toast.makeText(getApplicationContext(), "Authentication failed.",
                                         Toast.LENGTH_SHORT).show();
-
                             }
 
                             // ...
                         }
                     });
         }catch(IllegalArgumentException e){
-            Toast.makeText(getApplicationContext(),"EMPTY FIELDS" , Toast.LENGTH_LONG).show();
-        }catch(Exception e){
-            Toast.makeText(getApplicationContext(),"AUTHENTICATION FAILED",Toast.LENGTH_LONG).show();
-        } finally {
-            inputEmail.requestFocus();
+                Toast.makeText(getApplicationContext(),"EMPTY FIELDS" , Toast.LENGTH_LONG).show();
+            }catch(Exception e){
+                Toast.makeText(getApplicationContext(),"AUTHENTICATION FAILED",Toast.LENGTH_LONG).show();
+            } finally {
+                inputEmail.requestFocus();
         }
-
     }
 
-    public void onRegister(View view){
-
-        startActivity(new Intent(LoginActivity.this , RegisterActivity.class));
-
+    public void onLogin(View view){
+        startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
     }
+
+
+
 }

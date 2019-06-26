@@ -1,4 +1,4 @@
-package com.example.icasapp.Adapters;
+package com.example.icasapp.Forums.ForumAdapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,8 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.icasapp.Forums.ForumActivities.QuestionsActivity;
 import com.example.icasapp.ObjectClasses.DiscussionTopic;
-import com.example.icasapp.Activities.QuestionsActivity;
 import com.example.icasapp.R;
 
 import java.util.List;

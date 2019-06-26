@@ -9,4 +9,19 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="feed">Feed</string>
     <string name="title_activity_comments">CommentsActivity</string>
+
+    <string-array name="semester_array">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+
+    <string-array name="stream_array">
+        <item>CSE</item>
+        <item>Aero</item>
+        <item>Mechanical</item>
+        <item>Chem</item>
+        <item>Mechatronics</item>
+    </string-array>
 </resources>

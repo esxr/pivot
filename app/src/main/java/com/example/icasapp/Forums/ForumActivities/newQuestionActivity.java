@@ -1,4 +1,4 @@
-package com.example.icasapp.Activities;
+package com.example.icasapp.Forums.ForumActivities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

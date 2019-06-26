@@ -1,4 +1,4 @@
-package com.example.icasapp.Activities;
+package com.example.icasapp.Forums.ForumActivities;
 
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
@@ -9,7 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Toast;
 
-import com.example.icasapp.Adapters.QuestionRecyclerAdapter;
+import com.example.icasapp.Forums.ForumAdapters.QuestionRecyclerAdapter;
 import com.example.icasapp.ObjectClasses.Questions;
 import com.example.icasapp.R;
 import com.google.firebase.firestore.DocumentChange;
