@@ -50,7 +50,7 @@ public class newQuestionActivity extends AppCompatActivity {
                 if (!TextUtils.isEmpty(content) &&!TextUtils.isEmpty(title)) {
 
                     Map<String, Object> postMap = new HashMap<>();
-                    postMap.put("title", title);
+                    postMap.put("topic", title);
                     // postMap.put("image_thumb",ls);
                     postMap.put("content", content);
                     postMap.put("user_id", current_user_id);

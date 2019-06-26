@@ -19,6 +19,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.icasapp.Forums.ForumFragment;
+import com.example.icasapp.MainActivity;
 import com.example.icasapp.R;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -159,9 +161,9 @@ public class NewDiscussionActivity extends AppCompatActivity {
                                             if (task.isSuccessful()) {
 
                                                 Toast.makeText(NewDiscussionActivity.this, "Post was added", Toast.LENGTH_LONG).show();
-                                                //Intent mainIntent = new Intent(NewDiscussionActivity.this, MainActivity.class);
-                                                //startActivity(mainIntent);
-                                                //finish();
+                                                Intent mainIntent = new Intent(NewDiscussionActivity.this, ForumFragment.class);
+                                                startActivity(mainIntent);
+                                                finish();
 
                                             } else {
                                                 Toast.makeText(NewDiscussionActivity.this, "Post was not added", Toast.LENGTH_LONG).show();

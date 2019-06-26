@@ -42,17 +42,24 @@ public class QuestionRecyclerAdapter extends RecyclerView.Adapter<QuestionRecycl
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.question_list_item, viewGroup, false);
         context=viewGroup.getContext();
         firebaseFirestore=firebaseFirestore.getInstance();
-        String user_name;
         return new QuestionRecyclerAdapter.ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, int i) {
-       String question =  questionsList.get(i).getContent();
+       String question =  questionsList.get(i).getTopic();
+       try{
+       Log.i("Ques",question);}
+       catch (Exception e)
+       {
+
+       }
 
        final String id=questionsList.get(i).QuestionsId;
 
        String uid=questionsList.get(i).getUser_id();
+
+       String content=questionsList.get(i).getContent();
 
 
        firebaseFirestore.collection("USER").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -73,6 +80,8 @@ public class QuestionRecyclerAdapter extends RecyclerView.Adapter<QuestionRecycl
                viewHolder.setQuestion(question);
 
                viewHolder.setUsername(user_name);
+
+               viewHolder.setContent(content);
 
        viewHolder.addAnswer.setOnClickListener(new View.OnClickListener() {
            @Override
@@ -99,6 +108,8 @@ public class QuestionRecyclerAdapter extends RecyclerView.Adapter<QuestionRecycl
 
         private TextView userName;
 
+        private TextView content;
+
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -111,7 +122,12 @@ public class QuestionRecyclerAdapter extends RecyclerView.Adapter<QuestionRecycl
             question = mView.findViewById(R.id.Question);
             question.setText(message);
 
+        }
 
+        public void setContent(String message)
+        {
+            content=mView.findViewById(R.id.Content);
+            content.setText(message);
         }
 
         public void setUsername(String username)
