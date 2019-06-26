@@ -12,6 +12,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,6 +23,7 @@ import com.example.icasapp.R;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -33,9 +35,14 @@ import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import id.zelory.compressor.Compressor;
 
 
 public class NewDiscussionActivity extends AppCompatActivity {
@@ -93,123 +100,9 @@ public class NewDiscussionActivity extends AppCompatActivity {
         //data is stored in storage folder thread image
         // If the image is put successfully.
         // Details of the image. The upload uri, user uid, timestamp etc are stored in a collection thread in firestore
-     /*  newPostBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        //Compressed image is stored
 
-                final String content = editText.getText().toString();
-
-                if (!TextUtils.isEmpty(content) && postImageUri != null) {
-                    final StorageReference filePath = storageReference.child("post_image");
-                    filePath.putFile(postImageUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                        @Override
-                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                            if (!task.isSuccessful()) {
-                                Toast.makeText(NewDiscussionActivity.this, "Uploading", Toast.LENGTH_SHORT).show();
-                            }
-                            return filePath.getDownloadUrl();
-                        }
-                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Uri> task) {
-                            Toast.makeText(NewDiscussionActivity.this, "Image Uploaded Successfully", Toast.LENGTH_SHORT).show();
-                            String downloadUri=task.getResult().toString();
-                            Map<String, Object> postMap = new HashMap<>();
-                            postMap.put("image_url", downloadUri);
-                            // postMap.put("image_thumb",ls);
-                            postMap.put("content", content);
-                            postMap.put("user_id", current_user_id);
-                            postMap.put("timestamp", FieldValue.serverTimestamp());
-
-                            firebaseFirestore.collection("Posts").add(postMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                                @Override
-                                public void onComplete(@NonNull Task<DocumentReference> task) {
-
-                                    if (task.isSuccessful()) {
-
-                                        Toast.makeText(NewDiscussionActivity.this, "Post was added", Toast.LENGTH_LONG).show();
-                                        //    Intent mainIntent = new Intent(NewPostActivity.this, MainActivity.class);
-                                        //    startActivity(mainIntent);
-                                        //    finish();
-
-                                    } else {
-                                        Toast.makeText(NewDiscussionActivity.this, "Post was not added", Toast.LENGTH_LONG).show();
-
-                                    }
-
-                                }
-                            });
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(NewDiscussionActivity.this, "Post was not added", Toast.LENGTH_LONG).show();
-                        }
-                    });
-                }
-            }
-        });
-    }*/
         newPostBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                final String content = editText.getText().toString();
-                final String randomName = UUID.randomUUID().toString();
-
-                if (!TextUtils.isEmpty(content) && postImageUri != null) {
-                    final StorageReference filePath = storageReference.child("post_image/"+randomName+".png");
-                    filePath.putFile(postImageUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                        @Override
-                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                            if (!task.isSuccessful()) {
-                                Toast.makeText(NewDiscussionActivity.this, "Upload Failed", Toast.LENGTH_SHORT).show();
-                            }
-                            return filePath.getDownloadUrl();
-                        }
-                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Uri> task) {
-                            Toast.makeText(NewDiscussionActivity.this, "Image Uploaded Successfully", Toast.LENGTH_SHORT).show();
-                            String downloadUri=task.getResult().toString();
-                            Map<String, Object> postMap = new HashMap<>();
-                            postMap.put("image_url", downloadUri);
-                            // postMap.put("image_thumb",ls);
-                            postMap.put("content", content);
-                            postMap.put("user_id", current_user_id);
-                            postMap.put("timestamp", FieldValue.serverTimestamp());
-                            firebaseFirestore.collection("Posts").add(postMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                                @Override
-                                public void onComplete(@NonNull Task<DocumentReference> task) {
-
-                                    if (task.isSuccessful()) {
-
-                                        Toast.makeText(NewDiscussionActivity.this, "Post was added", Toast.LENGTH_LONG).show();
-                                        //    Intent mainIntent = new Intent(NewPostActivity.this, MainActivity.class);
-                                        //    startActivity(mainIntent);
-                                        //    finish();
-
-                                                                  } else {
-                                                                      Toast.makeText(NewDiscussionActivity.this, "Post was not added", Toast.LENGTH_LONG).show();
-
-                                                                  }
-
-                                }
-                            });
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(NewDiscussionActivity.this, "Post was not added", Toast.LENGTH_LONG).show();
-                        }
-                    });
-                }
-            }
-        });
-    }
-
-
-    /*    newPostBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -239,120 +132,56 @@ public class NewDiscussionActivity extends AppCompatActivity {
 
                     // PHOTO UPLOAD
                     final StorageReference FilePath = storageReference.child("post_images").child(randomName + ".jpg");
-                    UploadTask filePath = storageReference.child("post_images").child(randomName + ".jpg").putBytes(imageData);
-                    filePath.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    FilePath.putBytes(imageData).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                         @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            try {
-                                FilePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                    @Override
-                                    public void onSuccess(Uri uri) {
-                                        downloadUrl= uri.toString();
-                                    }
-                                });
-                            }
-                            catch(Exception e)
+                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                            if(!task.isSuccessful())
                             {
-                                Toast.makeText(NewDiscussionActivity.this, downloadUrl, Toast.LENGTH_LONG).show();
+                                Toast.makeText(NewDiscussionActivity.this,"Cant Upload",Toast.LENGTH_SHORT).show();
                             }
-                            Map<String, Object> postMap = new HashMap<>();
-                            postMap.put("image_url", downloadUrl);
-                            postMap.put("content", content);
-                            postMap.put("user_id", current_user_id);
-                            postMap.put("timestamp", FieldValue.serverTimestamp());
-
-                            firebaseFirestore.collection("Posts").add(postMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                            return FilePath.getDownloadUrl();
+                        }
+                    })
+                            .addOnCompleteListener(new OnCompleteListener<Uri>() {
                                 @Override
+                                public void onComplete(@NonNull Task<Uri> task) {
+                                    downloadUrl = task.getResult().toString();
+                                    Map<String, Object> postMap = new HashMap<>();
+                                    postMap.put("image_url", downloadUrl);
+                                    postMap.put("content", content);
+                                    postMap.put("user_id", current_user_id);
+                                    postMap.put("timestamp", FieldValue.serverTimestamp());
 
-                                public void onComplete(@NonNull Task<DocumentReference> task) {
-                                    if (task.isSuccessful()) {
+                                    firebaseFirestore.collection("Posts").add(postMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                        @Override
 
-                                        Toast.makeText(NewDiscussionActivity.this, "Post was added", Toast.LENGTH_LONG).show();
-                                        //Intent mainIntent = new Intent(NewDiscussionActivity.this, MainActivity.class);
-                                        //startActivity(mainIntent);
-                                        //finish();
+                                        public void onComplete(@NonNull Task<DocumentReference> task) {
+                                            if (task.isSuccessful()) {
 
-                                    } else {
-                                        Toast.makeText(NewDiscussionActivity.this, "Post was not added", Toast.LENGTH_LONG).show();
+                                                Toast.makeText(NewDiscussionActivity.this, "Post was added", Toast.LENGTH_LONG).show();
+                                                //Intent mainIntent = new Intent(NewDiscussionActivity.this, MainActivity.class);
+                                                //startActivity(mainIntent);
+                                                //finish();
 
-                                    }
+                                            } else {
+                                                Toast.makeText(NewDiscussionActivity.this, "Post was not added", Toast.LENGTH_LONG).show();
+
+                                            }
+
+                                        }
+                                    });
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(NewDiscussionActivity.this,"Cant Uplaod",Toast.LENGTH_SHORT).show();
                                 }
                             });
-                        }
-                    });
                 }
             }
         });
-    } */
-
-
-
-                        /*    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                                compressedImageFile.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                                byte[] thumbData = baos.toByteArray();
-
-                                final StorageReference ref = storageReference.child("post_images/thumbs");
-                                ref.child(randomName + ".jpg").putBytes(thumbData).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                                    @Override
-                                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                                        if (!task.isSuccessful()) {
-                                            Toast.makeText(NewDiscussionActivity.this, "Uploading", Toast.LENGTH_SHORT).show();
-                                        }
-                                        return ref.getDownloadUrl();
-                                    }
-                                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Uri> task) {
-                                        if (task.isSuccessful()) {
-                                            String downloadthumbUri = ref.getDownloadUrl().toString();
-                                            String downloadUrl = task.getResult().toString();
-                                            Map<String, Object> postMap = new HashMap<>();
-                                            postMap.put("image_url", downloadUrl);
-                                            postMap.put("image_thumb", downloadthumbUri);
-                                            postMap.put("content", content);
-                                            postMap.put("user_id", current_user_id);
-                                            postMap.put("timestamp", FieldValue.serverTimestamp());
-
-                                            firebaseFirestore.collection("Posts").add(postMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                                                @Override
-
-                                                public void onComplete(@NonNull Task<DocumentReference> task) {
-                                                    if (task.isSuccessful()) {
-
-                                                        Toast.makeText(NewDiscussionActivity.this, "Post was added", Toast.LENGTH_LONG).show();
-                                                        //Intent mainIntent = new Intent(NewDiscussionActivity.this, MainActivity.class);
-                                                        //startActivity(mainIntent);
-                                                        //finish();
-
-                                                    } else {
-                                                        Toast.makeText(NewDiscussionActivity.this, "Post was not added", Toast.LENGTH_LONG).show();
-
-                                                    }
-
-                                                    //  newPostProgress.setVisibility(View.INVISIBLE);
-
-                                                }
-                                            });
-                                        }
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                         Toast.makeText(NewDiscussionActivity.this, "Failed", Toast.LENGTH_LONG).show();
-                                    }
-                                });
-
-                            }
-
-                        }
-                    });
-
-                }
-            }
-})
-
-*/
-
+    }
 
 
 
