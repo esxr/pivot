@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,10 @@ import android.widget.TextView;
 import com.example.icasapp.Forums.ForumActivities.AnswersActivity;
 import com.example.icasapp.ObjectClasses.Questions;
 import com.example.icasapp.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
 
@@ -22,6 +27,8 @@ public class QuestionRecyclerAdapter extends RecyclerView.Adapter<QuestionRecycl
 
     public List<Questions> questionsList;
     public Context context;
+    private FirebaseFirestore firebaseFirestore;
+    private String user_name;
 
     public QuestionRecyclerAdapter(List<Questions> discussion_list){
         questionsList=discussion_list;
@@ -34,6 +41,8 @@ public class QuestionRecyclerAdapter extends RecyclerView.Adapter<QuestionRecycl
         //Then the view is passed to ViewHolder **CLASS** and the view is made.
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.question_list_item, viewGroup, false);
         context=viewGroup.getContext();
+        firebaseFirestore=firebaseFirestore.getInstance();
+        String user_name;
         return new QuestionRecyclerAdapter.ViewHolder(view);
     }
 
@@ -43,7 +52,27 @@ public class QuestionRecyclerAdapter extends RecyclerView.Adapter<QuestionRecycl
 
        final String id=questionsList.get(i).QuestionsId;
 
-       viewHolder.setQuestion(question);
+       String uid=questionsList.get(i).getUser_id();
+
+
+       firebaseFirestore.collection("USER").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+
+
+           @Override
+                                                                                          public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                                                              if(task.isSuccessful()){
+                                                                                                  DocumentSnapshot document=task.getResult();
+                                                                                                  if(document.exists()){
+                                                                                                      Log.d("NAME",document.get("name").toString());
+                                                                                                      user_name = document.get("name").toString();
+                                                                                                  }
+                                                                                              }
+                                                                                          }
+                                                                                      });
+
+               viewHolder.setQuestion(question);
+
+               viewHolder.setUsername(user_name);
 
        viewHolder.addAnswer.setOnClickListener(new View.OnClickListener() {
            @Override
@@ -68,6 +97,8 @@ public class QuestionRecyclerAdapter extends RecyclerView.Adapter<QuestionRecycl
 
         private Button addAnswer;
 
+        private TextView userName;
+
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -81,6 +112,12 @@ public class QuestionRecyclerAdapter extends RecyclerView.Adapter<QuestionRecycl
             question.setText(message);
 
 
+        }
+
+        public void setUsername(String username)
+        {
+            userName=mView.findViewById(R.id.user_name);
+            userName.setText(username);
         }
 
 

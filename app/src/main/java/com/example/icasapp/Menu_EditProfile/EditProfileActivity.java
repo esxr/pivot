@@ -106,7 +106,6 @@ public class EditProfileActivity extends AppCompatActivity{
                 setStream(streamSpinner.getSelectedItem().toString());
 
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> arg0) {
                 Log.v("NothingSelected Item",
@@ -201,6 +200,7 @@ public class EditProfileActivity extends AppCompatActivity{
         // [END update_profile]
 
         Map<String, Object> USER = new HashMap<>();
+        USER.put("name",getUsername());
         USER.put("semester", getSemester());
         USER.put("stream", getStream());
 

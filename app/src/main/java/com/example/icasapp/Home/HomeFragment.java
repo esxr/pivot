@@ -52,7 +52,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        db = FirebaseFirestore.getInstance();
+    /*    db = FirebaseFirestore.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
         homeView = inflater.inflate(R.layout.fragment_home, container, false);
         ImageView imageView = homeView.findViewById(R.id.imageView);
@@ -80,7 +80,7 @@ public class HomeFragment extends Fragment {
 
         new ImageLoadTask(user.getPhotoUrl().toString() , imageView).execute();
 
-
+*/
 
 
         // Inflate the layout for this fragment

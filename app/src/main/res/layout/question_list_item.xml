@@ -30,22 +30,26 @@
                 android:id="@+id/Answer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="36dp"
-                android:text="Answer"
+                android:layout_marginTop="25dp"
+                android:layout_marginBottom="8dp"
+                android:hint="Answer"
+                app:layout_constraintBottom_toTopOf="@+id/Answers"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/Question" />
+                app:layout_constraintTop_toBottomOf="@+id/Content" />
 
             <TextView
                 android:id="@+id/Question"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="36dp"
+                android:layout_marginBottom="10dp"
                 android:hint="Question"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                app:layout_constraintBottom_toTopOf="@+id/Answer"
+                app:layout_constraintBottom_toTopOf="@+id/user_name"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <Button
                 android:id="@+id/Answers"
@@ -60,21 +64,32 @@
                 app:layout_constraintTop_toBottomOf="@+id/Answer" />
 
             <TextView
-                android:id="@+id/textView4"
+                android:id="@+id/user_name"
                 android:layout_width="366dp"
                 android:layout_height="18dp"
                 android:layout_marginStart="2dp"
                 android:layout_marginLeft="2dp"
-                android:layout_marginTop="7dp"
                 android:layout_marginEnd="3dp"
                 android:layout_marginRight="3dp"
-                android:layout_marginBottom="11dp"
-                android:text="TextView"
+                android:layout_marginBottom="20dp"
+                android:hint="Username"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                app:layout_constraintBottom_toTopOf="@+id/Answer"
+                app:layout_constraintBottom_toTopOf="@+id/Content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/Content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="312dp"
+                android:layout_marginRight="312dp"
+                android:hint="Content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/Question" />
+                app:layout_constraintTop_toBottomOf="@+id/user_name" />
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>
 
