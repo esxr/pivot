@@ -95,6 +95,7 @@ public class DiscussionRecyclerAdapter extends RecyclerView.Adapter<DiscussionRe
         public void setUrl(String url){
             imageView=mView.findViewById(R.id.forum_image);
             Glide.with(context).load(url).into(imageView);
+
         }
     }
 }

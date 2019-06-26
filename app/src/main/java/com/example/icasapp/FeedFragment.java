@@ -9,9 +9,7 @@ import android.view.ViewGroup;
 import com.example.icasapp.R;
 
 /**
-
  * A simple {@link Fragment} subclass.
-
  */
 
 public class FeedFragment extends Fragment {
