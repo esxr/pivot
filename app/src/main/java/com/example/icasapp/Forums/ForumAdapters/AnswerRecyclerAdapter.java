@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.icasapp.Forums.ForumFragment;
 import com.example.icasapp.ObjectClasses.Answers;
 import com.example.icasapp.R;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -31,6 +32,7 @@ import javax.annotation.Nullable;
 
 import static com.example.icasapp.Forums.ForumActivities.AnswersActivity.ans_id;
 import static com.example.icasapp.Forums.ForumActivities.QuestionsActivity.docId;
+import static com.example.icasapp.Forums.ForumFragment.collectionReference;
 
 public class AnswerRecyclerAdapter extends RecyclerView.Adapter<AnswerRecyclerAdapter.ViewHolder>{
 
@@ -64,7 +66,9 @@ public class AnswerRecyclerAdapter extends RecyclerView.Adapter<AnswerRecyclerAd
         final String id = answersList.get(i).AnswerPostId;
         viewHolder.setupvote(answersList.get(i).getUpvotes());
 
-        firebaseFirestore.collection("Posts").document(docId).collection("Questions").document(ans_id).collection("Answers").document(id).collection("Upvotes")
+        ForumFragment.setFirestoreReference(firebaseFirestore, ForumFragment.i_d,"c");
+
+        collectionReference.document(docId).collection("Questions").document(ans_id).collection("Answers").document(id).collection("Upvotes")
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot snapshots,
@@ -89,27 +93,27 @@ public class AnswerRecyclerAdapter extends RecyclerView.Adapter<AnswerRecyclerAd
         viewHolder.upvotes.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                firebaseFirestore.collection("Posts").document(docId).collection("Questions").document(ans_id).collection("Answers").document(id).collection("Upvotes")
+                                collectionReference.document(docId).collection("Questions").document(ans_id).collection("Answers").document(id).collection("Upvotes")
                                         .document(currentUser).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                     @Override
                                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                                         if (documentSnapshot.exists()) {
-                                            firebaseFirestore.collection("Posts").document(docId).collection("Questions").document(ans_id).collection("Answers").document(id).collection("Upvotes")
+                                            collectionReference.document(docId).collection("Questions").document(ans_id).collection("Answers").document(id).collection("Upvotes")
                                                     .document(currentUser).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
                                                     Toast.makeText(context, "Down-voted", Toast.LENGTH_LONG).show();
-                                                    firebaseFirestore.collection("Posts").document(docId).collection("Questions").document(ans_id).collection("Answers").document(id).update("dirty bit",1);
+                                                    collectionReference.document(docId).collection("Questions").document(ans_id).collection("Answers").document(id).update("dirty bit",1);
                                                 }
                                             });
                                         } else {
                                             HashMap<String, Object> postMap = new HashMap<>();
                                             postMap.put("timestamp", FieldValue.serverTimestamp());
-                                            firebaseFirestore.collection("Posts").document(docId).collection("Questions").document(ans_id).collection("Answers").document(id).collection("Upvotes")
+                                            collectionReference.document(docId).collection("Questions").document(ans_id).collection("Answers").document(id).collection("Upvotes")
                                                     .document(currentUser).set(postMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
-                                                    firebaseFirestore.collection("Posts").document(docId).collection("Questions").document(ans_id).collection("Answers").document(id).update("dirty bit",0);
+                                                    collectionReference.document(docId).collection("Questions").document(ans_id).collection("Answers").document(id).update("dirty bit",0);
                                                     Toast.makeText(context, "Upvoted", Toast.LENGTH_LONG).show();
                                                 }
                                             });

@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.icasapp.Forums.ForumAdapters.AnswerRecyclerAdapter;
+import com.example.icasapp.Forums.ForumFragment;
 import com.example.icasapp.ObjectClasses.Answers;
 import com.example.icasapp.R;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -34,6 +35,7 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 import static com.example.icasapp.Forums.ForumActivities.QuestionsActivity.docId;
+import static com.example.icasapp.Forums.ForumFragment.collectionReference;
 
 
 public class AnswersActivity extends AppCompatActivity {
@@ -81,7 +83,8 @@ public class AnswersActivity extends AppCompatActivity {
 
         ans_id = getIntent().getStringExtra("id");
 
-        firebaseFirestore.collection("Posts").document(docId).collection("Questions").document(ans_id).collection("Answers").addSnapshotListener(new EventListener<QuerySnapshot>() {
+        ForumFragment.setFirestoreReference(firebaseFirestore, ForumFragment.i_d,"c");
+        collectionReference.document(docId).collection("Questions").document(ans_id).collection("Answers").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                 for(DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()){
@@ -150,7 +153,7 @@ public class AnswersActivity extends AppCompatActivity {
                 postMap.put("timestamp", FieldValue.serverTimestamp());
                 postMap.put("dirty bit","0");
 
-                firebaseFirestore.collection("Posts").document(docId).collection("Questions").document(ans_id).collection("Answers").add(postMap)
+                collectionReference.document(docId).collection("Questions").document(ans_id).collection("Answers").add(postMap)
                         .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                             @Override
                             public void onSuccess(DocumentReference documentReference) {

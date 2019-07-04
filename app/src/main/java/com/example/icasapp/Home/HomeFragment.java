@@ -37,7 +37,7 @@ import io.reactivex.annotations.NonNull;
 
 public class HomeFragment extends Fragment {
 
-    FirebaseFirestore db;
+  /*  FirebaseFirestore db;
     FirebaseUser user;
 
     View homeView;
@@ -52,12 +52,13 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-    /*    db = FirebaseFirestore.getInstance();
+        db = FirebaseFirestore.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
         homeView = inflater.inflate(R.layout.fragment_home, container, false);
         ImageView imageView = homeView.findViewById(R.id.imageView);
 
         textView = homeView.findViewById(R.id.textView);
+
 
 
         DocumentReference docRef = db.collection("USER").document(user.getUid().toString());
@@ -77,10 +78,15 @@ public class HomeFragment extends Fragment {
                 }
             }
         });
+        try {
+            new ImageLoadTask(user.getPhotoUrl().toString(), imageView).execute();
+        }
+        catch (Exception e)
+        {
 
-        new ImageLoadTask(user.getPhotoUrl().toString() , imageView).execute();
+        }
 
-*/
+
 
 
         // Inflate the layout for this fragment
@@ -120,5 +126,5 @@ public class HomeFragment extends Fragment {
             imageView.setImageBitmap(result);
         }
 
-    }
+    }*/
 }

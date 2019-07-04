@@ -12,14 +12,18 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.icasapp.Forums.ForumActivities.AnswersActivity;
+import com.example.icasapp.Forums.ForumFragment;
 import com.example.icasapp.ObjectClasses.Questions;
 import com.example.icasapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
+
+import static com.example.icasapp.Forums.ForumFragment.collectionReference;
 
 //Adaptors are bridge between XML and ando
 
@@ -61,8 +65,8 @@ public class QuestionRecyclerAdapter extends RecyclerView.Adapter<QuestionRecycl
 
        String content=questionsList.get(i).getContent();
 
-
-       firebaseFirestore.collection("USER").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+       ForumFragment.setFirestoreReference(firebaseFirestore, ForumFragment.i_d,"c");
+       collectionReference.document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
 
 
            @Override

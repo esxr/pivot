@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.icasapp.Forums.ForumAdapters.QuestionRecyclerAdapter;
+import com.example.icasapp.Forums.ForumFragment;
 import com.example.icasapp.ObjectClasses.Questions;
 import com.example.icasapp.R;
 import com.google.firebase.firestore.DocumentChange;
@@ -20,6 +21,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
+import static com.example.icasapp.Forums.ForumFragment.collectionReference;
+
 public class QuestionsActivity extends AppCompatActivity {
     private FloatingActionButton addQuestion;
     private FirebaseFirestore firebaseFirestore;
@@ -27,6 +30,8 @@ public class QuestionsActivity extends AppCompatActivity {
     private RecyclerView question_list_view;
     private QuestionRecyclerAdapter questionRecyclerAdapter;
     public static String docId;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +63,8 @@ public class QuestionsActivity extends AppCompatActivity {
             }
         });
 
-        firebaseFirestore.collection("Posts").document(docId).collection("Questions").addSnapshotListener(new EventListener<QuerySnapshot>() {
+        ForumFragment.setFirestoreReference(firebaseFirestore, ForumFragment.i_d,"c");
+        collectionReference.document(docId).collection("Questions").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@javax.annotation.Nullable QuerySnapshot queryDocumentSnapshots, @javax.annotation.Nullable FirebaseFirestoreException e) {
                 //check for changes in document if data is added
