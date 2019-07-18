@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.example.icasapp.Forums.ForumActivities.AnswersActivity;
 import com.example.icasapp.Forums.ForumFragment;
+import com.example.icasapp.Forums.OnBottomReachedListener;
 import com.example.icasapp.ObjectClasses.Questions;
 import com.example.icasapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -33,6 +34,7 @@ public class QuestionRecyclerAdapter extends RecyclerView.Adapter<QuestionRecycl
     public Context context;
     private FirebaseFirestore firebaseFirestore;
     private String user_name;
+    private OnBottomReachedListener onBottomReachedListener;
 
     public QuestionRecyclerAdapter(List<Questions> discussion_list){
         questionsList=discussion_list;
@@ -47,6 +49,11 @@ public class QuestionRecyclerAdapter extends RecyclerView.Adapter<QuestionRecycl
         context=viewGroup.getContext();
         firebaseFirestore=firebaseFirestore.getInstance();
         return new QuestionRecyclerAdapter.ViewHolder(view);
+    }
+
+    public void setOnBottomReachedListener(OnBottomReachedListener onBottomReachedListener){
+
+        this.onBottomReachedListener = onBottomReachedListener;
     }
 
     @Override
@@ -95,6 +102,11 @@ public class QuestionRecyclerAdapter extends RecyclerView.Adapter<QuestionRecycl
                context.startActivity(intent);
            }
        });
+
+       //this ensures whenever the condition end is reached OnBottomReached is invoked
+       if(i==questionsList.size()-1) {
+           onBottomReachedListener.OnBottomReached(i);
+       }
     }
 
     @Override

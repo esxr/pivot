@@ -11,10 +11,12 @@ import android.widget.Toast;
 
 import com.example.icasapp.Forums.ForumAdapters.QuestionRecyclerAdapter;
 import com.example.icasapp.Forums.ForumFragment;
+import com.example.icasapp.Forums.OnBottomReachedListener;
 import com.example.icasapp.ObjectClasses.Questions;
 import com.example.icasapp.R;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -27,6 +29,7 @@ public class QuestionsActivity extends AppCompatActivity {
     private FloatingActionButton addQuestion;
     private FirebaseFirestore firebaseFirestore;
     private Boolean isFirstPageFirstLoad=false;
+    private Boolean FirstLoad=true;
     private RecyclerView question_list_view;
     private QuestionRecyclerAdapter questionRecyclerAdapter;
     public static String docId;
@@ -49,6 +52,14 @@ public class QuestionsActivity extends AppCompatActivity {
 
         question_list_view.setLayoutManager(new LinearLayoutManager(QuestionsActivity.this));
         question_list_view.setAdapter(questionRecyclerAdapter);
+
+        questionRecyclerAdapter.setOnBottomReachedListener(new OnBottomReachedListener() {
+            @Override
+            public void OnBottomReached(int position) {
+
+            }
+        });
+
 
         docId = getIntent().getStringExtra("post_id");
 
@@ -78,9 +89,11 @@ public class QuestionsActivity extends AppCompatActivity {
 
                             question_list.add(questions);
 
+
                         } else {
 
                             question_list.add(0, questions);
+
 
                         }
 

@@ -217,8 +217,8 @@ public class ForumFragment extends Fragment implements AdapterView.OnItemClickLi
     {
         if(changed)
         {
-            discussion_list.clear();
-            discussionRecyclerAdapter.notifyDataSetChanged();
+           // discussion_list.clear();
+           // discussionRecyclerAdapter.notifyDataSetChanged();
         }
         query.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override

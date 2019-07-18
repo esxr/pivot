@@ -12,15 +12,29 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.icasapp.Forums.ForumActivities.QuestionsActivity;
+import com.example.icasapp.Forums.ForumFragment;
 import com.example.icasapp.ObjectClasses.DiscussionTopic;
 import com.example.icasapp.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.List;
+
+import javax.annotation.Nullable;
+
+import static com.example.icasapp.Forums.ForumFragment.collectionReference;
 
 public class DiscussionRecyclerAdapter extends RecyclerView.Adapter<DiscussionRecyclerAdapter.ViewHolder> {
 
     public List<DiscussionTopic> discussionTopicList;
     public Context context;
+    FirebaseFirestore firebaseFirestore;
 
     public DiscussionRecyclerAdapter(List<DiscussionTopic> discussion_list){
        discussionTopicList=discussion_list;
@@ -30,13 +44,14 @@ public class DiscussionRecyclerAdapter extends RecyclerView.Adapter<DiscussionRe
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.discussion_list_item, viewGroup, false);
         context=viewGroup.getContext();
+        firebaseFirestore=FirebaseFirestore.getInstance();
         return new ViewHolder(view);
     }
 
     //bind actual data in the elements
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(@NonNull final ViewHolder viewHolder, int i) {
          //On Bind View is mostly used to get stuff from array list
         //getting discussion id
         final String blogPostId = discussionTopicList.get(i).DiscussionPostid;
@@ -47,7 +62,7 @@ public class DiscussionRecyclerAdapter extends RecyclerView.Adapter<DiscussionRe
        // });
 
         //calling method from Discussion Topic class
-    String content=discussionTopicList.get(i).getContent();
+    final String content=discussionTopicList.get(i).getContent();
         viewHolder.setContentText(content);
 
 
@@ -67,7 +82,18 @@ public class DiscussionRecyclerAdapter extends RecyclerView.Adapter<DiscussionRe
 
                 // String id=discussionTopicList.get(i).getId();
                 // Log.i("Avijit",id);
+        ForumFragment.setFirestoreReference(firebaseFirestore, ForumFragment.i_d,"c");
 
+        //it is checked if question is being uploaded
+        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                for(DocumentChange doc:queryDocumentSnapshots.getDocumentChanges()) {
+                    String questions = doc.getDocument().get("questions").toString();
+                    viewHolder.setCommentCount(questions);
+                }
+            }
+        });
 
     }
  //populates no. of items in recycler adapter
@@ -83,6 +109,7 @@ public class DiscussionRecyclerAdapter extends RecyclerView.Adapter<DiscussionRe
         private TextView contentView;
         private ImageView imageView;
         private  ImageView CommentBtn;
+        private TextView commentCount;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             mView=itemView;
@@ -96,6 +123,12 @@ public class DiscussionRecyclerAdapter extends RecyclerView.Adapter<DiscussionRe
             imageView=mView.findViewById(R.id.forum_image);
             Glide.with(context).load(url).into(imageView);
 
+        }
+        public void setCommentCount(String count)
+        {
+            commentCount=mView.findViewById(R.id.blog_comment_count);
+            String text=count+" Questions ";
+            commentCount.setText(text);
         }
     }
 }

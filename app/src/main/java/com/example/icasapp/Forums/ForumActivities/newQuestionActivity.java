@@ -64,7 +64,7 @@ public class newQuestionActivity extends AppCompatActivity {
                             .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                 @Override
                                 public void onSuccess(DocumentReference documentReference) {
-
+                                    collectionReference.document(docId).update("questions", FieldValue.increment(1));
                                     Toast.makeText(newQuestionActivity.this,"Success",Toast.LENGTH_LONG).show();
                                 }
                             });
