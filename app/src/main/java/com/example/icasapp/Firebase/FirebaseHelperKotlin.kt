@@ -7,11 +7,16 @@ class FirebaseHelperKotlin {
     val TAG = "Kotlin FirebaseHelper"
     private val db = FirebaseFirestore.getInstance()
 
+    // getters and setters
 
-    fun addDocumenttoCollection(document: Do, collection: Collection) {
-        db.collection("cities").document("LA")
-                .set(city)
+
+    // document manipulation
+    fun addDocumentToCollection(document: HashMap<String, Object>, collection: String) {
+        db.collection(collection).document("LA")
+                .set(document)
                 .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully written!") }
                 .addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }
     }
+
+
 }
