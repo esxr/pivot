@@ -73,7 +73,7 @@ public class QuestionRecyclerAdapter extends RecyclerView.Adapter<QuestionRecycl
        String content=questionsList.get(i).getContent();
 
        ForumFragment.setFirestoreReference(firebaseFirestore, ForumFragment.i_d,"c");
-       collectionReference.document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+       firebaseFirestore.collection("USER").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
 
 
            @Override
@@ -83,14 +83,13 @@ public class QuestionRecyclerAdapter extends RecyclerView.Adapter<QuestionRecycl
                                                                                                   if(document.exists()){
                                                                                                       Log.d("NAME",document.get("name").toString());
                                                                                                       user_name = document.get("name").toString();
+                                                                                                      viewHolder.setUsername(user_name);
                                                                                                   }
                                                                                               }
                                                                                           }
                                                                                       });
 
                viewHolder.setQuestion(question);
-
-               viewHolder.setUsername(user_name);
 
                viewHolder.setContent(content);
 

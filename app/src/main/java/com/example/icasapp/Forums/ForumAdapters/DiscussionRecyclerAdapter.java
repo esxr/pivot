@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -69,6 +71,10 @@ public class DiscussionRecyclerAdapter extends RecyclerView.Adapter<DiscussionRe
     String url=discussionTopicList.get(i).getImage_url();
         viewHolder.setUrl(url);
 
+        long millisecond =discussionTopicList.get(i).getTimestamp().getTime();
+       // String dateToStr = DateFormat.new Date(millisecond)).toString();
+        String dateString = DateFormat.format("MM/dd/yyyy hh:mm", new Date(millisecond)).toString();
+        viewHolder.setTime(dateString);
 
         viewHolder.CommentBtn.setOnClickListener(new View.OnClickListener() {
                                                      @Override
@@ -95,6 +101,8 @@ public class DiscussionRecyclerAdapter extends RecyclerView.Adapter<DiscussionRe
             }
         });
 
+
+
     }
  //populates no. of items in recycler adapter
     //get the view elementts
@@ -110,6 +118,7 @@ public class DiscussionRecyclerAdapter extends RecyclerView.Adapter<DiscussionRe
         private ImageView imageView;
         private  ImageView CommentBtn;
         private TextView commentCount;
+        private TextView Time;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             mView=itemView;
@@ -129,6 +138,11 @@ public class DiscussionRecyclerAdapter extends RecyclerView.Adapter<DiscussionRe
             commentCount=mView.findViewById(R.id.blog_comment_count);
             String text=count+" Questions ";
             commentCount.setText(text);
+        }
+        public void setTime(String time)
+        {
+            Time=mView.findViewById(R.id.time);
+            Time.setText(time);
         }
     }
 }
