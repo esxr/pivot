@@ -20,7 +20,7 @@ import java.util.List;
 
 public class FirebaseHelper {
 
-    String TAG = "Firebase Helper";
+    String TAG = "msg";
 
     private static FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private static FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
