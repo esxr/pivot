@@ -1,11 +1,16 @@
 package com.example.icasapp.Auth;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -22,10 +27,14 @@ public class LoginActivity extends AppCompatActivity {
     private EditText inputEmail;
     private EditText inputPassword;
 
+    private Button onReg;
+    private Button Login;
+
     private String email;
     private String password;
 
     private FirebaseAuth mAuth;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,11 +43,36 @@ public class LoginActivity extends AppCompatActivity {
 
         getSupportActionBar().setTitle("LOGIN");
 
+
         inputEmail = findViewById(R.id.inputEmail);
         inputPassword = findViewById(R.id.inputPassword);
+        onReg = findViewById(R.id.button3);
+        Login = findViewById(R.id.login);
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
+
+        //register button
+        onReg.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onClick(View v) {
+                Intent sharedIntent = new Intent(LoginActivity.this, RegisterActivity.class);
+
+
+                Pair[] pairs = new Pair[4];
+                pairs[0] = new Pair<View , String>(inputEmail , "email");
+                pairs[1] = new Pair<View , String>(inputPassword , "password");
+                pairs[2] = new Pair<View , String>(onReg , "register");
+                pairs[3] = new Pair<View , String>(onReg , "login");
+
+
+
+                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(LoginActivity.this, pairs);
+                startActivity(sharedIntent , options.toBundle());
+
+            }
+        });
 
     }
 
@@ -104,9 +138,9 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    public void onRegister(View view){
+   // public void onRegister(View view){
 
-        startActivity(new Intent(LoginActivity.this , RegisterActivity.class));
+    //    startActivity(new Intent(LoginActivity.this , RegisterActivity.class));
 
-    }
+   // }
 }

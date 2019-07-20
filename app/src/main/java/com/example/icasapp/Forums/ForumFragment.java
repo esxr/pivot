@@ -1,8 +1,10 @@
 package com.example.icasapp.Forums;
 
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -37,6 +39,7 @@ public class ForumFragment extends Fragment {
     private FirebaseFirestore firebaseFirestore;
     private DiscussionRecyclerAdapter discussionRecyclerAdapter;
     private boolean isFirstPageFirstLoad =false;
+    private ConstraintLayout animback;
     int c=0;
     public ForumFragment() {
 
@@ -47,7 +50,15 @@ public class ForumFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_forum, container, false);
         // Inflate the layout for this fragment
-        addPost = view.findViewById(R.id.addPost); //getView() only works in on create View
+        addPost = view.findViewById(R.id.addPost);//getView() only works in on create View
+        animback = view.findViewById(R.id.forumLayout);
+       AnimationDrawable animationDrawable = (AnimationDrawable) animback.getBackground();//gradient animation
+       animationDrawable.setEnterFadeDuration(2000);
+       animationDrawable.setExitFadeDuration(4000);
+        animationDrawable.start();//animation starts
+
+
+
         addPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
