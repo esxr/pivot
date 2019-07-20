@@ -15,6 +15,7 @@
         <item>2</item>
         <item>3</item>
         <item>4</item>
+        <item>None</item>
     </string-array>
 
     <string-array name="stream_array">
@@ -28,7 +29,7 @@
     <string-array name="sessional_array">
         <item>I</item>
         <item>II</item>
-        <item>Make-up</item>
+        <item>Make up</item>
         <item>None</item>
     </string-array>
 </resources>

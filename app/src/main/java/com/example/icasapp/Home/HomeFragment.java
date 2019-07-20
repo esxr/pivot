@@ -30,9 +30,7 @@ import java.net.URL;
 import io.reactivex.annotations.NonNull;
 
 /**
-
  * A simple {@link Fragment} subclass.
-
  */
 
 public class HomeFragment extends Fragment {
