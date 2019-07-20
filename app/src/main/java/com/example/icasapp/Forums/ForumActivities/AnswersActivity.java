@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.icasapp.Forums.ForumAdapters.AnswerRecyclerAdapter;
@@ -60,6 +61,9 @@ public class AnswersActivity extends AppCompatActivity {
     private Button recent;
     private Button votes;
 
+    private TextView topic;
+    private TextView content;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +80,9 @@ public class AnswersActivity extends AppCompatActivity {
         recent=findViewById(R.id.recent);
         votes=findViewById(R.id.topVoted);
 
+        topic=findViewById(R.id.topic);
+        content=findViewById(R.id.recent);
+
         firebaseAuth=FirebaseAuth.getInstance();
         currentUserId=firebaseAuth.getCurrentUser().getUid();
 
@@ -89,6 +96,11 @@ public class AnswersActivity extends AppCompatActivity {
     });
 
         ans_id = getIntent().getStringExtra("id");
+        String Topic=getIntent().getStringExtra("topic");
+        String Content=getIntent().getStringExtra("content");
+
+        topic.setText(Topic);
+        content.setText(Content);
 
         setQuery("timestamp",answersList,answerRecyclerAdapter);
         //menu items to select what to sort and how to sort
@@ -108,11 +120,6 @@ public class AnswersActivity extends AppCompatActivity {
                                      }
                                  });
 
-
-    }
-
-    public void queryMaker(Query query)
-    {
 
     }
 
@@ -158,7 +165,7 @@ public class AnswersActivity extends AppCompatActivity {
         alert.show();
     }
 
-    public void setQuery(String sort, final List<Answers> answersList, final AnswerRecyclerAdapter answerRecyclerAdapter)
+    public void setQuery(final String sort, final List<Answers> answersList, final AnswerRecyclerAdapter answerRecyclerAdapter)
     {
 
     answersList.clear();
@@ -175,12 +182,23 @@ public class AnswersActivity extends AppCompatActivity {
                             if(isFirstPageLoad) {
                                 answersList.add(answers);
                             }
-                            else{
+                            if(sort=="timestamp"){
+                                //if sorting was of timestamp. then when a new post is added the post is put up.
                                 answersList.add(0,answers);
+                            }
+                            else{
+                                shuffle();
+                                bestAnswerSelector();
                             }
                             answerRecyclerAdapter.notifyDataSetChanged();
                             break;
                         case MODIFIED:
+                            //is upvotes are put the document will be modified hence the arraylist will again be shifted
+                            if(sort=="upvotes") {
+                                shuffle();
+                            }
+                            //whenever modified best answer is selected in answer activity
+                            bestAnswerSelector();
                             Toast.makeText(AnswersActivity.this, "Success", Toast.LENGTH_LONG).show();
                             answerRecyclerAdapter.notifyDataSetChanged();
                             break;
@@ -193,6 +211,28 @@ public class AnswersActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    public void shuffle()
+    {
+        try {
+            Collections.sort(answersList, new Comparator<Answers>() {
+                @Override
+                public int compare(Answers u1, Answers u2) {
+                    return u2.upvotes-u1.upvotes; // Ascending
+                }
+
+            });
+        }
+        catch(Exception e){
+
+        }
+    }
+
+    public void bestAnswerSelector()
+    {
+        String answer=answersList.get(0).getAnswer();
+        collectionReference.document(docId).collection("Questions").document(ans_id).update("best_answer",answer);
     }
 
 }

@@ -58,19 +58,14 @@ public class QuestionRecyclerAdapter extends RecyclerView.Adapter<QuestionRecycl
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, int i) {
-       String question =  questionsList.get(i).getTopic();
-       try{
-       Log.i("Ques",question);}
-       catch (Exception e)
-       {
-
-       }
+       final String question =  questionsList.get(i).getTopic();
+       viewHolder.setQuestion(question);
 
        final String id=questionsList.get(i).QuestionsId;
 
        String uid=questionsList.get(i).getUser_id();
 
-       String content=questionsList.get(i).getContent();
+       final String content=questionsList.get(i).getContent();
 
        ForumFragment.setFirestoreReference(firebaseFirestore, ForumFragment.i_d,"c");
        firebaseFirestore.collection("USER").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -98,6 +93,8 @@ public class QuestionRecyclerAdapter extends RecyclerView.Adapter<QuestionRecycl
            public void onClick(View v) {
                Intent intent=new Intent(context, AnswersActivity.class);
                intent.putExtra("id",id);
+               intent.putExtra("topic",question);
+               intent.putExtra("content",content);
                context.startActivity(intent);
            }
        });
@@ -125,6 +122,7 @@ public class QuestionRecyclerAdapter extends RecyclerView.Adapter<QuestionRecycl
 
         private TextView content;
 
+        private TextView bestAnswer;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -151,6 +149,12 @@ public class QuestionRecyclerAdapter extends RecyclerView.Adapter<QuestionRecycl
             userName.setText(username);
         }
 
+
+        public void setBestAnswer(String best_answer)
+        {
+            bestAnswer=mView.findViewById(R.id.Answer);
+            bestAnswer.setText(best_answer);
+        }
 
 
     }
