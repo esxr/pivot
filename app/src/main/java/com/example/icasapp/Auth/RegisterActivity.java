@@ -79,7 +79,7 @@ public class RegisterActivity extends AppCompatActivity {
             } else if (email == null && password == null) {
                 Toast.makeText(getApplicationContext(), "BOTH FIELDS ARE EMPTY", Toast.LENGTH_LONG).show();
                 inputEmail.requestFocus();
-            }else if(!password2.equals(password)){
+            } else if (!password2.equals(password)) {
                 Toast.makeText(getApplicationContext(), "PASSWORD FIELDS ARE NOT EQUAL.", Toast.LENGTH_LONG).show();
                 inputPassword.requestFocus();
             } else
