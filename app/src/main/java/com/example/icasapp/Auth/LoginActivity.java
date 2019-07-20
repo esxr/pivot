@@ -52,6 +52,13 @@ public class LoginActivity extends AppCompatActivity {
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
+        if (mAuth.getCurrentUser() != null) {
+            // User is signed in (getCurrentUser() will be null if not signed in)
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
         //register button
         onReg.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -61,22 +68,21 @@ public class LoginActivity extends AppCompatActivity {
 
 
                 Pair[] pairs = new Pair[4];
-                pairs[0] = new Pair<View , String>(inputEmail , "email");
-                pairs[1] = new Pair<View , String>(inputPassword , "password");
-                pairs[2] = new Pair<View , String>(onReg , "register");
-                pairs[3] = new Pair<View , String>(onReg , "login");
-
+                pairs[0] = new Pair<View, String>(inputEmail, "email");
+                pairs[1] = new Pair<View, String>(inputPassword, "password");
+                pairs[2] = new Pair<View, String>(onReg, "register");
+                pairs[3] = new Pair<View, String>(onReg, "login");
 
 
                 ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(LoginActivity.this, pairs);
-                startActivity(sharedIntent , options.toBundle());
+                startActivity(sharedIntent, options.toBundle());
 
             }
         });
 
     }
 
-    public void onLogin(View view){
+    public void onLogin(View view) {
         try {
 
             email = inputEmail.getText().toString().trim();
@@ -93,16 +99,15 @@ public class LoginActivity extends AppCompatActivity {
                 inputEmail.requestFocus();
             } else
                 FirebaseLogin();
-        } catch(IllegalArgumentException e){
-            Toast.makeText(getApplicationContext() , "EMPTY FIELDS" , Toast.LENGTH_LONG).show();
-        }
-        catch(Exception e){
-            Toast.makeText(getApplicationContext() , "AUTHENTICATION NOT SUCCESSFUL. RE-ENTER CREDENTIALS" , Toast.LENGTH_LONG).show();
+        } catch (IllegalArgumentException e) {
+            Toast.makeText(getApplicationContext(), "EMPTY FIELDS", Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(), "AUTHENTICATION NOT SUCCESSFUL. RE-ENTER CREDENTIALS", Toast.LENGTH_LONG).show();
         }
 
     }
 
-    public void FirebaseLogin(){
+    public void FirebaseLogin() {
 
         try {
 
@@ -128,19 +133,19 @@ public class LoginActivity extends AppCompatActivity {
                             // ...
                         }
                     });
-        }catch(IllegalArgumentException e){
-            Toast.makeText(getApplicationContext(),"EMPTY FIELDS" , Toast.LENGTH_LONG).show();
-        }catch(Exception e){
-            Toast.makeText(getApplicationContext(),"AUTHENTICATION FAILED",Toast.LENGTH_LONG).show();
+        } catch (IllegalArgumentException e) {
+            Toast.makeText(getApplicationContext(), "EMPTY FIELDS", Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(), "AUTHENTICATION FAILED", Toast.LENGTH_LONG).show();
         } finally {
             inputEmail.requestFocus();
         }
 
     }
 
-   // public void onRegister(View view){
+    // public void onRegister(View view){
 
     //    startActivity(new Intent(LoginActivity.this , RegisterActivity.class));
 
-   // }
+    // }
 }

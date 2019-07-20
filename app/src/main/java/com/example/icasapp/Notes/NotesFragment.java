@@ -1,9 +1,9 @@
 package com.example.icasapp.Notes;
+
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
-import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
+
 import com.example.icasapp.R;
 
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -26,7 +27,7 @@ public class NotesFragment extends Fragment {
     Button viewButton;
     View notesView;
     StorageReference storageRef;
-    FirebaseFirestore db ;
+    FirebaseFirestore db;
     Uri DATA;
 
     public NotesFragment() {
@@ -47,7 +48,6 @@ public class NotesFragment extends Fragment {
         db = FirebaseFirestore.getInstance();
 
 
-
         //FUNCTIONALITY WHEN UPLOAD BUTTON CLICKED.
         uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,7 +59,7 @@ public class NotesFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                startActivity(new Intent(getContext() , NotesViewActivity.class));
+                startActivity(new Intent(getContext(), NotesViewActivity.class));
 
             }
         });
@@ -90,16 +90,11 @@ public class NotesFragment extends Fragment {
             DATA = data.getData();
 
             Intent intent = new Intent(getContext(), NotesForm.class);
-            intent.putExtra("SELECTED_FILE_DATA" , DATA.toString());
+            intent.putExtra("SELECTED_FILE_DATA", DATA.toString());
             startActivity(intent);
 
         }
     }
-
-
-
-
-
 
 
 }
