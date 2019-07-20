@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.FieldPosition;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -71,10 +75,24 @@ public class DiscussionRecyclerAdapter extends RecyclerView.Adapter<DiscussionRe
     String url=discussionTopicList.get(i).getImage_url();
         viewHolder.setUrl(url);
 
-        long millisecond =discussionTopicList.get(i).getTimestamp().getTime();
-       // String dateToStr = DateFormat.new Date(millisecond)).toString();
-        String dateString = DateFormat.format("MM/dd/yyyy hh:mm", new Date(millisecond)).toString();
-        viewHolder.setTime(dateString);
+        long currentTime = Calendar.getInstance().getTime().getTime();
+        long uploadtime =discussionTopicList.get(i).getTimestamp().getTime();
+
+        long diff=currentTime-uploadtime;
+        String difference = DateFormat.format("hh", new Date(uploadtime)).toString();
+        int value= Integer.parseInt(difference);
+
+        if(value>24)
+        {
+            String dateString = DateFormat.format("MM/dd/yyyy", new Date(uploadtime)).toString();
+            viewHolder.setTime(dateString);
+        }
+        else
+        {
+            String dateString = DateFormat.format("hh:mm", new Date(uploadtime)).toString();
+            viewHolder.setTime(dateString);
+        }
+
 
         viewHolder.CommentBtn.setOnClickListener(new View.OnClickListener() {
                                                      @Override

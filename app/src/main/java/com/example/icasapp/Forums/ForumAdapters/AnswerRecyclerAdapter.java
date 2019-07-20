@@ -66,29 +66,10 @@ public class AnswerRecyclerAdapter extends RecyclerView.Adapter<AnswerRecyclerAd
         final String id = answersList.get(i).AnswerPostId;
         viewHolder.setupvote(answersList.get(i).getUpvotes());
 
+        String answer= answers.getAnswer();
+        viewHolder.setAnswer(answer);
+
         ForumFragment.setFirestoreReference(firebaseFirestore, ForumFragment.i_d,"c");
-
-        collectionReference.document(docId).collection("Questions").document(ans_id).collection("Answers").document(id).collection("Upvotes")
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot snapshots,
-                                        @Nullable FirebaseFirestoreException e) {
-                        if (snapshots.isEmpty()) {
-                            viewHolder.setupvote("0");
-                            answersList.get(i).setUpvotes("0");
-
-                      //      modi(id);
-                            return;
-                        } else {
-                            String count = Integer.toString(snapshots.size());
-                            viewHolder.setupvote(count);
-                            answersList.get(i).setUpvotes(count);
-                       //     modi(id);
-                        }
-                    }
-                });
-
-
 
         viewHolder.upvotes.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -103,7 +84,7 @@ public class AnswerRecyclerAdapter extends RecyclerView.Adapter<AnswerRecyclerAd
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
                                                     Toast.makeText(context, "Down-voted", Toast.LENGTH_LONG).show();
-                                                    collectionReference.document(docId).collection("Questions").document(ans_id).collection("Answers").document(id).update("dirty bit",1);
+                                                    collectionReference.document(docId).collection("Questions").document(ans_id).collection("Answers").document(id).update("upvotes",FieldValue.increment(1));
                                                 }
                                             });
                                         } else {
@@ -113,7 +94,7 @@ public class AnswerRecyclerAdapter extends RecyclerView.Adapter<AnswerRecyclerAd
                                                     .document(currentUser).set(postMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
-                                                    collectionReference.document(docId).collection("Questions").document(ans_id).collection("Answers").document(id).update("dirty bit",0);
+                                                    collectionReference.document(docId).collection("Questions").document(ans_id).collection("Answers").document(id).update("upvotes",FieldValue.increment(1));
                                                     Toast.makeText(context, "Upvoted", Toast.LENGTH_LONG).show();
                                                 }
                                             });
@@ -121,24 +102,23 @@ public class AnswerRecyclerAdapter extends RecyclerView.Adapter<AnswerRecyclerAd
                                     }
                                 });
 
-                                Log.i("POP", id);
-                                String upVote = viewHolder.getupvote();
-                             /*   if (upVote.equals("") || upVote.equals("0")) {
-
-                                    viewHolder.setupvote("1");
-                                    answersList.get(i).setUpvotes("1");
-
-                                } else {
-                                    viewHolder.setupvote("0");
-                                    answersList.get(i).setUpvotes("0");
-                                    firebaseFirestore.collection("Posts").document(docId).collection("Questions").document(ans_id).collection("Answers").document(id)
-                                            .update("upvotes", "0");
-                                }*/
                             }
                         });
 
-        String answer= answers.getAnswer();
-        viewHolder.setAnswer(answer);
+        collectionReference.document(docId).collection("Questions").document(ans_id).collection("Answers").document(id).collection("Upvotes")
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot snapshots,
+                                        @Nullable FirebaseFirestoreException e) {
+                        if (snapshots.isEmpty()) {
+                            viewHolder.setupvote("0");
+                            return;
+                        } else {
+                            String count = Integer.toString(snapshots.size());
+                            viewHolder.setupvote(count);
+                        }
+                    }
+                });
 
     }
 

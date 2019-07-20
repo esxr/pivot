@@ -101,7 +101,7 @@ public class ForumFragment extends Fragment implements AdapterView.OnItemClickLi
                         semester = document.get("semester").toString();
                         stream = document.get("stream").toString();
                         //sets the document id according to semester and stream
-                        setDocumentId(semester, stream,view);
+                        findDocumentId(semester, stream,view);
 
 
 
@@ -149,7 +149,7 @@ public class ForumFragment extends Fragment implements AdapterView.OnItemClickLi
 
     }
 
-    public String setDocumentId(String semester, String stream,final View view) {
+    public String findDocumentId(String semester, String stream,final View view) {
 
         Query query = firebaseFirestore.collection("Specific").whereEqualTo("semester", semester).whereEqualTo("stream", stream);
 
@@ -220,7 +220,7 @@ public class ForumFragment extends Fragment implements AdapterView.OnItemClickLi
            // discussion_list.clear();
            // discussionRecyclerAdapter.notifyDataSetChanged();
         }
-        query.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        query.orderBy("timestamp",Query.Direction.DESCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@javax.annotation.Nullable QuerySnapshot queryDocumentSnapshots, @javax.annotation.Nullable FirebaseFirestoreException e) {
                 //check for changes in document if data is added
