@@ -71,6 +71,8 @@ public class DiscussionRecyclerAdapter extends RecyclerView.Adapter<DiscussionRe
     final String content=discussionTopicList.get(i).getContent();
         viewHolder.setContentText(content);
 
+    final int question=discussionTopicList.get(i).getQuestion();
+        viewHolder.setCommentCount(Integer.toString(question));
 
     String url=discussionTopicList.get(i).getImage_url();
         viewHolder.setUrl(url);
@@ -107,18 +109,6 @@ public class DiscussionRecyclerAdapter extends RecyclerView.Adapter<DiscussionRe
                 // String id=discussionTopicList.get(i).getId();
                 // Log.i("Avijit",id);
         ForumFragment.setFirestoreReference(firebaseFirestore, ForumFragment.i_d,"c");
-
-        //it is checked if question is being uploaded
-        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                for(DocumentChange doc:queryDocumentSnapshots.getDocumentChanges()) {
-                    String questions = doc.getDocument().get("questions").toString();
-                    viewHolder.setCommentCount(questions);
-                }
-            }
-        });
-
 
 
     }

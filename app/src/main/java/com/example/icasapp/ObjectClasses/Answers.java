@@ -5,7 +5,7 @@ import java.util.Date;
 public class Answers extends AnswersPostId{
 
     private String answer ,user_id;
-    public String upvotes;
+    public int upvotes;
     public Date timestamp;
 
 
@@ -13,7 +13,7 @@ public class Answers extends AnswersPostId{
 
     }
 
-    public Answers(String answer,String upvotes, String user_id, Date timestamp) {
+    public Answers(String answer,int upvotes, String user_id, Date timestamp) {
         this.answer=answer;
         this.upvotes = upvotes;
         this.user_id = user_id;
@@ -44,9 +44,9 @@ public class Answers extends AnswersPostId{
         this.timestamp = timestamp;
     }
 
-    public String getUpvotes(){ return upvotes; }
+    public int getUpvotes(){ return upvotes; }
 
-    public void setUpvotes(String upvotes){ this.upvotes=upvotes; }
+    public void setUpvotes(int upvotes){ this.upvotes=upvotes; }
 
 
 }

@@ -90,11 +90,12 @@ public class AnswersActivity extends AppCompatActivity {
 
         ans_id = getIntent().getStringExtra("id");
 
+        setQuery("timestamp",answersList,answerRecyclerAdapter);
         //menu items to select what to sort and how to sort
         recent.setOnClickListener(new View.OnClickListener() {
                                       @Override
                                       public void onClick(View v) {
-                                          sort="upvotes";
+                                          sort="timestamp";
                                           setQuery(sort, answersList, answerRecyclerAdapter);
                                       }
                                   });
@@ -102,7 +103,7 @@ public class AnswersActivity extends AppCompatActivity {
         votes.setOnClickListener(new View.OnClickListener() {
                                      @Override
                                      public void onClick(View v) {
-                                         sort="timestamp";
+                                         sort="upvotes";
                                          setQuery(sort, answersList, answerRecyclerAdapter);
                                      }
                                  });
@@ -160,7 +161,8 @@ public class AnswersActivity extends AppCompatActivity {
     public void setQuery(String sort, final List<Answers> answersList, final AnswerRecyclerAdapter answerRecyclerAdapter)
     {
 
-        ForumFragment.setFirestoreReference(firebaseFirestore, ForumFragment.i_d,"c");
+    answersList.clear();
+    answerRecyclerAdapter.notifyDataSetChanged();
 
         collectionReference.document(docId).collection("Questions").document(ans_id).collection("Answers").orderBy(sort, Query.Direction.DESCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -171,13 +173,8 @@ public class AnswersActivity extends AppCompatActivity {
 
                             String post_id = doc.getDocument().getId();
                             Answers answers = doc.getDocument().toObject(Answers.class).withId(post_id);
-                            if (isFirstPageLoad == true) {
                                 answersList.add(answers);
                                 answerRecyclerAdapter.notifyDataSetChanged();
-                            } else {
-                                answersList.add(0, answers);
-                                answerRecyclerAdapter.notifyDataSetChanged();
-                            }
                             break;
                         case MODIFIED:
                             Toast.makeText(AnswersActivity.this, "Success", Toast.LENGTH_LONG).show();

@@ -230,15 +230,11 @@ public class ForumFragment extends Fragment implements AdapterView.OnItemClickLi
                         //this is the part where every item in the Firebase document gets stored in DiscussionTopic list
                         String blogPostId = doc.getDocument().getId();
                         DiscussionTopic discussionTopic = doc.getDocument().toObject(DiscussionTopic.class).withId(blogPostId);
-                        if (isFirstPageFirstLoad) {
+
 
                             discussion_list.add(discussionTopic);
 
-                        } else {
 
-                            discussion_list.add(0, discussionTopic);
-
-                        }
 
                         discussionRecyclerAdapter.notifyDataSetChanged();
                     }

@@ -159,6 +159,7 @@ public class NewDiscussionActivity extends AppCompatActivity {
                                     postMap.put("content", content);
                                     postMap.put("user_id", current_user_id);
                                     postMap.put("timestamp", FieldValue.serverTimestamp());
+                                    postMap.put("question",0);
 
                                     setFirestoreReference(firebaseFirestore,i_d,"c");
 

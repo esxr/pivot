@@ -4,9 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/fab_const"
     tools:context=".Forums.ForumActivities.AnswersActivity">
 
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/nestedScrollView2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
@@ -57,5 +59,18 @@
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="612dp"
+        android:layout_marginEnd="36dp"
+        android:layout_marginRight="36dp"
+        android:clickable="true"
+        android:foregroundGravity="bottom"
+        app:layout_constraintEnd_toEndOf="@id/fab_const"
+        app:layout_constraintTop_toTopOf="@id/fab_const"
+        app:srcCompat="@drawable/common_full_open_on_phone" />
 
 </android.support.constraint.ConstraintLayout>

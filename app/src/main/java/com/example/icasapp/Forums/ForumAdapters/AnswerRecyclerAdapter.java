@@ -64,7 +64,7 @@ public class AnswerRecyclerAdapter extends RecyclerView.Adapter<AnswerRecyclerAd
         final String currentUser = firebaseAuth.getCurrentUser().getUid();
 
         final String id = answersList.get(i).AnswerPostId;
-        viewHolder.setupvote(answersList.get(i).getUpvotes());
+        viewHolder.setupvote(Integer.toString(answersList.get(i).getUpvotes()));
 
         String answer= answers.getAnswer();
         viewHolder.setAnswer(answer);
@@ -84,7 +84,7 @@ public class AnswerRecyclerAdapter extends RecyclerView.Adapter<AnswerRecyclerAd
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
                                                     Toast.makeText(context, "Down-voted", Toast.LENGTH_LONG).show();
-                                                    collectionReference.document(docId).collection("Questions").document(ans_id).collection("Answers").document(id).update("upvotes",FieldValue.increment(1));
+                                                    collectionReference.document(docId).collection("Questions").document(ans_id).collection("Answers").document(id).update("upvotes",FieldValue.increment(-1));
                                                 }
                                             });
                                         } else {
