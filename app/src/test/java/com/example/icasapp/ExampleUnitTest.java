@@ -2,14 +2,19 @@ package com.example.icasapp;
 
 import android.util.Log;
 
+import com.example.icasapp.Firebase.FirebaseHelper;
+import com.example.icasapp.Firebase.FirebaseHelperKotlin;
 import com.example.icasapp.User.Credential;
 import com.example.icasapp.User.Privilage;
 import com.example.icasapp.User.User;
 import com.example.icasapp.User.UserType;
-
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.HashMap;
+import java.util.HashSet;
+
+import static com.example.icasapp.Home.UserOpsKt.createUser;
 import static org.junit.Assert.*;
 
 /**
@@ -29,8 +34,22 @@ public class ExampleUnitTest {
     @Test
     public void UserType() { assertEquals(new UserType(2).getType(), "teacher"); }
 
-    @Test
-    public void User() {
-        assertEquals(new User(Credential.getCredential(), new Privilage(5)).getPrivilage(), 5);
+    // UserOps class testing
+    private HashMap<String, String> ActualUser;
+
+    @Before
+    public void createActualUSer() {
+        ActualUser = new HashMap<String, String>();
+            ActualUser.put("name", "Pranav");
+            ActualUser.put("semester", "1");
+            ActualUser.put("stream", "CSE");
     }
+
+    @Test
+    public void FirebaseHelper() {
+        assertTrue(FirebaseHelperKotlin.Companion.addDocumentToCollection(ActualUser, "USER"));
+    }
+
+    @Test
+    public void ktUser() { assertEquals(createUser("Pranav", "1", "CSE"), true); }
 }

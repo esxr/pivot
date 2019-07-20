@@ -1,9 +1,12 @@
 package com.example.icasapp.User;
 
+import java.util.HashMap;
+
 public class User {
     private Credential credential;
     private Privilage privilage;
     private UserType type;
+    private HashMap<String, String> userData;
 
     public User(Credential credential, Privilage privilage) {
         this.credential = credential;

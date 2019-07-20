@@ -4,7 +4,7 @@
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -13,7 +13,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Menu_EditProfile.EditProfileActivity"></activity>
+        <activity android:name=".Notes.NotesForm"></activity>
+        <activity android:name=".Menu_EditProfile.EditProfileActivity" />
         <activity android:name=".Forums.ForumActivities.AnswersActivity" />
         <activity android:name=".Forums.ForumActivities.newQuestionActivity" />
         <activity android:name=".Forums.ForumActivities.QuestionsActivity" />
@@ -22,7 +23,6 @@
             android:theme="@style/Base.Theme.AppCompat" />
         <activity android:name=".Forums.ForumActivities.NewDiscussionActivity" />
         <activity android:name=".Auth.RegisterActivity" />
-        <activity android:name=".Notes.ViewNotesActivity" />
         <activity android:name=".MainActivity" />
         <activity
             android:name=".Auth.LoginActivity"
