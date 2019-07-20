@@ -44,6 +44,9 @@ public class LoginActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("LOGIN");
 
 
+
+
+
         inputEmail = findViewById(R.id.inputEmail);
         inputPassword = findViewById(R.id.inputPassword);
         onReg = findViewById(R.id.button3);
@@ -51,6 +54,13 @@ public class LoginActivity extends AppCompatActivity {
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
+
+        if (mAuth.getCurrentUser() != null) {
+            // User is signed in (getCurrentUser() will be null if not signed in)
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
 
         //register button
         onReg.setOnClickListener(new View.OnClickListener() {

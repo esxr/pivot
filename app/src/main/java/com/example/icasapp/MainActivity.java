@@ -178,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void signOut(){
+    public void signOut(){ //dialog box sign out
         new AlertDialog.Builder(this)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setTitle("ARE YOU SURE?")
