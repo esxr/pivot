@@ -67,6 +67,9 @@ public class QuestionRecyclerAdapter extends RecyclerView.Adapter<QuestionRecycl
 
        final String content=questionsList.get(i).getContent();
 
+       String best_answer=questionsList.get(i).getBest_answer();
+       viewHolder.setBestAnswer(best_answer);
+
        ForumFragment.setFirestoreReference(firebaseFirestore, ForumFragment.i_d,"c");
        firebaseFirestore.collection("USER").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
 
