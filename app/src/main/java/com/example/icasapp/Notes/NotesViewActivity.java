@@ -4,6 +4,7 @@ package com.example.icasapp.Notes;
 
 import android.app.ProgressDialog;
 
+import android.content.Intent;
 import android.net.Uri;
 
 import android.support.annotation.NonNull;
@@ -126,7 +127,9 @@ public class NotesViewActivity extends AppCompatActivity {
     }
 
     public void downloadFile(Uri url, String fileName){
-
+        Intent i = new Intent(Intent.ACTION_VIEW);
+        i.setData(url);
+        startActivity(i);
     }
 
 }
