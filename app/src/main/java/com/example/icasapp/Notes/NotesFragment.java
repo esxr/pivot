@@ -3,6 +3,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -14,13 +15,8 @@ import com.example.icasapp.R;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -62,6 +58,8 @@ public class NotesFragment extends Fragment {
         viewButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                startActivity(new Intent(getContext() , NotesViewActivity.class));
 
             }
         });
