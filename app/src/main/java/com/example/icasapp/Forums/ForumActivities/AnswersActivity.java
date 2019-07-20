@@ -170,11 +170,15 @@ public class AnswersActivity extends AppCompatActivity {
                 for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
                     switch (doc.getType()) {
                         case ADDED:
-
                             String post_id = doc.getDocument().getId();
                             Answers answers = doc.getDocument().toObject(Answers.class).withId(post_id);
+                            if(isFirstPageLoad) {
                                 answersList.add(answers);
-                                answerRecyclerAdapter.notifyDataSetChanged();
+                            }
+                            else{
+                                answersList.add(0,answers);
+                            }
+                            answerRecyclerAdapter.notifyDataSetChanged();
                             break;
                         case MODIFIED:
                             Toast.makeText(AnswersActivity.this, "Success", Toast.LENGTH_LONG).show();
