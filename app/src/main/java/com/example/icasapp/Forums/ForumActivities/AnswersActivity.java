@@ -26,6 +26,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -64,6 +65,8 @@ public class AnswersActivity extends AppCompatActivity {
 
     private TextView topic;
     private TextView content;
+
+    private ListenerRegistration registration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,48 +116,10 @@ public class AnswersActivity extends AppCompatActivity {
        {
 
        }
-        collectionReference.document(docId).collection("Questions").document(ans_id).collection("Answers").orderBy(sort, Query.Direction.DESCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
-                    switch (doc.getType()) {
-                        case ADDED:
-                            String post_id = doc.getDocument().getId();
-                            Answers answers = doc.getDocument().toObject(Answers.class).withId(post_id);
-                            if(isFirstPageLoad) {
-                                answersList.add(answers);
 
-                            }
-                            //if the page is not loaded for the first time. That means a new post or mode has been changed has been added then these conditions are invoked
-                            else {
-                                    answersList.add(0, answers);
-                                    shuffle();
-                                    //   bestAnswerSelector();
-                            }
-                            answerRecyclerAdapter.notifyDataSetChanged();
-                            break;
-                        case MODIFIED:
-                            //is upvotes are put the document will be modified hence the arraylist will again be shifted
-
-                            shuffle();
-
-                            //whenever modified best answer is selected in answer activity
-                            //  bestAnswerSelector();
-                            Toast.makeText(AnswersActivity.this, "Success", Toast.LENGTH_LONG).show();
-                            answerRecyclerAdapter.notifyDataSetChanged();
-                            break;
-                        case REMOVED:
-                            break;
-
-                    }
-
-                }
-                isFirstPageLoad = false;
-            }
-        });
 
         //menu items to select what to sort and how to sort
-     /*   recent.setOnClickListener(new View.OnClickListener() {
+        recent.setOnClickListener(new View.OnClickListener() {
                                       @Override
                                       public void onClick(View v) {
                                           isFirstPageLoad=true;
@@ -171,7 +136,7 @@ public class AnswersActivity extends AppCompatActivity {
                                          sort="upvotes";
                                          setQuery(sort,answersList, answerRecyclerAdapter);
                                      }
-                                 });*/
+                                 });
 
 
 
@@ -222,10 +187,17 @@ public class AnswersActivity extends AppCompatActivity {
 
     public void setQuery(final String sort, final List<Answers> answersList, final AnswerRecyclerAdapter answerRecyclerAdapter)
     {
+        try {
+            registration.remove();
+        }
+        catch(Exception e)
+        {
 
+        }
     answersList.clear();
+    ForumFragment.setFirestoreReference(firebaseFirestore, ForumFragment.i_d,"c");
 
-        collectionReference.document(docId).collection("Questions").document(ans_id).collection("Answers").orderBy(sort, Query.Direction.DESCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
+        registration =collectionReference.document(docId).collection("Questions").document(ans_id).collection("Answers").orderBy(sort, Query.Direction.DESCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                 for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
@@ -239,6 +211,7 @@ public class AnswersActivity extends AppCompatActivity {
                             }
                             //if the page is not loaded for the first time. That means a new post or mode has been changed has been added then these conditions are invoked
                             else {
+                                Log.i("SORTT",sort);
                                 if (sort == "timestamp") {
                                     //if sorting was of timestamp. then when a new post is added the post is put up.
                                     answersList.add(0, answers);
@@ -246,16 +219,17 @@ public class AnswersActivity extends AppCompatActivity {
                                 if (sort == "upvotes") {
                                     answersList.add(0, answers);
                                     shuffle();
-                                   //   bestAnswerSelector();
+                                    bestAnswerSelector();
                                 }
                             }
                             answerRecyclerAdapter.notifyDataSetChanged();
                             break;
                         case MODIFIED:
                             //is upvotes are put the document will be modified hence the arraylist will again be shifted
-
+                            if(sort == "upvotes") {
                                 shuffle();
-
+                                bestAnswerSelector();
+                            }
                             //whenever modified best answer is selected in answer activity
                           //  bestAnswerSelector();
                             Toast.makeText(AnswersActivity.this, "Success", Toast.LENGTH_LONG).show();
@@ -275,6 +249,14 @@ public class AnswersActivity extends AppCompatActivity {
     public void shuffle()
     {
         try {
+           /* Collections.sort(answersList, new Comparator<Answers>() {
+                @Override
+                public int compare(Answers lhs, Answers rhs) {
+                    // -1 - less than, 1 - greater than, 0 - equal, all inversed for descending
+                    return lhs.upvotes > rhs.upvotes ? -1 : (lhs.upvotes < rhs.upvotes ) ? 1 : 0;
+                }
+            }); */
+
             Collections.sort(answersList, new Comparator<Answers>() {
                 @Override
                 public int compare(Answers u1, Answers u2) {
@@ -295,6 +277,7 @@ public class AnswersActivity extends AppCompatActivity {
 
         String answer=answersList.get(0).getAnswer();
         collectionReference.document(docId).collection("Questions").document(ans_id).update("best_answer",answer);
+
     }
 
 }

@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.example.icasapp.Forums.ForumFragment;
 import com.example.icasapp.ObjectClasses.Answers;
 import com.example.icasapp.R;
+import com.google.android.gms.common.server.converter.StringToIntConverter;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -112,10 +113,14 @@ public class AnswerRecyclerAdapter extends RecyclerView.Adapter<AnswerRecyclerAd
                                         @Nullable FirebaseFirestoreException e) {
                         if (snapshots.isEmpty()) {
                             viewHolder.setupvote("0");
+                            answersList.get(i).setUpvotes(0);
                             return;
                         } else {
                             String count = Integer.toString(snapshots.size());
+                            int c= Integer.parseInt(count);
+                            answersList.get(i).setUpvotes(c);
                             viewHolder.setupvote(count);
+
                         }
                     }
                 });

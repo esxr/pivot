@@ -61,17 +61,26 @@ public class DiscussionRecyclerAdapter extends RecyclerView.Adapter<DiscussionRe
          //On Bind View is mostly used to get stuff from array list
         //getting discussion id
         final String blogPostId = discussionTopicList.get(i).DiscussionPostid;
-      //  holder.itemView.setOnClickListener(v -> {
-      //      DocumentSnapshot snapshot = getSnapshots().getSnapshot(holder.getAdapterPosition());
-       //    docId= snapshot.getId();
-            // ...
-       // });
 
         //calling method from Discussion Topic class
     final String content=discussionTopicList.get(i).getContent();
         viewHolder.setContentText(content);
 
-    final int question=discussionTopicList.get(i).getQuestion();
+try{
+    Log.i("ASA",blogPostId);
+}
+catch (Exception e)
+{
+
+}
+       /* collectionReference.document(blogPostId).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+              int n=  Integer.parseInt(documentSnapshot.get("question").toString());
+              viewHolder.setCommentCount(Integer.toString(n));
+            }
+        }); */
+        final int question=discussionTopicList.get(i).getQuestion();
         viewHolder.setCommentCount(Integer.toString(question));
 
     String url=discussionTopicList.get(i).getImage_url();
@@ -81,7 +90,7 @@ public class DiscussionRecyclerAdapter extends RecyclerView.Adapter<DiscussionRe
         long uploadtime =discussionTopicList.get(i).getTimestamp().getTime();
 
         long diff=currentTime-uploadtime;
-        String difference = DateFormat.format("hh", new Date(uploadtime)).toString();
+        String difference = DateFormat.format("hh", new Date(diff)).toString();
         int value= Integer.parseInt(difference);
 
         if(value>24)
