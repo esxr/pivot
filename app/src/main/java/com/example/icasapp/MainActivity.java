@@ -9,9 +9,13 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 import com.example.icasapp.Auth.LoginActivity;
 import com.example.icasapp.Feed.FeedFragment;
@@ -181,8 +185,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void signOut() { //dialog box sign out
-        new AlertDialog.Builder(this)
-                .setIcon(android.R.drawable.ic_dialog_alert)
+        final AlertDialog.Builder signOutDialog = new AlertDialog.Builder(this);
+
+        this.setTheme(R.style.AlertDialogCustom);
+        signOutDialog
+                .setIcon(R.drawable.alert)
                 .setTitle("ARE YOU SURE?")
                 .setMessage("You will be shifted to the login screen and will have to sign in in order to continue using the app.")
                 .setPositiveButton("YES", new DialogInterface.OnClickListener() {
@@ -194,9 +201,12 @@ public class MainActivity extends AppCompatActivity {
                         }
                 )
                 .setNegativeButton("NO", null)
+                .create()
                 .show();
 
+
     }
+
 
     public void setLoginActivity() {
         finish();
