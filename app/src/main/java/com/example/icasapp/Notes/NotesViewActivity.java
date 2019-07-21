@@ -1,28 +1,24 @@
 package com.example.icasapp.Notes;
 
 
-
-import android.app.ProgressDialog;
-
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseExpandableListAdapter;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
-
-
 
 import com.example.icasapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
-
 import com.google.android.gms.tasks.Task;
-
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -32,6 +28,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 
 public class NotesViewActivity extends AppCompatActivity {
@@ -46,6 +44,8 @@ public class NotesViewActivity extends AppCompatActivity {
     Uri DOWNLOAD_URL;
 
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,19 +58,21 @@ public class NotesViewActivity extends AppCompatActivity {
 
 
 
+
+
+
         arrayList = new ArrayList<>();
         getdocumentList("NOTES");
 
         lv = findViewById(R.id.listView);
 
 
-
-        Log.i("msg" , "ARRAYLIST: "+ arrayList.toString());
+        Log.i("msg", "ARRAYLIST: " + arrayList.toString());
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.i("msg" , "ARRAYLIST POSITION:"+position+ "DATA:"+ arrayList.get(position));
+                Log.i("msg", "ARRAYLIST POSITION:" + position + "DATA:" + arrayList.get(position));
                 DocumentReference docRef = db.collection("NOTES").document(arrayList.get(position));
                 docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -81,7 +83,7 @@ public class NotesViewActivity extends AppCompatActivity {
                                 Log.d("msg", "DocumentSnapshot data: " + document.getData().get("downloadURL"));
                                 DOWNLOAD_URL = Uri.parse(document.getData().get("downloadURL").toString());
                                 String fileName = document.getData().get("originalFileName").toString();
-                                downloadFile(DOWNLOAD_URL , fileName);
+                                downloadFile(DOWNLOAD_URL, fileName);
                             } else {
                                 Log.d("msg", "No such document");
                             }
@@ -92,12 +94,12 @@ public class NotesViewActivity extends AppCompatActivity {
                 });
 
 
-
             }
         });
     }
 
-    public void getdocumentList(String collection){
+
+    public void getdocumentList(String collection) {
         db.collection(collection).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -115,7 +117,7 @@ public class NotesViewActivity extends AppCompatActivity {
                     ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
                             getApplicationContext(),
                             android.R.layout.simple_list_item_1,
-                            arrayList );
+                            arrayList);
 
                     lv.setAdapter(arrayAdapter);
                 } else {
@@ -125,7 +127,9 @@ public class NotesViewActivity extends AppCompatActivity {
         });
     }
     //FILE DOWNLOAD FUNCTION ON CLICK
-    public void downloadFile(Uri url, String fileName){
+
+
+    public void downloadFile(Uri url, String fileName) {
         Intent i = new Intent(Intent.ACTION_VIEW);
         i.setData(url);
         startActivity(i);
