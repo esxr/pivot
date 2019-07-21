@@ -2,6 +2,7 @@ package com.example.icasapp.Firebase;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -23,7 +24,11 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.security.auth.callback.Callback;
 
 public class FirebaseHelper {
 
@@ -124,11 +129,15 @@ public class FirebaseHelper {
                 });
     }
 
-    public interface MyCallback {
-        void callbackCall(TestUser user);
+    public interface CallBackList<T> {
+        void callbackCall(List<T> list);
     }
 
-    public static void getDocumentFromCollection(String documentName, String collectionName, final MyCallback callback) {
+    public interface CallbackObject<T>{
+        void callbackCall(T object);
+    }
+
+    public static void getDocumentFromCollection(String documentName, String collectionName, final CallbackObject<TestUser> callback) {
         DocumentReference docRef = db.collection(collectionName).document(documentName);
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             TestUser user;
@@ -142,19 +151,40 @@ public class FirebaseHelper {
         });
     }
 
-    public static void getCollection(String collection) {
+    public static void getDocumentFromCollectionWhere(@Nullable final Query query, String collectionName, final CallbackObject<List<HashMap<String, String>>> callback) {
+        FirebaseHelper.getCollection(collectionName, new CallBackList<Map<String,Object>>() {
+            @Override
+            public void callbackCall(List<Map<String,Object>> list) {
+                List<HashMap<String, String>> matches = new ArrayList<>();
+                for(Map<String,Object> obj : list) {
+                    Map<String, String> convertedObj = (Map) obj;
+                    HashMap<String, String> userData = new HashMap<>(convertedObj);
+
+                    try {
+                        if(userData.get(query.getProperty()).equals(query.getValue())) {
+                            matches.add(userData);
+                        }
+                    } catch(Exception e) {}
+                    callback.callbackCall(matches);
+                }
+            }
+        });
+    }
+
+    public static void getCollection(String collection, final CallBackList<Map<String,Object>> callback) {
         db.collection(collection)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
 
-                    List<Object> list = new ArrayList<>();
+                    List<Map<String,Object>> list = new ArrayList<>();
 
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                list.add(document);
+                                list.add(document.getData());
                                 Log.d(TAG, document.getData() + " => " + document.getData());
+                                callback.callbackCall(list);
                             }
                         } else {
                             Log.w(TAG, "Error getting documents.", task.getException());
