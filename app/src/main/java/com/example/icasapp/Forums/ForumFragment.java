@@ -103,8 +103,6 @@ public class ForumFragment extends Fragment implements AdapterView.OnItemClickLi
                         //sets the document id according to semester and stream
                         findDocumentId(semester, stream,view);
 
-
-
                     }
                 }
             }
@@ -217,8 +215,8 @@ public class ForumFragment extends Fragment implements AdapterView.OnItemClickLi
     {
         if(changed)
         {
-           // discussion_list.clear();
-           // discussionRecyclerAdapter.notifyDataSetChanged();
+            discussion_list.clear();
+            discussionRecyclerAdapter.notifyDataSetChanged();
         }
         query.orderBy("timestamp",Query.Direction.DESCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override

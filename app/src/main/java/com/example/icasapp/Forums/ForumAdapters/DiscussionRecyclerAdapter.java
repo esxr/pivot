@@ -3,6 +3,7 @@ package com.example.icasapp.Forums.ForumAdapters;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.FitWindowsFrameLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -19,6 +20,7 @@ import com.example.icasapp.ObjectClasses.DiscussionTopic;
 import com.example.icasapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -41,6 +43,7 @@ public class DiscussionRecyclerAdapter extends RecyclerView.Adapter<DiscussionRe
     public List<DiscussionTopic> discussionTopicList;
     public Context context;
     FirebaseFirestore firebaseFirestore;
+    FirebaseAuth firebaseAuth;
 
     public DiscussionRecyclerAdapter(List<DiscussionTopic> discussion_list){
        discussionTopicList=discussion_list;
@@ -51,13 +54,15 @@ public class DiscussionRecyclerAdapter extends RecyclerView.Adapter<DiscussionRe
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.discussion_list_item, viewGroup, false);
         context=viewGroup.getContext();
         firebaseFirestore=FirebaseFirestore.getInstance();
+        firebaseAuth=FirebaseAuth.getInstance();
+        ForumFragment.setFirestoreReference(firebaseFirestore, ForumFragment.i_d,"c");
         return new ViewHolder(view);
     }
 
     //bind actual data in the elements
 
     @Override
-    public void onBindViewHolder(@NonNull final ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
          //On Bind View is mostly used to get stuff from array list
         //getting discussion id
         final String blogPostId = discussionTopicList.get(i).DiscussionPostid;
@@ -66,20 +71,16 @@ public class DiscussionRecyclerAdapter extends RecyclerView.Adapter<DiscussionRe
     final String content=discussionTopicList.get(i).getContent();
         viewHolder.setContentText(content);
 
-try{
-    Log.i("ASA",blogPostId);
-}
-catch (Exception e)
-{
+        String currentUser= firebaseAuth.getInstance().getUid();
 
-}
-       /* collectionReference.document(blogPostId).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+
+       collectionReference.document(blogPostId).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
               int n=  Integer.parseInt(documentSnapshot.get("question").toString());
               viewHolder.setCommentCount(Integer.toString(n));
             }
-        }); */
+        });
         final int question=discussionTopicList.get(i).getQuestion();
         viewHolder.setCommentCount(Integer.toString(question));
 
@@ -88,11 +89,9 @@ catch (Exception e)
 
         long currentTime = Calendar.getInstance().getTime().getTime();
         long uploadtime =discussionTopicList.get(i).getTimestamp().getTime();
-
         long diff=currentTime-uploadtime;
         String difference = DateFormat.format("hh", new Date(diff)).toString();
         int value= Integer.parseInt(difference);
-
         if(value>24)
         {
             String dateString = DateFormat.format("MM/dd/yyyy", new Date(uploadtime)).toString();
@@ -114,10 +113,31 @@ catch (Exception e)
                                                      }
                                                  });
 
+        Log.d("AQWE",currentUser);
+        Log.d("vvbb", discussionTopicList.get(i).getUser_id());
 
-                // String id=discussionTopicList.get(i).getId();
-                // Log.i("Avijit",id);
-        ForumFragment.setFirestoreReference(firebaseFirestore, ForumFragment.i_d,"c");
+        if(currentUser.equals(discussionTopicList.get(i).getUser_id()))
+        {
+            viewHolder.delete.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            viewHolder.delete.setVisibility(View.GONE);
+        }
+
+        viewHolder.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                collectionReference.document(blogPostId).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        discussionTopicList.remove(i);
+                        notifyDataSetChanged();
+                    }
+                });
+
+            }
+        });
 
 
     }
@@ -134,12 +154,14 @@ catch (Exception e)
         private TextView contentView;
         private ImageView imageView;
         private  ImageView CommentBtn;
+        private ImageView delete;
         private TextView commentCount;
         private TextView Time;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             mView=itemView;
             CommentBtn=mView.findViewById(R.id.blog_comment_icon);
+            delete=mView.findViewById(R.id.delete);
         }
         public void setContentText(String text){
             contentView=mView.findViewById(R.id.forum_topic);

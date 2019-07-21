@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,7 +17,9 @@ import com.example.icasapp.Forums.ForumFragment;
 import com.example.icasapp.ObjectClasses.Answers;
 import com.example.icasapp.R;
 import com.google.android.gms.common.server.converter.StringToIntConverter;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -60,6 +63,7 @@ public class AnswerRecyclerAdapter extends RecyclerView.Adapter<AnswerRecyclerAd
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
 
+
         final Answers answers = answersList.get(i);
         firebaseFirestore = firebaseFirestore.getInstance();
         final String currentUser = firebaseAuth.getCurrentUser().getUid();
@@ -69,8 +73,6 @@ public class AnswerRecyclerAdapter extends RecyclerView.Adapter<AnswerRecyclerAd
 
         String answer= answers.getAnswer();
         viewHolder.setAnswer(answer);
-
-        ForumFragment.setFirestoreReference(firebaseFirestore, ForumFragment.i_d,"c");
 
         viewHolder.upvotes.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -125,6 +127,29 @@ public class AnswerRecyclerAdapter extends RecyclerView.Adapter<AnswerRecyclerAd
                     }
                 });
 
+        if(currentUser.equals(answersList.get(i).getUser_id()))
+        {
+            viewHolder.delete.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            viewHolder.delete.setVisibility(View.GONE);
+        }
+
+        viewHolder.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                collectionReference.document(docId).collection("Questions").document(ans_id).collection("Answers").document(id).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        answersList.remove(i);
+                        notifyDataSetChanged();
+                    }
+                });
+            }
+        });
+
+
     }
 
     @Override
@@ -137,6 +162,7 @@ public class AnswerRecyclerAdapter extends RecyclerView.Adapter<AnswerRecyclerAd
         Button upvotes;
         TextView answers;
         TextView upVotes;
+        ImageView delete;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -144,6 +170,7 @@ public class AnswerRecyclerAdapter extends RecyclerView.Adapter<AnswerRecyclerAd
             upvotes=mView.findViewById(R.id.upvote_btn);
             upVotes=mView.findViewById(R.id.upvote_text);
             answers=mView.findViewById(R.id.Answer);
+            delete=mView.findViewById(R.id.delete);
         }
 
         public void setAnswer(String answer){

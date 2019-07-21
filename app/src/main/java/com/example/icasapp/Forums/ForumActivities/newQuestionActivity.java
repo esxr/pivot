@@ -58,6 +58,7 @@ public class newQuestionActivity extends AppCompatActivity {
                     postMap.put("content", content);
                     postMap.put("user_id", current_user_id);
                     postMap.put("timestamp", FieldValue.serverTimestamp());
+                    postMap.put("best_answer","");
 
                     ForumFragment.setFirestoreReference(firebaseFirestore, ForumFragment.i_d,"c");
                     collectionReference.document(docId).collection("Questions").add(postMap)
