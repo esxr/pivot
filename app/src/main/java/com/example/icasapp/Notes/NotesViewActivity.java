@@ -67,7 +67,6 @@ public class NotesViewActivity extends AppCompatActivity {
 
         Log.i("msg" , "ARRAYLIST: "+ arrayList.toString());
 
-
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -125,7 +124,7 @@ public class NotesViewActivity extends AppCompatActivity {
             }
         });
     }
-
+    //FILE DOWNLOAD FUNCTION ON CLICK
     public void downloadFile(Uri url, String fileName){
         Intent i = new Intent(Intent.ACTION_VIEW);
         i.setData(url);
