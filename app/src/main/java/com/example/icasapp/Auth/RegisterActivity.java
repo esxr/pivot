@@ -6,7 +6,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.icasapp.MainActivity;
@@ -17,6 +20,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class RegisterActivity extends AppCompatActivity {
 
     private EditText inputEmail;
@@ -24,6 +29,8 @@ public class RegisterActivity extends AppCompatActivity {
 
     private String email;
     private String password;
+    private RelativeLayout relativeLayout;
+    private CircleImageView circleImageView;
 
     private FirebaseAuth mAuth;
 
@@ -36,12 +43,23 @@ public class RegisterActivity extends AppCompatActivity {
 
         inputEmail = findViewById(R.id.inputEmail);
         inputPassword = findViewById(R.id.inputPassword);
+        relativeLayout = findViewById(R.id.rl);
+        circleImageView = findViewById(R.id.circle_avi);
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
+        Animation fade = AnimationUtils.loadAnimation(this,R.anim.fade_scale);
+        Animation transition = AnimationUtils.loadAnimation(this,R.anim.fade_transition);
+        relativeLayout.setAnimation(fade);
+        circleImageView.setAnimation(transition);
+
+
+
 
 
     }
+
+
 
     public void onRegister(View view){
 

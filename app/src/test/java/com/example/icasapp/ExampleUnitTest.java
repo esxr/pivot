@@ -14,7 +14,6 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import static com.example.icasapp.Home.UserOpsKt.createUser;
 import static org.junit.Assert.*;
 
 /**
@@ -44,12 +43,4 @@ public class ExampleUnitTest {
             ActualUser.put("semester", "1");
             ActualUser.put("stream", "CSE");
     }
-
-    @Test
-    public void FirebaseHelper() {
-        assertTrue(FirebaseHelperKotlin.Companion.addDocumentToCollection(ActualUser, "USER"));
-    }
-
-    @Test
-    public void ktUser() { assertEquals(createUser("Pranav", "1", "CSE"), true); }
 }
