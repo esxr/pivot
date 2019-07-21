@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -80,20 +81,22 @@ public class AnswersActivity extends AppCompatActivity {
         recent=findViewById(R.id.recent);
         votes=findViewById(R.id.topVoted);
 
-        topic=findViewById(R.id.topic);
-        content=findViewById(R.id.recent);
+        topic=findViewById(R.id.title);
+        content=findViewById(R.id.question);
 
         firebaseAuth=FirebaseAuth.getInstance();
         currentUserId=firebaseAuth.getCurrentUser().getUid();
 
         firebaseFirestore=FirebaseFirestore.getInstance();
 
+        ForumFragment.setFirestoreReference(firebaseFirestore, ForumFragment.i_d,"c");
         addAnswer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Dialog();
             }
     });
+
 
         ans_id = getIntent().getStringExtra("id");
         String Topic=getIntent().getStringExtra("topic");
@@ -102,11 +105,59 @@ public class AnswersActivity extends AppCompatActivity {
         topic.setText(Topic);
         content.setText(Content);
 
-        setQuery("timestamp",answersList,answerRecyclerAdapter);
+       try {
+           Log.i("ASDASD", ans_id);
+           Log.i("ASDADSASD", docId);
+       }
+       catch (Exception e)
+       {
+
+       }
+        collectionReference.document(docId).collection("Questions").document(ans_id).collection("Answers").orderBy(sort, Query.Direction.DESCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
+                    switch (doc.getType()) {
+                        case ADDED:
+                            String post_id = doc.getDocument().getId();
+                            Answers answers = doc.getDocument().toObject(Answers.class).withId(post_id);
+                            if(isFirstPageLoad) {
+                                answersList.add(answers);
+
+                            }
+                            //if the page is not loaded for the first time. That means a new post or mode has been changed has been added then these conditions are invoked
+                            else {
+                                    answersList.add(0, answers);
+                                    shuffle();
+                                    //   bestAnswerSelector();
+                            }
+                            answerRecyclerAdapter.notifyDataSetChanged();
+                            break;
+                        case MODIFIED:
+                            //is upvotes are put the document will be modified hence the arraylist will again be shifted
+
+                            shuffle();
+
+                            //whenever modified best answer is selected in answer activity
+                            //  bestAnswerSelector();
+                            Toast.makeText(AnswersActivity.this, "Success", Toast.LENGTH_LONG).show();
+                            answerRecyclerAdapter.notifyDataSetChanged();
+                            break;
+                        case REMOVED:
+                            break;
+
+                    }
+
+                }
+                isFirstPageLoad = false;
+            }
+        });
+
         //menu items to select what to sort and how to sort
-        recent.setOnClickListener(new View.OnClickListener() {
+     /*   recent.setOnClickListener(new View.OnClickListener() {
                                       @Override
                                       public void onClick(View v) {
+                                          isFirstPageLoad=true;
                                           sort="timestamp";
                                           setQuery(sort, answersList, answerRecyclerAdapter);
                                       }
@@ -115,10 +166,13 @@ public class AnswersActivity extends AppCompatActivity {
         votes.setOnClickListener(new View.OnClickListener() {
                                      @Override
                                      public void onClick(View v) {
+                                         //when another menu is selected the documents are loaded again
+                                         isFirstPageLoad=true;
                                          sort="upvotes";
-                                         setQuery(sort, answersList, answerRecyclerAdapter);
+                                         setQuery(sort,answersList, answerRecyclerAdapter);
                                      }
-                                 });
+                                 });*/
+
 
 
     }
@@ -150,6 +204,7 @@ public class AnswersActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(DocumentReference documentReference) {
                                 Toast.makeText(AnswersActivity.this, "Success", Toast.LENGTH_LONG).show();
+
                             }
                         });
 
@@ -169,7 +224,6 @@ public class AnswersActivity extends AppCompatActivity {
     {
 
     answersList.clear();
-    answerRecyclerAdapter.notifyDataSetChanged();
 
         collectionReference.document(docId).collection("Questions").document(ans_id).collection("Answers").orderBy(sort, Query.Direction.DESCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -181,24 +235,29 @@ public class AnswersActivity extends AppCompatActivity {
                             Answers answers = doc.getDocument().toObject(Answers.class).withId(post_id);
                             if(isFirstPageLoad) {
                                 answersList.add(answers);
+
                             }
-                            if(sort=="timestamp"){
-                                //if sorting was of timestamp. then when a new post is added the post is put up.
-                                answersList.add(0,answers);
-                            }
-                            else{
-                                shuffle();
-                                bestAnswerSelector();
+                            //if the page is not loaded for the first time. That means a new post or mode has been changed has been added then these conditions are invoked
+                            else {
+                                if (sort == "timestamp") {
+                                    //if sorting was of timestamp. then when a new post is added the post is put up.
+                                    answersList.add(0, answers);
+                                }
+                                if (sort == "upvotes") {
+                                    answersList.add(0, answers);
+                                    shuffle();
+                                   //   bestAnswerSelector();
+                                }
                             }
                             answerRecyclerAdapter.notifyDataSetChanged();
                             break;
                         case MODIFIED:
                             //is upvotes are put the document will be modified hence the arraylist will again be shifted
-                            if(sort=="upvotes") {
+
                                 shuffle();
-                            }
+
                             //whenever modified best answer is selected in answer activity
-                            bestAnswerSelector();
+                          //  bestAnswerSelector();
                             Toast.makeText(AnswersActivity.this, "Success", Toast.LENGTH_LONG).show();
                             answerRecyclerAdapter.notifyDataSetChanged();
                             break;
@@ -206,9 +265,9 @@ public class AnswersActivity extends AppCompatActivity {
                             break;
 
                     }
-                    isFirstPageLoad = false;
-                }
 
+                }
+                isFirstPageLoad = false;
             }
         });
     }
@@ -219,6 +278,7 @@ public class AnswersActivity extends AppCompatActivity {
             Collections.sort(answersList, new Comparator<Answers>() {
                 @Override
                 public int compare(Answers u1, Answers u2) {
+                    Log.i("ASDFG", Integer.toString(u2.upvotes-u1.upvotes));
                     return u2.upvotes-u1.upvotes; // Ascending
                 }
 
@@ -226,11 +286,13 @@ public class AnswersActivity extends AppCompatActivity {
         }
         catch(Exception e){
 
+            Log.d("Ex","ERROR");
         }
     }
 
     public void bestAnswerSelector()
     {
+
         String answer=answersList.get(0).getAnswer();
         collectionReference.document(docId).collection("Questions").document(ans_id).update("best_answer",answer);
     }
