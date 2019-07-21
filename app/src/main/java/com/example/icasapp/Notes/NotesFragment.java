@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.Toast;
 
 import com.example.icasapp.R;
@@ -18,6 +20,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import java.util.HashMap;
+import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -30,6 +35,9 @@ public class NotesFragment extends Fragment {
     FirebaseFirestore db;
     Uri DATA;
 
+
+
+
     public NotesFragment() {
         // Required empty public constructor
     }
@@ -37,8 +45,11 @@ public class NotesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         notesView = inflater.inflate(R.layout.fragment_notes, container, false);
+
+
 
         uploadButton = notesView.findViewById(R.id.uploadButton);
         viewButton = notesView.findViewById(R.id.viewButton);
@@ -46,6 +57,7 @@ public class NotesFragment extends Fragment {
         storageRef = FirebaseStorage.getInstance().getReference();
 
         db = FirebaseFirestore.getInstance();
+
 
 
         //FUNCTIONALITY WHEN UPLOAD BUTTON CLICKED.
