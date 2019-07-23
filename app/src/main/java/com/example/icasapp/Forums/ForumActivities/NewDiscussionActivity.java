@@ -19,6 +19,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.icasapp.Forums.ForumFragment;
+import com.example.icasapp.MainActivity;
 import com.example.icasapp.R;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -26,9 +28,11 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -43,6 +47,10 @@ import java.util.Map;
 import java.util.UUID;
 
 import id.zelory.compressor.Compressor;
+
+import static com.example.icasapp.Forums.ForumFragment.collectionReference;
+import static com.example.icasapp.Forums.ForumFragment.i_d;
+import static com.example.icasapp.Forums.ForumFragment.setFirestoreReference;
 
 
 public class NewDiscussionActivity extends AppCompatActivity {
@@ -152,16 +160,18 @@ public class NewDiscussionActivity extends AppCompatActivity {
                                     postMap.put("user_id", current_user_id);
                                     postMap.put("timestamp", FieldValue.serverTimestamp());
 
-                                    firebaseFirestore.collection("Posts").add(postMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                    setFirestoreReference(firebaseFirestore,i_d,"c");
+
+                                    collectionReference.add(postMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                                         @Override
 
                                         public void onComplete(@NonNull Task<DocumentReference> task) {
                                             if (task.isSuccessful()) {
 
                                                 Toast.makeText(NewDiscussionActivity.this, "Post was added", Toast.LENGTH_LONG).show();
-                                                //Intent mainIntent = new Intent(NewDiscussionActivity.this, MainActivity.class);
-                                                //startActivity(mainIntent);
-                                                //finish();
+                                                Intent mainIntent = new Intent(NewDiscussionActivity.this, ForumFragment.class);
+                                                startActivity(mainIntent);
+                                                finish();
 
                                             } else {
                                                 Toast.makeText(NewDiscussionActivity.this, "Post was not added", Toast.LENGTH_LONG).show();
