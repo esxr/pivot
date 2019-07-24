@@ -9,6 +9,11 @@ public class Query {
         this.value = value;
     }
 
+    public Query(String[] queryParams) { try {
+        this.property = queryParams[0];
+        this.value = queryParams[1];
+    } catch(Exception e) {} }
+
     public String getProperty() {
         return property;
     }

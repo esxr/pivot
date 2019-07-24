@@ -126,7 +126,7 @@ public class FirebaseHelper {
         void callbackCall(List<T> list);
     }
 
-    public interface CallbackObject<T>{
+    public interface CallbackObject<T> {
         void callbackCall(T object);
     }
 
@@ -144,32 +144,57 @@ public class FirebaseHelper {
         });
     }
 
+    @Deprecated
     public static void getDocumentFromCollectionWhere(@Nullable final Query query, String collectionName, final CallbackObject<List<HashMap<String, String>>> callback) {
-        FirebaseHelper.getCollection(collectionName, new CallBackList<Map<String,Object>>() {
+        FirebaseHelper.getCollection(collectionName, new CallBackList<Map<String, Object>>() {
             @Override
-            public void callbackCall(List<Map<String,Object>> list) {
+            public void callbackCall(List<Map<String, Object>> list) {
                 List<HashMap<String, String>> matches = new ArrayList<>();
-                for(Map<String,Object> obj : list) {
+                for (Map<String, Object> obj : list) {
                     Map<String, String> convertedObj = (Map) obj;
                     HashMap<String, String> userData = new HashMap<>(convertedObj);
 
                     try {
-                        if(userData.get(query.getProperty()).equals(query.getValue())) {
+                        if (userData.get(query.getProperty()).equals(query.getValue())) {
                             matches.add(userData);
                         }
-                    } catch(Exception e) {}
+                    } catch (Exception e) {
+                    }
                     callback.callbackCall(matches);
                 }
             }
         });
     }
 
-    public static void getCollection(String collection, final CallBackList<Map<String,Object>> callback) {
+    public static void getDocumentFromCollectionWhere(String collection, Query query, final CallbackObject<List<Map<String, Object>>> callback) {
+        final List<Map<String, Object>> matches = new ArrayList<>();
+        db.collection(collection)
+                .whereEqualTo(query.getProperty(), query.getValue())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                matches.add(document.getData());
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+//                            Map<String, Object> nullMap = new HashMap<String, Object>();
+//                            nullMap.put("null", "null");
+//                            matches.add(nullMap);
+                        }
+                        callback.callbackCall(matches);
+                    }
+                });
+    }
+
+    public static void getCollection(String collection, final CallBackList<Map<String, Object>> callback) {
         db.collection(collection)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
 
-                    List<Map<String,Object>> list = new ArrayList<>();
+                    List<Map<String, Object>> list = new ArrayList<>();
 
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {

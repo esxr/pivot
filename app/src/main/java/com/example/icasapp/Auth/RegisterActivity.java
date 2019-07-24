@@ -59,8 +59,6 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
-
-
     public void onRegister(View view){
 
         try {

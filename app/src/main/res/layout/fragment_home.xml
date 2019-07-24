@@ -5,11 +5,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Home.HomeFragment"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_margin="8dp"
+    android:padding="16dp">
 
+    <!--ONLY FOR DEBUGGING-->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="100dip" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/profileview"
+        android:text="View SampleProfile (Hardcoded)"/>
 
     <EditText
-        android:windowSoftInputMode="adjustPan"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/query"/>
@@ -20,25 +31,19 @@
         android:id="@+id/profileSearch"
         android:text="Search"/>
 
-    <TextView
-
-        android:id="@+id/info"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Search Results..."
-        android:textSize="30sp" />
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/profileview"
-        android:text="View SampleProfile (Hardcoded)"/>
-
     <!--ListView-->
     <ListView
         android:layout_width="match_parent"
-        android:layout_height="500dip"
+        android:layout_height="200dip"
         android:scrollbars="vertical"
         android:id="@+id/profile_menu"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No Results ..."
+        android:textSize="33sp"
+        android:id="@+id/emptyElement"
+        />
 
 </LinearLayout>

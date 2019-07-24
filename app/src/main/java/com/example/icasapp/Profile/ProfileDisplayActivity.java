@@ -32,7 +32,7 @@ public class ProfileDisplayActivity extends AppCompatActivity {
         // get data for user object
         TestUser user = (TestUser) getIntent().getExtras().getSerializable("user");
         profileName.setText(user.getName());
-        profileRollno.setText(user.getRegNo());
+        profileRollno.setText(user.getStream());
         try {
             profilePhoto.setImageBitmap(BitmapFactory.decodeFile(user.getProfilePhoto()));
         } catch(Exception e) { Log.e("Image frontend", "Problem loading image "+e); }

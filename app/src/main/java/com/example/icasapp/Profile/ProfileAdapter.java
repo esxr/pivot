@@ -35,7 +35,7 @@ public class ProfileAdapter extends ArrayAdapter<TestUser> {
 
         // Populate the data into the template view using the data object
         profileName.setText(testUser.getName());
-        profileRegNo.setText(testUser.getRegNo());
+        profileRegNo.setText(testUser.getStream());
 
         // Return the completed view to render on screen
         return convertView;

@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Map;
 
 public class TestUser implements Serializable {
     String name, semester, stream, regNo;
@@ -22,6 +23,12 @@ public class TestUser implements Serializable {
         this.name = object.get("name");
         this.semester = object.get("semester");
         this.stream = object.get("stream");
+    }
+
+    public TestUser(Map<String, Object> object) {
+        this.name = (String) object.get("name");
+        this.semester = (String) object.get("semester");
+        this.stream = (String) object.get("stream");
     }
 
     public String getProfilePhoto() {

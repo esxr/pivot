@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -70,6 +71,7 @@ public class HomeFragment extends Fragment {
         // intitialize the array and listview adapter
         items = new ArrayList<>();
         listView = (ListView) homeView.findViewById(R.id.profile_menu);
+        listView.setEmptyView(homeView.findViewById(R.id.emptyElement));
         itemsAdapter = new ProfileAdapter(getContext(), items);
         listView.setAdapter(itemsAdapter);
 
@@ -85,20 +87,22 @@ public class HomeFragment extends Fragment {
         profileSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(query.length() == 0) return;
                 String[] queryParams =
                         query.getText().toString()
                                 .trim().split(":");
                 FirebaseHelper.getDocumentFromCollectionWhere(
-                        new Query(queryParams[0], queryParams[1]),
                         "USER",
-                        new FirebaseHelper.CallbackObject<List<HashMap<String, String>>>() {
+                        new Query(queryParams),
+                        new FirebaseHelper.CallbackObject<List<Map<String, Object>>>() {
                             @Override
-                            public void callbackCall(List<HashMap<String, String>> object) {
+                            public void callbackCall(List<Map<String, Object>> object) {
                                 items.clear();
-                                for(HashMap<String, String> obj : object) { try {
+                                Log.d("Callback", ""+object);
+                                for(Map<String, Object> obj : object) {
                                     items.add(new TestUser(obj));
-                                    itemsAdapter.notifyDataSetChanged();
-                                } catch(Exception e) {} }
+                                }
+                                itemsAdapter.notifyDataSetChanged();
                             }
                         });
             }
