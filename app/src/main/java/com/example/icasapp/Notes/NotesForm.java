@@ -22,6 +22,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.icasapp.Firebase.FirebaseHelper;
 import com.example.icasapp.R;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -357,6 +358,7 @@ public class NotesForm extends AppCompatActivity {
         data.put("subject_abr", SUBJECT_ABR);
         data.put("downloadURL", DOWNLOAD_URL.toString());
         data.put("originalFileName", filename);
+        data.put("username" , FirebaseHelper.getUser().getDisplayName());
 
         db.collection("NOTES").document(FILE_NAME_BY_USER)
                 .set(data, SetOptions.merge());
