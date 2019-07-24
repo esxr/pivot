@@ -8,10 +8,13 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.icasapp.R;
 import com.example.icasapp.User.TestUser;
 
 import java.io.Serializable;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileDisplayActivity extends AppCompatActivity {
 
@@ -33,6 +36,8 @@ public class ProfileDisplayActivity extends AppCompatActivity {
         TestUser user = (TestUser) getIntent().getExtras().getSerializable("user");
         profileName.setText(user.getName());
         profileRollno.setText(user.getStream());
+        Glide.with(this).load("http://goo.gl/gEgYUd").into(profilePhoto);
+
         try {
             profilePhoto.setImageBitmap(BitmapFactory.decodeFile(user.getProfilePhoto()));
         } catch(Exception e) { Log.e("Image frontend", "Problem loading image "+e); }

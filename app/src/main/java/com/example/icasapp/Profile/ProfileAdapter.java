@@ -5,14 +5,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.icasapp.R;
 import com.example.icasapp.User.TestUser;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class ProfileAdapter extends ArrayAdapter<TestUser> {
+
+    TextView profileName, profileRegNo; ImageView profilePhoto;
 
     public ProfileAdapter(Context context, ArrayList<TestUser> TestUsers) {
         super(context, 0, TestUsers);
@@ -30,12 +36,14 @@ public class ProfileAdapter extends ArrayAdapter<TestUser> {
         }
 
         // Lookup view for data population
-        TextView profileName = (TextView) convertView.findViewById(R.id.profileName);
-        TextView profileRegNo = (TextView) convertView.findViewById(R.id.profileRegNo);
+        profileName = (TextView) convertView.findViewById(R.id.profileName);
+        profileRegNo = (TextView) convertView.findViewById(R.id.profileRegNo);
+        profilePhoto = (ImageView) convertView.findViewById(R.id.profilePhoto);
 
         // Populate the data into the template view using the data object
         profileName.setText(testUser.getName());
         profileRegNo.setText(testUser.getStream());
+        Glide.with(getContext()).load("http://goo.gl/gEgYUd").into(profilePhoto);
 
         // Return the completed view to render on screen
         return convertView;
