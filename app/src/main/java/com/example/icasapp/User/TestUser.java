@@ -1,9 +1,44 @@
 package com.example.icasapp.User;
 
+import android.graphics.Bitmap;
+import android.support.annotation.Nullable;
+
+import java.io.Serializable;
 import java.util.HashMap;
 
-public class TestUser {
-    String name, semester, stream;
+public class TestUser implements Serializable {
+    String name, semester, stream, regNo;
+    String profilePhoto;
+
+    public TestUser(String name, String semester, String stream, String regNo, @Nullable String profilePhoto) {
+        this.name = name;
+        this.semester = semester;
+        this.stream = stream;
+        this.regNo = regNo;
+        this.profilePhoto = profilePhoto;
+    }
+
+    public TestUser(HashMap<String, String> object) {
+        this.name = object.get("name");
+        this.semester = object.get("semester");
+        this.stream = object.get("stream");
+    }
+
+    public String getProfilePhoto() {
+        return profilePhoto;
+    }
+
+    public void setProfilePhoto(String profilePhoto) {
+        this.profilePhoto = profilePhoto;
+    }
+
+    public String getRegNo() {
+        return regNo;
+    }
+
+    public void setRegNo(String regNo) {
+        this.regNo = regNo;
+    }
 
     public String getName() {
         return name;

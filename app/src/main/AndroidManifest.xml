@@ -13,8 +13,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Front_End.SplashActivity">
-        </activity>
+        <activity android:name=".Profile.ProfileDisplayActivity"></activity>
+        <activity android:name=".Front_End.SplashActivity"></activity>
         <activity android:name=".Menu_EditProfile.EditProfileActivity" />
         <activity android:name=".Forums.ForumActivities.AnswersActivity" />
         <activity android:name=".Forums.ForumActivities.newQuestionActivity" />
@@ -34,7 +34,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
     </application>
 

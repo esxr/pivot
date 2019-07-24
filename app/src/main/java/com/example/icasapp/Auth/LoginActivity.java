@@ -4,7 +4,6 @@ import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.icasapp.Annonations.Hardcoded;
 import com.example.icasapp.MainActivity;
 import com.example.icasapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -30,7 +30,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private Button onReg;
     private Button Login;
-    @Hardcoded private Button loginHardcoded;
+    @Hardcoded
+    private Button loginHardcoded;
 
     private String email;
     private String password;

@@ -18,6 +18,24 @@
         android:id="@+id/profileSearch"
         android:text="Search"/>
 
+    <Button
+        app:layout_constraintTop_toBottomOf="@+id/info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/profileview"
+        android:text="View SampleProfile (Hardcoded)"/>
+
+    <!--ListView-->
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/profileview"
+        android:id="@+id/profile_menu">
+
+
+
+    </ListView>
+
     <TextView
         app:layout_constraintTop_toBottomOf="@+id/profileSearch"
         android:id="@+id/info"

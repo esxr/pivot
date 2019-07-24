@@ -1,15 +1,10 @@
 package com.example.icasapp.Firebase;
 
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.example.icasapp.Auth.Hardcoded;
-import com.example.icasapp.MainActivity;
 import com.example.icasapp.User.TestUser;
-import com.example.icasapp.User.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -27,8 +22,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.security.auth.callback.Callback;
 
 public class FirebaseHelper {
 
