@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -43,8 +44,6 @@ public class HomeFragment extends Fragment {
     FirebaseUser user;
 
     View homeView;
-
-    TextView info;
     EditText query;
     Button profileSearch;
 
@@ -65,7 +64,6 @@ public class HomeFragment extends Fragment {
         homeView = inflater.inflate(R.layout.fragment_home, container, false);
 
         // reference of all views
-        info = homeView.findViewById(R.id.info);
         query = homeView.findViewById(R.id.query);
         profileSearch = homeView.findViewById(R.id.profileSearch);
 
@@ -74,6 +72,15 @@ public class HomeFragment extends Fragment {
         listView = (ListView) homeView.findViewById(R.id.profile_menu);
         itemsAdapter = new ProfileAdapter(getContext(), items);
         listView.setAdapter(itemsAdapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getActivity(), ProfileDisplayActivity.class);
+                intent.putExtra("user", (TestUser) listView.getItemAtPosition(position));
+                startActivity(intent);
+            }
+        });
 
         profileSearch.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,7 +94,7 @@ public class HomeFragment extends Fragment {
                         new FirebaseHelper.CallbackObject<List<HashMap<String, String>>>() {
                             @Override
                             public void callbackCall(List<HashMap<String, String>> object) {
-                                info.setText(object.toString()); // debug purposes
+                                items.clear();
                                 for(HashMap<String, String> obj : object) { try {
                                     items.add(new TestUser(obj));
                                     itemsAdapter.notifyDataSetChanged();
