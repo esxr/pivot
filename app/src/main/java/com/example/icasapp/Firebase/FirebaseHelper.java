@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.example.icasapp.Annonations.Hardcoded;
 import com.example.icasapp.User.TestUser;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -120,6 +121,28 @@ public class FirebaseHelper {
 
                     }
                 });
+    }
+
+    @Hardcoded
+    public static void generateFakeFirebaseUsers(int no_of_users) {
+        for(int i=0; i<no_of_users; i++) {
+            db.collection("USER")
+                    .add(TestUser.getFirebaseDocument())
+                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                        @Override
+                        public void onSuccess(DocumentReference documentReference) {
+                            Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w(TAG, "Error adding document", e);
+
+                        }
+                    });
+        }
+
     }
 
     public interface CallBackList<T> {

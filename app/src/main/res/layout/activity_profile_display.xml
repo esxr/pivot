@@ -9,7 +9,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="200dp"
         android:orientation="horizontal">
 
         <de.hdodenhof.circleimageview.CircleImageView
@@ -27,14 +27,14 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/profileName"
                 app:layout_constraintTop_toBottomOf="@+id/profilePhoto"
-                android:textSize="55sp"/>
+                android:textSize="32sp"/>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/profileRegNo"
                 app:layout_constraintTop_toBottomOf="@+id/profileName"
-                android:textSize="32sp"/>
+                android:textSize="20sp"/>
 
         </LinearLayout>
 

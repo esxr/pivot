@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.icasapp.Annonations.Hardcoded;
 import com.example.icasapp.Firebase.FirebaseHelper;
@@ -46,7 +47,7 @@ public class HomeFragment extends Fragment {
 
     View homeView;
     EditText query;
-    Button profileSearch;
+    Button profileSearch, generateUsers;
 
     // listview and adapter
     ArrayList<TestUser> items;
@@ -84,6 +85,16 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        // Hardcoded
+        generateUsers = homeView.findViewById(R.id.generateUsers);
+        generateUsers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseHelper.generateFakeFirebaseUsers(10);
+                Toast.makeText(getContext(), "Generated 10 fake users", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         profileSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -108,58 +119,7 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        // Set listview and adapter
-        @Hardcoded
-        TestUser user = new TestUser(
-                "Pranav",
-                "",
-                "",
-                "181627027",
-                ""
-        );
-
-        @Hardcoded
-        Button profileview = homeView.findViewById(R.id.profileview);
-        profileview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Get profilePhoto URI
-                String imagePath = "";
-                try {
-                    imagePath = jugaadTheImage().getAbsolutePath();
-                } catch(Exception e) {
-                    Log.e("File save problem", ""+e);
-                }
-
-                // User
-                TestUser sampleUser = new TestUser("Dhooli", "2", "CSE", "181627027", imagePath);
-
-                Intent intent = new Intent(getActivity(), ProfileDisplayActivity.class);
-                intent.putExtra("user", sampleUser);
-                startActivity(intent);
-            }
-        });
-
         // Inflate the layout for this fragment
         return homeView;
-    }
-
-    @Hardcoded public File jugaadTheImage() throws Exception{
-        // Image ka jugaad (sasta plx)
-        String file_path = Environment.getExternalStorageDirectory().getAbsolutePath() +
-                "/profilePhotos";
-        File dir = new File(file_path);
-        if(!dir.exists())
-            dir.mkdirs();
-
-        File file = new File(dir, "temp.png");
-        FileOutputStream fOut = new FileOutputStream(file);
-
-        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.avi);
-        bm.compress(Bitmap.CompressFormat.PNG, 85, fOut);
-        fOut.flush();
-        fOut.close();
-
-        return file;
     }
 }

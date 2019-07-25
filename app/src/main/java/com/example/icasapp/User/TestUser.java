@@ -3,9 +3,12 @@ package com.example.icasapp.User;
 import android.graphics.Bitmap;
 import android.support.annotation.Nullable;
 
+import com.example.icasapp.Annonations.Hardcoded;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 public class TestUser implements Serializable {
     String name, semester, stream, regNo;
@@ -31,6 +34,18 @@ public class TestUser implements Serializable {
         this.semester = (String) object.get("semester");
         this.stream = (String) object.get("stream");
         this.profilePhoto = (String) object.get("profile_photo");
+    }
+
+    @Hardcoded
+    public static HashMap<String, String> getFirebaseDocument() {
+        final String[] streams = {"CSE", "Aero", "Chemical", "ECE", "Mechanical", "Mechatronics"};
+        final String[] name = {"Neerav", "Pranav", "Vishal", "Avijit", "Ankur", "Siddhant", "Bakchi", "Bagchii"};
+        return new HashMap<String, String>() {{
+            put("name", name[new Random().nextInt(name.length)]);
+            put("semester", new Random().nextInt(3)+1+"");
+            put("stream", streams[new Random().nextInt(streams.length)]);
+            put("profile_photo", "https://images-na.ssl-images-amazon.com/images/I/61UYXqQwkkL._SY679_.jpg");
+        }};
     }
 
     public String getProfilePhoto() {
