@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.RelativeLayout;
 
 import com.example.icasapp.Auth.LoginActivity;
 import com.example.icasapp.Feed.FeedFragment;
@@ -22,9 +23,12 @@ import com.example.icasapp.Menu_EditProfile.EditProfileActivity;
 import com.example.icasapp.Notes.NotesFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.sdsmdg.harjot.vectormaster.VectorMasterView;
+import com.sdsmdg.harjot.vectormaster.models.PathModel;
 
 public class MainActivity extends AppCompatActivity {
 
+  //  BottomNavigationView bottomNavigationView;
     BottomNavigationView bottomNavigationView;
 
     //This is our viewPager
@@ -35,6 +39,9 @@ public class MainActivity extends AppCompatActivity {
     NotesFragment notesFragment;
     ForumFragment forumFragment;
     FeedFragment feedFragment;
+    VectorMasterView fab,fab1,fab2,fab3;
+    RelativeLayout lin_id;
+    PathModel outline;
 
     MenuItem prevMenuItem;
 
@@ -52,8 +59,17 @@ public class MainActivity extends AppCompatActivity {
 
         //Initializing viewPager
         viewPager = (ViewPager) findViewById(R.id.viewPager);
+        //fab = (VectorMasterView) findViewById(R.id.fab);
+        //fab1 = (VectorMasterView) findViewById(R.id.fab1);
+        //fab2 = (VectorMasterView) findViewById(R.id.fab2);
 
-        //Initializing the bottomNavigationView. It changes depending on the button clicked.
+
+        //lin_id = (RelativeLayout)findViewById(R.id.lin_id);
+        //bottomNavigationView.setOnNavigationItemSelectedListener(MainActivity.this);
+
+
+
+        //Initializing the bottomNavigationView. It changes depending on the button clicked.z
 
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(
@@ -64,18 +80,22 @@ public class MainActivity extends AppCompatActivity {
                         switch (item.getItemId()) {
                             case R.id.navigation_home:
                                 viewPager.setCurrentItem(0);
+                                bottomNavigationView.setItemBackgroundResource(R.color.black2);
                                 break;
 
                             case R.id.navigation_notes:
                                 viewPager.setCurrentItem(1);
+                                bottomNavigationView.setItemBackgroundResource(R.color.black);
                                 break;
 
                             case R.id.navigation_forum:
                                 viewPager.setCurrentItem(2);
+                                bottomNavigationView.setItemBackgroundResource(R.color.yellow);
                                 break;
 
                             case R.id.navigation_feed:
                                 viewPager.setCurrentItem(3);
+                                bottomNavigationView.setItemBackgroundResource(R.color.colorPrimary);
                                 break;
                         }
 
@@ -202,4 +222,95 @@ public class MainActivity extends AppCompatActivity {
         finish();
         startActivity(new Intent(getApplicationContext(), LoginActivity.class));
     }
+   /* @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        switch (menuItem.getItemId())
+        {
+            case R.id.navigation_home:
+
+                //Animation
+                draw(6);
+                //findin the correct path
+                lin_id.setX(bottomNavigationView.mFirstCurveControlPoint1.x);
+                fab.setVisibility(View.VISIBLE);
+                fab1.setVisibility(View.GONE);
+                fab2.setVisibility(View.GONE);
+                drawAnimation(fab);
+                break;
+
+            case R.id.navigation_notes:
+
+                draw(2);
+                //findin the correct path
+                lin_id.setX(bottomNavigationView.mFirstCurveControlPoint1.x);
+                fab.setVisibility(View.GONE);
+                fab1.setVisibility(View.VISIBLE);
+                fab2.setVisibility(View.GONE);
+                drawAnimation(fab1);
+
+                break;
+
+            case R.id.navigation_forum:
+
+                draw(6);
+                //findin the correct path
+                lin_id.setX(bottomNavigationView.mFirstCurveControlPoint1.x);
+                fab.setVisibility(View.GONE);
+                fab1.setVisibility(View.GONE);
+                fab2.setVisibility(View.VISIBLE);
+                drawAnimation(fab2);
+                break;
+        }
+        return true;
+    }
+    private void draw(int i)
+    {
+        bottomNavigationView.mFirstCurveStartPoint.set((bottomNavigationView.mNavigationBarWidth/i)
+        -(bottomNavigationView.CURVE_CIRCLE_RADIUS*2)-(bottomNavigationView.CURVE_CIRCLE_RADIUS/3),0);
+
+
+        bottomNavigationView.mFirstCurveEndPoint.set((bottomNavigationView.mNavigationBarWidth/i),(bottomNavigationView.CURVE_CIRCLE_RADIUS)
+    +(bottomNavigationView.CURVE_CIRCLE_RADIUS/4));
+
+
+        bottomNavigationView.mSecondCurveStartPoint = bottomNavigationView.mFirstCurveStartPoint;
+
+
+        bottomNavigationView.mSecondCurveEndPoint.set((bottomNavigationView.mNavigationBarWidth / i)
+                + (bottomNavigationView.CURVE_CIRCLE_RADIUS * 2) + (bottomNavigationView.CURVE_CIRCLE_RADIUS / 3),0);
+
+        bottomNavigationView.mFirstCurveControlPoint1.set(bottomNavigationView.mFirstCurveStartPoint.x + bottomNavigationView.CURVE_CIRCLE_RADIUS +
+                (bottomNavigationView.CURVE_CIRCLE_RADIUS/4),bottomNavigationView.mFirstCurveStartPoint.y);
+
+        bottomNavigationView.mFirstCurveControlPoint2.set(bottomNavigationView.mFirstCurveEndPoint.x - (bottomNavigationView.CURVE_CIRCLE_RADIUS*2)
+                        + bottomNavigationView.CURVE_CIRCLE_RADIUS,bottomNavigationView.mFirstCurveEndPoint.y);
+
+        //second
+        bottomNavigationView.mSecondCurveControlPoint1.set(bottomNavigationView.mSecondCurveStartPoint.x + (bottomNavigationView.CURVE_CIRCLE_RADIUS*2)
+        -bottomNavigationView.CURVE_CIRCLE_RADIUS,bottomNavigationView.mSecondCurveStartPoint.y);
+
+        bottomNavigationView.mSecondCurveControlPoint2.set(bottomNavigationView.mSecondCurveEndPoint.x -
+                (bottomNavigationView.CURVE_CIRCLE_RADIUS +(bottomNavigationView.CURVE_CIRCLE_RADIUS/4)) , bottomNavigationView.mSecondCurveEndPoint.y);
+
+    }
+    private void drawAnimation(final VectorMasterView fab)
+    {
+        outline = fab.getPathModelByName("outline");
+        outline.setStrokeColor(Color.WHITE);
+        outline.setTrimPathEnd(0.0f);
+
+        ValueAnimator valueAnimator = ValueAnimator.ofFloat(0.0f,1.0f);
+        valueAnimator.setDuration(1000);
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                outline.setTrimPathEnd((Float)animation.getAnimatedValue());
+                fab.update();
+
+            }
+        });
+        valueAnimator.start();
+    }*/
+
+
 }
