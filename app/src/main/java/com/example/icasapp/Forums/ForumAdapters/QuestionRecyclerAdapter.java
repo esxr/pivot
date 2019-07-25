@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.icasapp.Forums.ForumActivities.AnswersActivity;
+import com.example.icasapp.Forums.ForumActivities.QuestionsActivity;
 import com.example.icasapp.Forums.ForumFragment;
 import com.example.icasapp.Forums.OnBottomReachedListener;
 import com.example.icasapp.ObjectClasses.Questions;
@@ -28,11 +30,16 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import static com.example.icasapp.Forums.ForumActivities.AnswersActivity.ans_id;
 import static com.example.icasapp.Forums.ForumActivities.QuestionsActivity.docId;
+import static com.example.icasapp.Forums.ForumFragment.Category;
 import static com.example.icasapp.Forums.ForumFragment.collectionReference;
+import static com.example.icasapp.Forums.ForumFragment.i_d;
+import static com.example.icasapp.Forums.ForumFragment.setFirestoreReference;
 
 //Adaptors are bridge between XML and ando
 
@@ -47,6 +54,7 @@ public class QuestionRecyclerAdapter extends RecyclerView.Adapter<QuestionRecycl
 
     public QuestionRecyclerAdapter(List<Questions> discussion_list){
         questionsList=discussion_list;
+
     }
 
     @Override
@@ -57,6 +65,8 @@ public class QuestionRecyclerAdapter extends RecyclerView.Adapter<QuestionRecycl
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.question_list_item, viewGroup, false);
         context=viewGroup.getContext();
         firebaseFirestore=firebaseFirestore.getInstance();
+
+        setFirestoreReference(firebaseFirestore,i_d,"c");
         return new QuestionRecyclerAdapter.ViewHolder(view);
     }
 
@@ -68,21 +78,14 @@ public class QuestionRecyclerAdapter extends RecyclerView.Adapter<QuestionRecycl
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
        final String question =  questionsList.get(i).getTopic();
-       viewHolder.setQuestion(question);
-
        final String id=questionsList.get(i).QuestionsId;
-
-       String uid=questionsList.get(i).getUser_id();
-
        final String content=questionsList.get(i).getContent();
-
-       String currentUser=firebaseAuth.getInstance().getUid();
-
        String best_answer=questionsList.get(i).getBest_answer();
-       viewHolder.setBestAnswer(best_answer);
 
-
-       firebaseFirestore.collection("USER").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        //setting user names
+        String currentUser=FirebaseAuth.getInstance().getUid();
+        String uid=questionsList.get(i).getUser_id();
+        firebaseFirestore.collection("USER").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
 
 
            @Override
@@ -97,10 +100,10 @@ public class QuestionRecyclerAdapter extends RecyclerView.Adapter<QuestionRecycl
                                                                                               }
                                                                                           }
                                                                                       });
-
-               viewHolder.setQuestion(question);
-
-               viewHolder.setContent(content);
+        viewHolder.setQuestion(question);
+        viewHolder.setBestAnswer(best_answer);
+        viewHolder.setQuestion(question);
+        viewHolder.setContent(content);
 
        viewHolder.addAnswer.setOnClickListener(new View.OnClickListener() {
            @Override
@@ -109,9 +112,28 @@ public class QuestionRecyclerAdapter extends RecyclerView.Adapter<QuestionRecycl
                intent.putExtra("id",id);
                intent.putExtra("topic",question);
                intent.putExtra("content",content);
+               intent.putExtra("Category",Category);
+               intent.putExtra("ID",i_d);
                context.startActivity(intent);
            }
        });
+
+       // set time
+        long currentTime = Calendar.getInstance().getTime().getTime();
+        long uploadtime = questionsList.get(i).getTimestamp().getTime();
+        long diff=currentTime-uploadtime;
+        int value= (int) (diff/(3.6*(Math.pow(10,6))));
+
+        if(value>24)
+        {
+            String dateString = DateFormat.format("MM/dd/yyyy", new Date(uploadtime)).toString();
+            viewHolder.setTime(dateString);
+        }
+        else
+        {
+            String dateString = DateFormat.format("hh:mm", new Date(uploadtime)).toString();
+            viewHolder.setTime(dateString);
+        }
 
         if(currentUser.equals(questionsList.get(i).getUser_id()))
         {
@@ -177,6 +199,8 @@ public class QuestionRecyclerAdapter extends RecyclerView.Adapter<QuestionRecycl
 
         private TextView bestAnswer;
 
+        private TextView time;
+
         private ImageView delete;
 
         public ViewHolder(View itemView) {
@@ -212,6 +236,11 @@ public class QuestionRecyclerAdapter extends RecyclerView.Adapter<QuestionRecycl
             bestAnswer.setText(best_answer);
         }
 
+        public void setTime(String t)
+        {
+            time=mView.findViewById(R.id.time);
+            time.setText(t);
+        }
 
     }
 

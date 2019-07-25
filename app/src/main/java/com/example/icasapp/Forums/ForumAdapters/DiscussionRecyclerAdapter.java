@@ -33,10 +33,13 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.Nullable;
 
+import static com.example.icasapp.Forums.ForumFragment.Category;
 import static com.example.icasapp.Forums.ForumFragment.collectionReference;
+import static com.example.icasapp.Forums.ForumFragment.i_d;
 
 public class DiscussionRecyclerAdapter extends RecyclerView.Adapter<DiscussionRecyclerAdapter.ViewHolder> {
 
@@ -55,7 +58,7 @@ public class DiscussionRecyclerAdapter extends RecyclerView.Adapter<DiscussionRe
         context=viewGroup.getContext();
         firebaseFirestore=FirebaseFirestore.getInstance();
         firebaseAuth=FirebaseAuth.getInstance();
-        ForumFragment.setFirestoreReference(firebaseFirestore, ForumFragment.i_d,"c");
+        ForumFragment.setFirestoreReference(firebaseFirestore,i_d,"c");
         return new ViewHolder(view);
     }
 
@@ -77,8 +80,15 @@ public class DiscussionRecyclerAdapter extends RecyclerView.Adapter<DiscussionRe
        collectionReference.document(blogPostId).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-              int n=  Integer.parseInt(documentSnapshot.get("question").toString());
-              viewHolder.setCommentCount(Integer.toString(n));
+                int n = 0;
+                try {
+                    n =Integer.parseInt(documentSnapshot.get("question").toString());
+                }
+                catch(Exception c)
+                {
+                    //try catch because question can be empty
+                }
+                viewHolder.setCommentCount(Integer.toString(n));
             }
         });
         final int question=discussionTopicList.get(i).getQuestion();
@@ -90,8 +100,8 @@ public class DiscussionRecyclerAdapter extends RecyclerView.Adapter<DiscussionRe
         long currentTime = Calendar.getInstance().getTime().getTime();
         long uploadtime =discussionTopicList.get(i).getTimestamp().getTime();
         long diff=currentTime-uploadtime;
-        String difference = DateFormat.format("hh", new Date(diff)).toString();
-        int value= Integer.parseInt(difference);
+        int value= (int) (diff/(3.6*(Math.pow(10,6))));
+
         if(value>24)
         {
             String dateString = DateFormat.format("MM/dd/yyyy", new Date(uploadtime)).toString();
@@ -109,12 +119,13 @@ public class DiscussionRecyclerAdapter extends RecyclerView.Adapter<DiscussionRe
                                                      public void onClick(View v) {
                                                          Intent commentIntent=new Intent(context, QuestionsActivity.class);
                                                          commentIntent.putExtra("post_id", blogPostId);
+                                                         //Category is passed between activities so that the value can be used
+                                                         commentIntent.putExtra("Category",Category);
+                                                         commentIntent.putExtra("ID",i_d);
                                                          context.startActivity(commentIntent);
+
                                                      }
                                                  });
-
-        Log.d("AQWE",currentUser);
-        Log.d("vvbb", discussionTopicList.get(i).getUser_id());
 
         if(currentUser.equals(discussionTopicList.get(i).getUser_id()))
         {

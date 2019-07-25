@@ -40,11 +40,11 @@ import static com.example.icasapp.Forums.ForumFragment.collectionReference;
 
 public class AnswerRecyclerAdapter extends RecyclerView.Adapter<AnswerRecyclerAdapter.ViewHolder>{
 
-    private List<Answers> answersList=new ArrayList<>();
+    private List<Answers> answersList;
     public Context context;
     private FirebaseFirestore firebaseFirestore;
-    private boolean FirstTime=true;
     private FirebaseAuth firebaseAuth;
+    private int index;
 
     public AnswerRecyclerAdapter(List<Answers> answerList){
         this.answersList=answerList;
@@ -57,19 +57,20 @@ public class AnswerRecyclerAdapter extends RecyclerView.Adapter<AnswerRecyclerAd
         context=viewGroup.getContext();
         View view=LayoutInflater.from(context).inflate(R.layout.answer_list_item,viewGroup,false);
         firebaseAuth=firebaseAuth.getInstance();
+        firebaseFirestore = firebaseFirestore.getInstance();
+        ForumFragment.setFirestoreReference(firebaseFirestore, ForumFragment.i_d,"c");
         return new AnswerRecyclerAdapter.ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
+    public void onBindViewHolder(@NonNull final ViewHolder viewHolder,  int i) {
 
-
-        final Answers answers = answersList.get(i);
-        firebaseFirestore = firebaseFirestore.getInstance();
+        index=i;
+        final Answers answers = answersList.get(index);
         final String currentUser = firebaseAuth.getCurrentUser().getUid();
 
-        final String id = answersList.get(i).AnswerPostId;
-        viewHolder.setupvote(Integer.toString(answersList.get(i).getUpvotes()));
+        final String id = answersList.get(index).AnswerPostId;
+        viewHolder.setupvote(Integer.toString(answersList.get(index).getUpvotes()));
 
         String answer= answers.getAnswer();
         viewHolder.setAnswer(answer);
@@ -114,20 +115,22 @@ public class AnswerRecyclerAdapter extends RecyclerView.Adapter<AnswerRecyclerAd
                     public void onEvent(@Nullable QuerySnapshot snapshots,
                                         @Nullable FirebaseFirestoreException e) {
                         if (snapshots.isEmpty()) {
+                            answersList.get(index).setUpvotes(0);
                             viewHolder.setupvote("0");
-                            answersList.get(i).setUpvotes(0);
                             return;
                         } else {
                             String count = Integer.toString(snapshots.size());
                             int c= Integer.parseInt(count);
-                            answersList.get(i).setUpvotes(c);
+                            Log.i("LOLLL",Integer.toString(c));
+                            Log.i("Valuee", String.valueOf(index));
+                            answersList.get(index).setUpvotes(c);
                             viewHolder.setupvote(count);
 
                         }
                     }
                 });
 
-        if(currentUser.equals(answersList.get(i).getUser_id()))
+        if(currentUser.equals(answersList.get(index).getUser_id()))
         {
             viewHolder.delete.setVisibility(View.VISIBLE);
         }
@@ -135,15 +138,17 @@ public class AnswerRecyclerAdapter extends RecyclerView.Adapter<AnswerRecyclerAd
         {
             viewHolder.delete.setVisibility(View.GONE);
         }
-
+        Log.i("MSG", String.valueOf(index));
         viewHolder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 collectionReference.document(docId).collection("Questions").document(ans_id).collection("Answers").document(id).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        answersList.remove(i);
+                        Log.i("MSGG", String.valueOf(answersList.size()));
+                        answersList.remove(index);
                         notifyDataSetChanged();
+                        Log.i("MSGG", String.valueOf(answersList.size()));
                     }
                 });
             }

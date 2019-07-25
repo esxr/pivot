@@ -48,6 +48,7 @@ import java.util.UUID;
 
 import id.zelory.compressor.Compressor;
 
+import static com.example.icasapp.Forums.ForumFragment.Category;
 import static com.example.icasapp.Forums.ForumFragment.collectionReference;
 import static com.example.icasapp.Forums.ForumFragment.i_d;
 import static com.example.icasapp.Forums.ForumFragment.setFirestoreReference;
@@ -170,7 +171,7 @@ public class NewDiscussionActivity extends AppCompatActivity {
                                             if (task.isSuccessful()) {
 
                                                 Toast.makeText(NewDiscussionActivity.this, "Post was added", Toast.LENGTH_LONG).show();
-                                                Intent mainIntent = new Intent(NewDiscussionActivity.this, ForumFragment.class);
+                                                Intent mainIntent = new Intent(getApplicationContext(), ForumFragment.class);
                                                 startActivity(mainIntent);
                                                 finish();
 

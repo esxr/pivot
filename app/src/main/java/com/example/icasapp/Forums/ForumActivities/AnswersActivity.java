@@ -1,6 +1,7 @@
 package com.example.icasapp.Forums.ForumActivities;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 
 import com.example.icasapp.Forums.ForumAdapters.AnswerRecyclerAdapter;
 import com.example.icasapp.Forums.ForumFragment;
+import com.example.icasapp.MainActivity;
 import com.example.icasapp.ObjectClasses.Answers;
 import com.example.icasapp.R;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -40,7 +42,9 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 import static com.example.icasapp.Forums.ForumActivities.QuestionsActivity.docId;
+import static com.example.icasapp.Forums.ForumFragment.Category;
 import static com.example.icasapp.Forums.ForumFragment.collectionReference;
+import static com.example.icasapp.Forums.ForumFragment.i_d;
 
 
 public class AnswersActivity extends AppCompatActivity {
@@ -92,7 +96,6 @@ public class AnswersActivity extends AppCompatActivity {
 
         firebaseFirestore=FirebaseFirestore.getInstance();
 
-        ForumFragment.setFirestoreReference(firebaseFirestore, ForumFragment.i_d,"c");
         addAnswer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,23 +103,24 @@ public class AnswersActivity extends AppCompatActivity {
             }
     });
 
+        Intent intent=getIntent();
+        ans_id = intent.getStringExtra("id");
+        String Topic=intent.getStringExtra("topic");
+        String Content=intent.getStringExtra("content");
+        Category=intent.getStringExtra("Category");
+        i_d=intent.getStringExtra("ID");
 
-        ans_id = getIntent().getStringExtra("id");
-        String Topic=getIntent().getStringExtra("topic");
-        String Content=getIntent().getStringExtra("content");
+        //selecting the appropriate Category
+        if (Category.equals("General") || Category.equals("Alumni")) {
+            Log.i("LOL","SUCC");
+            collectionReference = firebaseFirestore.collection("General").document(Category).collection("Posts");
+        } else {
+            Log.i("LOL","SUC");
+            collectionReference = firebaseFirestore.collection("Specific").document(i_d).collection("Subjects").document(Category).collection("Posts");
+        }
 
         topic.setText(Topic);
         content.setText(Content);
-
-       try {
-           Log.i("ASDASD", ans_id);
-           Log.i("ASDADSASD", docId);
-       }
-       catch (Exception e)
-       {
-
-       }
-
 
         //menu items to select what to sort and how to sort
         recent.setOnClickListener(new View.OnClickListener() {
@@ -195,7 +199,6 @@ public class AnswersActivity extends AppCompatActivity {
 
         }
     answersList.clear();
-    ForumFragment.setFirestoreReference(firebaseFirestore, ForumFragment.i_d,"c");
 
         registration =collectionReference.document(docId).collection("Questions").document(ans_id).collection("Answers").orderBy(sort, Query.Direction.DESCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -211,12 +214,12 @@ public class AnswersActivity extends AppCompatActivity {
                             }
                             //if the page is not loaded for the first time. That means a new post or mode has been changed has been added then these conditions are invoked
                             else {
-                                Log.i("SORTT",sort);
-                                if (sort == "timestamp") {
+                                Log.i("SORT",sort);
+                                if (sort.equals("timestamp")) {
                                     //if sorting was of timestamp. then when a new post is added the post is put up.
                                     answersList.add(0, answers);
                                 }
-                                if (sort == "upvotes") {
+                                if (sort.equals("upvotes")) {
                                     answersList.add(0, answers);
                                     shuffle();
                                     bestAnswerSelector();
@@ -226,16 +229,17 @@ public class AnswersActivity extends AppCompatActivity {
                             break;
                         case MODIFIED:
                             //is upvotes are put the document will be modified hence the arraylist will again be shifted
-                            if(sort == "upvotes") {
+                            if(sort.equals( "upvotes")) {
                                 shuffle();
-                                bestAnswerSelector();
                             }
                             //whenever modified best answer is selected in answer activity
-                          //  bestAnswerSelector();
+                            bestAnswerSelector();
                             Toast.makeText(AnswersActivity.this, "Success", Toast.LENGTH_LONG).show();
                             answerRecyclerAdapter.notifyDataSetChanged();
                             break;
                         case REMOVED:
+
+                            answerRecyclerAdapter.notifyDataSetChanged();
                             break;
 
                     }
@@ -249,18 +253,10 @@ public class AnswersActivity extends AppCompatActivity {
     public void shuffle()
     {
         try {
-           /* Collections.sort(answersList, new Comparator<Answers>() {
-                @Override
-                public int compare(Answers lhs, Answers rhs) {
-                    // -1 - less than, 1 - greater than, 0 - equal, all inversed for descending
-                    return lhs.upvotes > rhs.upvotes ? -1 : (lhs.upvotes < rhs.upvotes ) ? 1 : 0;
-                }
-            }); */
 
             Collections.sort(answersList, new Comparator<Answers>() {
                 @Override
                 public int compare(Answers u1, Answers u2) {
-                    Log.i("ASDFG", Integer.toString(u2.upvotes-u1.upvotes));
                     return u2.upvotes-u1.upvotes; // Ascending
                 }
 
@@ -268,15 +264,48 @@ public class AnswersActivity extends AppCompatActivity {
         }
         catch(Exception e){
 
-            Log.d("Ex","ERROR");
+            Log.d("Error","Sorting Error");
         }
     }
 
     public void bestAnswerSelector()
     {
-
-        String answer=answersList.get(0).getAnswer();
+        shuffle();
+        String answer = answersList.get(0).getAnswer();
         collectionReference.document(docId).collection("Questions").document(ans_id).update("best_answer",answer);
+        if(sort.equals("timestamp")) {
+        Collections.sort(answersList, new Comparator<Answers>() {
+            @Override
+            public int compare(Answers o1, Answers o2) {
+                int t1=0;
+                int t2=0;
+                try {
+                     t1 = (int) o1.timestamp.getTime();
+                     t2 = (int) o2.timestamp.getTime();
+                }
+                catch (Exception e)
+                {
+                    Log.i("ERRORR","TIME");
+                    //timestamp error. It can be invoked if the document call in before teh timestamp is stored
+                }
+                int diff = t2 - t1;
+                return diff;
+            }
+        });
+    }
+    }
+
+    //When pressing back goes to Question activity
+    @Override
+    public void onBackPressed()
+    {
+        super.onBackPressed();
+        Intent intent=new Intent(AnswersActivity.this, QuestionsActivity.class);
+        intent.putExtra("Category",Category);
+        intent.putExtra("ID",i_d);
+        intent.putExtra("post_id",docId);
+        startActivity(intent);
+
 
     }
 

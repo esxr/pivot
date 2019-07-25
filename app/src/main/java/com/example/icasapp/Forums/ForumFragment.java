@@ -2,6 +2,7 @@ package com.example.icasapp.Forums;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,7 +15,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
@@ -24,24 +24,22 @@ import com.example.icasapp.Forums.ForumAdapters.DiscussionRecyclerAdapter;
 import com.example.icasapp.ObjectClasses.DiscussionTopic;
 import com.example.icasapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
 
@@ -62,7 +60,7 @@ public class ForumFragment extends Fragment implements AdapterView.OnItemClickLi
     private  ArrayList<String> subject;
     Spinner spinner;
     public static String i_d;
-    static String Category;
+    public static String Category;
     public static CollectionReference collectionReference;
     public static Query query;
     int c = 0;
@@ -188,7 +186,10 @@ public class ForumFragment extends Fragment implements AdapterView.OnItemClickLi
                     @Override
                     public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                         Category =subject.get(position);
-                        Log.i("bv",Category);
+                        SharedPreferences pref = getContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = pref.edit();
+                        editor.putString("key", Category);
+                        editor.commit();
                         setFirestoreReference(firebaseFirestore,i_d,"q");
                        if(isFirstPageFirstLoad)
                        {
@@ -244,17 +245,19 @@ public class ForumFragment extends Fragment implements AdapterView.OnItemClickLi
 
     public static void setFirestoreReference(FirebaseFirestore firebaseFirestore,String ID,String type)
     {
-        if(type=="c") {
-            if (Category == "General" || Category == "Alumni") {
+        if(type.equals("c")) {
+            if (Category.equals("General") || Category.equals("Alumni")) {
+                Log.i("LOL","SUCC");
                 collectionReference = firebaseFirestore.collection("General").document(Category).collection("Posts");
             } else {
+                Log.i("LOL","SUC");
                 collectionReference = firebaseFirestore.collection("Specific").document(ID).collection("Subjects").document(Category).collection("Posts");
 
             }
         }
-        if(type=="q")
+        if(type.equals("q"))
         {
-            if (Category == "General" || Category == "Alumni") {
+            if (Category.equals("General") || Category.equals("Alumni")) {
                 query = firebaseFirestore.collection("General").document(Category).collection("Posts");
             } else {
                 query = firebaseFirestore.collection("Specific").document(ID).collection("Subjects").document(Category).collection("Posts");
