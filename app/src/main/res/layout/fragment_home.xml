@@ -34,7 +34,7 @@
     <!--ListView-->
     <ListView
         android:layout_width="match_parent"
-        android:layout_height="200dip"
+        android:layout_height="350dip"
         android:scrollbars="vertical"
         android:id="@+id/profile_menu"/>
 

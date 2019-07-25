@@ -20,7 +20,7 @@ public class ProfileDisplayActivity extends AppCompatActivity {
 
     // all the views
     TextView profileName, profileRollno;
-    ImageView profilePhoto;
+    CircleImageView profilePhoto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,16 +30,13 @@ public class ProfileDisplayActivity extends AppCompatActivity {
         // Get all the views
         profileName = (TextView) findViewById(R.id.profileName);
         profileRollno = (TextView) findViewById(R.id.profileRegNo);
-        profilePhoto = (ImageView) findViewById(R.id.profilePhoto);
+        profilePhoto = (CircleImageView) findViewById(R.id.profilePhoto);
 
         // get data for user object
         TestUser user = (TestUser) getIntent().getExtras().getSerializable("user");
         profileName.setText(user.getName());
         profileRollno.setText(user.getStream());
-        Glide.with(this).load("http://goo.gl/gEgYUd").into(profilePhoto);
+        Glide.with(this).load(user.getProfilePhoto()).into(profilePhoto);
 
-        try {
-            profilePhoto.setImageBitmap(BitmapFactory.decodeFile(user.getProfilePhoto()));
-        } catch(Exception e) { Log.e("Image frontend", "Problem loading image "+e); }
     }
 }

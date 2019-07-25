@@ -23,12 +23,14 @@ public class TestUser implements Serializable {
         this.name = object.get("name");
         this.semester = object.get("semester");
         this.stream = object.get("stream");
+        this.profilePhoto = (String) object.get("profile_photo");
     }
 
     public TestUser(Map<String, Object> object) {
         this.name = (String) object.get("name");
         this.semester = (String) object.get("semester");
         this.stream = (String) object.get("stream");
+        this.profilePhoto = (String) object.get("profile_photo");
     }
 
     public String getProfilePhoto() {

@@ -18,7 +18,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileAdapter extends ArrayAdapter<TestUser> {
 
-    TextView profileName, profileRegNo; ImageView profilePhoto;
+    TextView profileName, profileRegNo; CircleImageView profilePhoto;
 
     public ProfileAdapter(Context context, ArrayList<TestUser> TestUsers) {
         super(context, 0, TestUsers);
@@ -38,12 +38,12 @@ public class ProfileAdapter extends ArrayAdapter<TestUser> {
         // Lookup view for data population
         profileName = (TextView) convertView.findViewById(R.id.profileName);
         profileRegNo = (TextView) convertView.findViewById(R.id.profileRegNo);
-        profilePhoto = (ImageView) convertView.findViewById(R.id.profilePhoto);
+        profilePhoto = (CircleImageView) convertView.findViewById(R.id.profilePhoto);
 
         // Populate the data into the template view using the data object
         profileName.setText(testUser.getName());
         profileRegNo.setText(testUser.getStream());
-        Glide.with(getContext()).load("http://goo.gl/gEgYUd").into(profilePhoto);
+        Glide.with(getContext()).load(testUser.getProfilePhoto()).into(profilePhoto);
 
         // Return the completed view to render on screen
         return convertView;

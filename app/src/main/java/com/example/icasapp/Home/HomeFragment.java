@@ -109,6 +109,7 @@ public class HomeFragment extends Fragment {
         });
 
         // Set listview and adapter
+        @Hardcoded
         TestUser user = new TestUser(
                 "Pranav",
                 "",

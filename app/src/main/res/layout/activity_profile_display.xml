@@ -12,11 +12,10 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:id="@+id/profilePhoto"
-            android:scaleType="fitXY"/>
+            android:id="@+id/profilePhoto"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
