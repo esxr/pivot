@@ -53,10 +53,6 @@ public class RegisterActivity extends AppCompatActivity {
         relativeLayout.setAnimation(fade);
         circleImageView.setAnimation(transition);
 
-
-
-
-
     }
 
     public void onRegister(View view){
