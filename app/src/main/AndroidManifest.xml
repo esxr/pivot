@@ -13,7 +13,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Notes.NotesForm"></activity>
+        <activity android:name=".Front_End.SplashActivity">
+        </activity>
         <activity android:name=".Menu_EditProfile.EditProfileActivity" />
         <activity android:name=".Forums.ForumActivities.AnswersActivity" />
         <activity android:name=".Forums.ForumActivities.newQuestionActivity" />
@@ -23,6 +24,7 @@
             android:theme="@style/Base.Theme.AppCompat" />
         <activity android:name=".Forums.ForumActivities.NewDiscussionActivity" />
         <activity android:name=".Auth.RegisterActivity" />
+        <activity android:name=".Notes.ViewNotesActivity" />
         <activity android:name=".MainActivity" />
         <activity
             android:name=".Auth.LoginActivity"
@@ -32,6 +34,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
     </application>
 
