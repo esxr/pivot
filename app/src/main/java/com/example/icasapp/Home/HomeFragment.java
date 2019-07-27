@@ -1,33 +1,6 @@
 package com.example.icasapp.Home;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.example.icasapp.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URL;
-
-import io.reactivex.annotations.NonNull;
+import androidx.fragment.app.Fragment;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,7 +8,7 @@ import io.reactivex.annotations.NonNull;
 
 public class HomeFragment extends Fragment {
 
-    FirebaseFirestore db;
+  /*  FirebaseFirestore db;
     FirebaseUser user;
 
     View homeView;
@@ -50,12 +23,13 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-    /*    db = FirebaseFirestore.getInstance();
+        db = FirebaseFirestore.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
         homeView = inflater.inflate(R.layout.fragment_home, container, false);
         ImageView imageView = homeView.findViewById(R.id.imageView);
 
         textView = homeView.findViewById(R.id.textView);
+
 
 
         DocumentReference docRef = db.collection("USER").document(user.getUid().toString());
@@ -75,10 +49,15 @@ public class HomeFragment extends Fragment {
                 }
             }
         });
+        try {
+            new ImageLoadTask(user.getPhotoUrl().toString(), imageView).execute();
+        }
+        catch (Exception e)
+        {
 
-        new ImageLoadTask(user.getPhotoUrl().toString() , imageView).execute();
+        }
 
-*/
+
 
 
         // Inflate the layout for this fragment
@@ -118,5 +97,5 @@ public class HomeFragment extends Fragment {
             imageView.setImageBitmap(result);
         }
 
-    }
+    }*/
 }

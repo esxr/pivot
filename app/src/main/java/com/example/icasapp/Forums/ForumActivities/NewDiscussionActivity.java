@@ -6,24 +6,26 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.icasapp.Forums.ForumFragment;
 import com.example.icasapp.R;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -44,6 +46,10 @@ import java.util.UUID;
 
 import id.zelory.compressor.Compressor;
 
+import static com.example.icasapp.Forums.ForumFragment.collectionReference;
+import static com.example.icasapp.Forums.ForumFragment.i_d;
+import static com.example.icasapp.Forums.ForumFragment.setFirestoreReference;
+
 
 public class NewDiscussionActivity extends AppCompatActivity {
     private ImageView setUpImage;
@@ -56,13 +62,20 @@ public class NewDiscussionActivity extends AppCompatActivity {
     private String current_user_id;
     private Bitmap compressedImageFile;
     private String downloadUrl;
+    private TextView discuss_txt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_discussion);
 
+        Animation fade = AnimationUtils.loadAnimation(this, R.anim.fade_scale);
+
         setUpImage = findViewById(R.id.new_post_image);
+        discuss_txt = findViewById(R.id.discuss_text);
+
+        discuss_txt.setAnimation(fade);
+
         newPostBtn = findViewById(R.id.post_btn);
         editText = findViewById(R.id.topic);
         storageReference = FirebaseStorage.getInstance().getReference();
@@ -151,17 +164,20 @@ public class NewDiscussionActivity extends AppCompatActivity {
                                     postMap.put("content", content);
                                     postMap.put("user_id", current_user_id);
                                     postMap.put("timestamp", FieldValue.serverTimestamp());
+                                    postMap.put("question",0);
 
-                                    firebaseFirestore.collection("Posts").add(postMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                    setFirestoreReference(firebaseFirestore,i_d,"c");
+
+                                    collectionReference.add(postMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                                         @Override
 
                                         public void onComplete(@NonNull Task<DocumentReference> task) {
                                             if (task.isSuccessful()) {
 
                                                 Toast.makeText(NewDiscussionActivity.this, "Post was added", Toast.LENGTH_LONG).show();
-                                                //Intent mainIntent = new Intent(NewDiscussionActivity.this, MainActivity.class);
-                                                //startActivity(mainIntent);
-                                                //finish();
+                                                Intent mainIntent = new Intent(getApplicationContext(), ForumFragment.class);
+                                                startActivity(mainIntent);
+                                                finish();
 
                                             } else {
                                                 Toast.makeText(NewDiscussionActivity.this, "Post was not added", Toast.LENGTH_LONG).show();
