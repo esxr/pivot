@@ -111,7 +111,7 @@ public class RegisterActivity extends AppCompatActivity {
                                         "1",
                                         "CSE",
                                         regNo,
-                                        "https://profilepicturesdp.com/wp-content/uploads/2018/06/generic-user-profile-picture.jpg",
+                                        getResources().getString(R.string.generic_profile_photo_path),
                                         user.getUid()
                                 );
                                 FirebaseHelper.addDocumentToCollection(user_USER.getFirebaseDocument(), "USER");

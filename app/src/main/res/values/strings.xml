@@ -10,7 +10,9 @@
     <string name="feed">Feed</string>
     <string name="title_activity_comments">CommentsActivity</string>
 
-    <string name="generic_profile_photo_path"><![CDATA[https://firebasestorage.googleapis.com/v0/b/icas–phase-1.appspot.com/o/USER_profile_photos%2Fgeneric_profile_photo.png?alt=media&token=0eafbb20-0e6c-4c66-afd2-90b784c3d026]]></string>
+    <string name="generic_profile_photo_path">
+        https://profilepicturesdp.com/wp-content/uploads/2018/06/generic-user-profile-picture.jpg
+    </string>
 
     <string-array name="semester_array">
         <item>1</item>

@@ -19,7 +19,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class ProfileDisplayActivity extends AppCompatActivity {
 
     // all the views
-    TextView profileName, profileRollno;
+    TextView profileName, profileRegNo, profileStream, profileSemester;
     CircleImageView profilePhoto;
 
     @Override
@@ -29,13 +29,18 @@ public class ProfileDisplayActivity extends AppCompatActivity {
 
         // Get all the views
         profileName = (TextView) findViewById(R.id.profileName);
-        profileRollno = (TextView) findViewById(R.id.profileRegNo);
         profilePhoto = (CircleImageView) findViewById(R.id.profilePhoto);
+        profileRegNo = (TextView) findViewById(R.id.profileRegNo);
+        profileStream = (TextView) findViewById(R.id.profileStream);
+        profileSemester = (TextView) findViewById(R.id.profileSemester);
 
         // get data for user object
         TestUser user = (TestUser) getIntent().getExtras().getSerializable("user");
         profileName.setText(user.getName());
-        profileRollno.setText(user.getStream());
+        profileRegNo.setText(user.getRegNo());
+        profileStream.setText(user.getStream());
+        profileSemester.setText(user.getSemester());
+
         Glide.with(this).load(user.getProfilePhoto()).into(profilePhoto);
 
     }

@@ -26,6 +26,7 @@
         <activity android:name=".Auth.RegisterActivity" />
         <activity android:name=".Notes.ViewNotesActivity" />
         <activity android:name=".MainActivity" >
+
         </activity>
         <activity
             android:name=".Auth.LoginActivity"

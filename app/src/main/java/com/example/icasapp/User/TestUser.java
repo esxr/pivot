@@ -28,7 +28,9 @@ public class TestUser implements Serializable {
         this.name = (String) object.get("name");
         this.semester = (String) object.get("semester");
         this.stream = (String) object.get("stream");
+        this.regNo = (String) object.get("regNo");
         this.profilePhoto = (String) object.get("profile_photo");
+        this.UID = (String) object.get("UID");
     }
 
     public String getUID() {
@@ -42,6 +44,7 @@ public class TestUser implements Serializable {
     public HashMap<String, String> getFirebaseDocument() {
         return new HashMap<String, String>() {{
             put("name", getName());
+            put("regNo", getRegNo());
             put("semester", getSemester());
             put("stream", getStream());
             put("profile_photo", getProfilePhoto());
@@ -55,9 +58,11 @@ public class TestUser implements Serializable {
         final String[] name = {"Neerav", "Pranav", "Vishal", "Avijit", "Ankur", "Siddhant", "Bakchi", "Bagchii"};
         return new HashMap<String, String>() {{
             put("name", name[new Random().nextInt(name.length)]);
+            put("regNo", "181627XXX");
             put("semester", new Random().nextInt(3)+1+"");
             put("stream", streams[new Random().nextInt(streams.length)]);
-            put("profile_photo", "https://images-na.ssl-images-amazon.com/images/I/61UYXqQwkkL._SY679_.jpg");
+            put("profile_photo", "https://profilepicturesdp.com/wp-content/uploads/2018/06/generic-user-profile-picture.jpg");
+            put("UID", "UID_23461XXX");
         }};
     }
 
