@@ -127,7 +127,7 @@ public class FirebaseHelper {
     public static void generateFakeFirebaseUsers(int no_of_users) {
         for(int i=0; i<no_of_users; i++) {
             db.collection("USER")
-                    .add(TestUser.getFirebaseDocument())
+                    .add(TestUser.getFirebaseDocumentHARDCODED())
                     .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                         @Override
                         public void onSuccess(DocumentReference documentReference) {

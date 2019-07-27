@@ -12,8 +12,10 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.example.icasapp.Firebase.FirebaseHelper;
 import com.example.icasapp.MainActivity;
 import com.example.icasapp.R;
+import com.example.icasapp.User.TestUser;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -26,8 +28,9 @@ public class RegisterActivity extends AppCompatActivity {
 
     private EditText inputEmail;
     private EditText inputPassword;
+    private EditText inputUsername, inputRegNo;
 
-    private String email;
+    private String email, username, regNo;
     private String password;
     private RelativeLayout relativeLayout;
     private CircleImageView circleImageView;
@@ -42,6 +45,8 @@ public class RegisterActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("REGISTER");
 
         inputEmail = findViewById(R.id.inputEmail);
+        inputUsername = findViewById(R.id.inputUsername);
+        inputRegNo = findViewById(R.id.inputRegNo);
         inputPassword = findViewById(R.id.inputPassword);
         relativeLayout = findViewById(R.id.rl);
         circleImageView = findViewById(R.id.circle_avi);
@@ -63,6 +68,8 @@ public class RegisterActivity extends AppCompatActivity {
 
             email = inputEmail.getText().toString().trim();
             password = inputPassword.getText().toString().trim();
+            username = inputUsername.getText().toString().trim();
+            regNo = inputRegNo.getText().toString().trim();
 
             if (email == null) {
                 Toast.makeText(getApplicationContext(), "EMAIL ID IS MISSING", Toast.LENGTH_LONG).show();
@@ -96,10 +103,26 @@ public class RegisterActivity extends AppCompatActivity {
                                 // Sign in success, update UI with the signed-in user's information
                                 Log.d("msg", "createUserWithEmail:success");
                                 FirebaseUser user = mAuth.getCurrentUser();
+
+                                // Add a database entry in "USER" database
+                                String generic_profile_photo_path = "https://firebasestorage.googleapis.com/v0/b/icas-phase-1.appspot.com/o/USER_profile_photos%2Fgeneric_profile_photo.png?alt=media&token=0eafbb20-0e6c-4c66-afd2-90b784c3d026";
+                                TestUser user_USER = new TestUser(
+                                        username,
+                                        "1",
+                                        "CSE",
+                                        regNo,
+                                        "https://profilepicturesdp.com/wp-content/uploads/2018/06/generic-user-profile-picture.jpg",
+                                        user.getUid()
+                                );
+                                FirebaseHelper.addDocumentToCollection(user_USER.getFirebaseDocument(), "USER");
+
+                                Log.e("Registration", "Registration successful");
+                                // ---------------------------------------
+
                                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
                             } else {
                                 // If sign in fails, display a message to the user.
-                                Log.w("msg", "createUserWithEmail:failure", task.getException());
+                                Log.e("msg", "createUserWithEmail:failure", task.getException());
                                 Toast.makeText(getApplicationContext(), "Authentication failed.",
                                         Toast.LENGTH_SHORT).show();
                             }

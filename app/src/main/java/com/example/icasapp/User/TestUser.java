@@ -12,21 +12,16 @@ import java.util.Random;
 
 public class TestUser implements Serializable {
     String name, semester, stream, regNo;
-    String profilePhoto;
+    private String profilePhoto;
+    private String UID;
 
-    public TestUser(String name, String semester, String stream, String regNo, @Nullable String profilePhoto) {
+    public TestUser(String name, String semester, String stream, String regNo, @Nullable String profilePhoto, String UID) {
         this.name = name;
         this.semester = semester;
         this.stream = stream;
         this.regNo = regNo;
         this.profilePhoto = profilePhoto;
-    }
-
-    public TestUser(HashMap<String, String> object) {
-        this.name = object.get("name");
-        this.semester = object.get("semester");
-        this.stream = object.get("stream");
-        this.profilePhoto = (String) object.get("profile_photo");
+        this.UID = UID;
     }
 
     public TestUser(Map<String, Object> object) {
@@ -36,8 +31,26 @@ public class TestUser implements Serializable {
         this.profilePhoto = (String) object.get("profile_photo");
     }
 
+    public String getUID() {
+        return UID;
+    }
+
+    public void setUID(String UID) {
+        this.UID = UID;
+    }
+
+    public HashMap<String, String> getFirebaseDocument() {
+        return new HashMap<String, String>() {{
+            put("name", getName());
+            put("semester", getSemester());
+            put("stream", getStream());
+            put("profile_photo", getProfilePhoto());
+            put("UID", getUID());
+        }};
+    }
+
     @Hardcoded
-    public static HashMap<String, String> getFirebaseDocument() {
+    public static HashMap<String, String> getFirebaseDocumentHARDCODED() {
         final String[] streams = {"CSE", "Aero", "Chemical", "ECE", "Mechanical", "Mechatronics"};
         final String[] name = {"Neerav", "Pranav", "Vishal", "Avijit", "Ankur", "Siddhant", "Bakchi", "Bagchii"};
         return new HashMap<String, String>() {{

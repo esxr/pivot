@@ -26,15 +26,15 @@
         <activity android:name=".Auth.RegisterActivity" />
         <activity android:name=".Notes.ViewNotesActivity" />
         <activity android:name=".MainActivity" >
+        </activity>
+        <activity
+            android:name=".Auth.LoginActivity"
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity
-            android:name=".Auth.LoginActivity"
-            android:label="@string/app_name">
         </activity>
     </application>
 
