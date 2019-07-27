@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,8 +55,20 @@ public class HomeFragment extends Fragment {
     ProfileAdapter itemsAdapter;
     ListView listView;
 
+    Spinner querySpinner;
+
+    String queryProperty;
+
     public HomeFragment() {
         // Required empty public constructor
+    }
+
+    public String getQueryProperty() {
+        return queryProperty;
+    }
+
+    public void setQueryProperty(String queryProperty) {
+        this.queryProperty = queryProperty;
     }
 
     @Override
@@ -95,16 +108,44 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        //
+        ArrayAdapter<CharSequence> adapterStream = ArrayAdapter.createFromResource(getContext(),
+                R.array.query_property_array, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapterStream.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        querySpinner = (Spinner) homeView.findViewById(R.id.querySpinner);
+        querySpinner.setAdapter(adapterStream);
+
+        querySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> arg0, View v,
+                                       int position, long id) {
+                Log.v("SpinnerSelected Item",
+                        "" + querySpinner.getSelectedItem());
+                Log.v("Clicked position", "" + position);
+                setQueryProperty(querySpinner.getSelectedItem().toString());
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+                Log.v("NothingSelected Item",
+                        "" + querySpinner.getSelectedItem().toString());
+                setQueryProperty(querySpinner.getSelectedItem().toString());
+
+            }
+        });
+
         profileSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(query.length() == 0) return;
-                String[] queryParams =
-                        query.getText().toString()
-                                .trim().split(":");
+                String queryValue =
+                        query.getText().toString();
                 FirebaseHelper.getDocumentFromCollectionWhere(
                         "USER",
-                        new Query(queryParams),
+                        new Query(getQueryProperty(), queryValue),
                         new FirebaseHelper.CallbackObject<List<Map<String, Object>>>() {
                             @Override
                             public void callbackCall(List<Map<String, Object>> object) {

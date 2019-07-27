@@ -21,6 +21,13 @@
         <item>4</item>
     </string-array>
 
+    <string-array name="query_property_array">
+        <item>name</item>
+        <item>regNo</item>
+        <item>stream</item>
+        <item>semester</item>
+    </string-array>
+
     <string-array name="stream_array">
         <item>CSE</item>
         <item>Aero</item>

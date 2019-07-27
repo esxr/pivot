@@ -13,6 +13,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -125,7 +126,7 @@ public class FirebaseHelper {
 
     @Hardcoded
     public static void generateFakeFirebaseUsers(int no_of_users) {
-        for(int i=0; i<no_of_users; i++) {
+        for (int i = 0; i < no_of_users; i++) {
             db.collection("USER")
                     .add(TestUser.getFirebaseDocumentHARDCODED())
                     .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
@@ -190,26 +191,30 @@ public class FirebaseHelper {
     }
 
     public static void getDocumentFromCollectionWhere(String collection, Query query, final CallbackObject<List<Map<String, Object>>> callback) {
+        CollectionReference colRef = db.collection(collection);
         final List<Map<String, Object>> matches = new ArrayList<>();
-        db.collection(collection)
-                .whereEqualTo(query.getProperty(), query.getValue())
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                matches.add(document.getData());
-                            }
-                        } else {
-                            Log.d(TAG, "Error getting documents: ", task.getException());
+        String[] properties = {"name", "regNo", "stream", "semester", "UID"};
+        for (String property : properties) {
+            colRef
+                    .whereEqualTo(property, query.getValue())
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    matches.add(document.getData());
+                                }
+                            } else {
+                                Log.d(TAG, "Error getting documents: ", task.getException());
 //                            Map<String, Object> nullMap = new HashMap<String, Object>();
 //                            nullMap.put("null", "null");
 //                            matches.add(nullMap);
+                            }
+                            callback.callbackCall(matches);
                         }
-                        callback.callbackCall(matches);
-                    }
-                });
+                    });
+        }
     }
 
     public static void getCollection(String collection, final CallBackList<Map<String, Object>> callback) {
