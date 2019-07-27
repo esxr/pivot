@@ -1,6 +1,33 @@
 package com.example.icasapp.Home;
 
+import android.content.Intent;
+import android.os.Bundle;
+
 import androidx.fragment.app.Fragment;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.Toast;
+
+import com.example.icasapp.Firebase.FirebaseHelper;
+import com.example.icasapp.Firebase.Query;
+import com.example.icasapp.Profile.ProfileAdapter;
+import com.example.icasapp.Profile.ProfileDisplayActivity;
+import com.example.icasapp.R;
+import com.example.icasapp.User.TestUser;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -8,94 +35,124 @@ import androidx.fragment.app.Fragment;
 
 public class HomeFragment extends Fragment {
 
-  /*  FirebaseFirestore db;
+    FirebaseFirestore db;
     FirebaseUser user;
 
     View homeView;
+    EditText query;
+    Button profileSearch, generateUsers;
 
-    TextView textView;
+    // listview and adapter
+    ArrayList<TestUser> items;
+    ProfileAdapter itemsAdapter;
+    ListView listView;
+
+    Spinner querySpinner;
+
+    String queryProperty;
 
     public HomeFragment() {
         // Required empty public constructor
+    }
+
+    public String getQueryProperty() {
+        return queryProperty;
+    }
+
+    public void setQueryProperty(String queryProperty) {
+        this.queryProperty = queryProperty;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        db = FirebaseFirestore.getInstance();
-        user = FirebaseAuth.getInstance().getCurrentUser();
+        // Inflate the layout for this fragment
         homeView = inflater.inflate(R.layout.fragment_home, container, false);
-        ImageView imageView = homeView.findViewById(R.id.imageView);
 
-        textView = homeView.findViewById(R.id.textView);
+        // reference of all views
+        query = homeView.findViewById(R.id.query);
+        profileSearch = homeView.findViewById(R.id.profileSearch);
 
+        // intitialize the array and listview adapter
+        items = new ArrayList<>();
+        listView = (ListView) homeView.findViewById(R.id.profile_menu);
+        listView.setEmptyView(homeView.findViewById(R.id.emptyElement));
+        itemsAdapter = new ProfileAdapter(getContext(), items);
+        listView.setAdapter(itemsAdapter);
 
-
-        DocumentReference docRef = db.collection("USER").document(user.getUid().toString());
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        Log.d("msg", "DocumentSnapshot data: " + document.getData());
-                        textView.setText(user.getDisplayName() + "\nDETAILS:"+ document.getData().toString());
-                    } else {
-                        Log.d("msg", "No such document");
-                    }
-                } else {
-                    Log.d("msg", "get failed with ", task.getException());
-                }
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getActivity(), ProfileDisplayActivity.class);
+                intent.putExtra("user", (TestUser) listView.getItemAtPosition(position));
+                startActivity(intent);
             }
         });
-        try {
-            new ImageLoadTask(user.getPhotoUrl().toString(), imageView).execute();
-        }
-        catch (Exception e)
-        {
 
-        }
+        // Hardcoded
+        generateUsers = homeView.findViewById(R.id.generateUsers);
+        generateUsers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseHelper.generateFakeFirebaseUsers(10);
+                Toast.makeText(getContext(), "Generated 10 fake users", Toast.LENGTH_SHORT).show();
+            }
+        });
 
+        //
+        ArrayAdapter<CharSequence> adapterStream = ArrayAdapter.createFromResource(getContext(),
+                R.array.query_property_array, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapterStream.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        querySpinner = (Spinner) homeView.findViewById(R.id.querySpinner);
+        querySpinner.setAdapter(adapterStream);
 
+        querySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> arg0, View v,
+                                       int position, long id) {
+                Log.v("SpinnerSelected Item",
+                        "" + querySpinner.getSelectedItem());
+                Log.v("Clicked position", "" + position);
+                setQueryProperty(querySpinner.getSelectedItem().toString());
 
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+                Log.v("NothingSelected Item",
+                        "" + querySpinner.getSelectedItem().toString());
+                setQueryProperty(querySpinner.getSelectedItem().toString());
+
+            }
+        });
+
+        profileSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(query.length() == 0) return;
+                String queryValue =
+                        query.getText().toString();
+                FirebaseHelper.getDocumentFromCollectionWhere(
+                        "USER",
+                        new Query(getQueryProperty(), queryValue),
+                        new FirebaseHelper.CallbackObject<List<Map<String, Object>>>() {
+                            @Override
+                            public void callbackCall(List<Map<String, Object>> object) {
+                                items.clear();
+                                Log.d("Callback", ""+object);
+                                for(Map<String, Object> obj : object) {
+                                    items.add(new TestUser(obj));
+                                }
+                                itemsAdapter.notifyDataSetChanged();
+                            }
+                        });
+            }
+        });
 
         // Inflate the layout for this fragment
         return homeView;
     }
-
-    public class ImageLoadTask extends AsyncTask<Void, Void, Bitmap> {
-
-        private String url;
-        private ImageView imageView;
-
-        public ImageLoadTask(String url, ImageView imageView) {
-            this.url = url;
-            this.imageView = imageView;
-        }
-
-        @Override
-        protected Bitmap doInBackground(Void... params) {
-            try {
-                URL urlConnection = new URL(url);
-                HttpURLConnection connection = (HttpURLConnection) urlConnection
-                        .openConnection();
-                connection.setDoInput(true);
-                connection.connect();
-                InputStream input = connection.getInputStream();
-                Bitmap myBitmap = BitmapFactory.decodeStream(input);
-                return myBitmap;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap result) {
-            super.onPostExecute(result);
-            imageView.setImageBitmap(result);
-        }
-
-    }*/
 }

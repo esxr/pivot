@@ -48,7 +48,7 @@ public class EditProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
-          semesterSpinner = findViewById(R.id.spinnerSemester);
+        semesterSpinner = findViewById(R.id.spinnerSemester);
         streamSpinner = findViewById(R.id.spinnerStream);
         profileView = findViewById(R.id.profileView);
 

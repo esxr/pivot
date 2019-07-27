@@ -10,12 +10,23 @@
     <string name="feed">Feed</string>
     <string name="title_activity_comments">CommentsActivity</string>
 
+    <string name="generic_profile_photo_path">
+        https://profilepicturesdp.com/wp-content/uploads/2018/06/generic-user-profile-picture.jpg
+    </string>
+
     <string-array name="semester_array">
         <item>1</item>
         <item>2</item>
         <item>3</item>
         <item>4</item>
         <item>None</item>
+    </string-array>
+
+    <string-array name="query_property_array">
+        <item>name</item>
+        <item>regNo</item>
+        <item>stream</item>
+        <item>semester</item>
     </string-array>
 
     <string-array name="stream_array">

@@ -25,12 +25,49 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
+        android:id="@+id/inputUsername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/text_black"
+        android:ems="10"
+        android:hint="USERNAME"
+        android:transitionName="username"
+        android:inputType="text"
+        android:padding="10dp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/content_txt_color"
+        app:layout_constraintBottom_toTopOf="@+id/inputRegNo"
+        app:layout_constraintTop_toBottomOf="@+id/inputEmail"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+    <EditText
+        android:id="@+id/inputRegNo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/text_black"
+        android:ems="10"
+        android:hint="REGISTRATION NO."
+        android:transitionName="reg_no"
+        android:inputType="text"
+        android:padding="10dp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/content_txt_color"
+        app:layout_constraintBottom_toTopOf="@+id/inputPassword"
+        app:layout_constraintTop_toBottomOf="@+id/inputUsername"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <EditText
         android:transitionName="password"
         android:padding="10dp"
         android:id="@+id/inputPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/text_black"
         android:ems="10"
         android:hint="PASSWORD"
@@ -39,7 +76,8 @@
         android:textColorHint="@color/content_txt_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/inputEmail" />
+        app:layout_constraintTop_toBottomOf="@+id/inputRegNo" />
+
 
     <Button
         android:id="@+id/button4"
