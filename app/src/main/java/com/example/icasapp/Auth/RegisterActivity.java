@@ -48,6 +48,8 @@ public class RegisterActivity extends AppCompatActivity {
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
+
+        // Animations (UI)
         Animation fade = AnimationUtils.loadAnimation(this,R.anim.fade_scale);
         Animation transition = AnimationUtils.loadAnimation(this,R.anim.fade_transition);
         relativeLayout.setAnimation(fade);
