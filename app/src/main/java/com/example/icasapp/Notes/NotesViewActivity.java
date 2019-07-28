@@ -1,6 +1,8 @@
 package com.example.icasapp.Notes;
 
 
+import android.app.Fragment;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -167,6 +169,9 @@ public class NotesViewActivity extends AppCompatActivity {
         recyclerView.setAdapter(notesAdapter);
 
     }
+
+
+
 
 
 }

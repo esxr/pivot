@@ -1,5 +1,6 @@
 package com.example.icasapp.Notes;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
@@ -264,7 +265,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
                     Intent intent = new Intent(context,NotesViewActivity.class);
                     context.startActivity(intent);
-
                     notifyItemRemoved(in);
                 }
             });
@@ -328,10 +328,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
                                 @Override
                                 public void onSuccess(Void aVoid) {
                                     // File deleted successfully
-                                    Log.i("msg", "FILE DELETED:" + notesNames.get(in));
-                                    notifyItemRemoved(in);
-
-
+                                    Log.i("msg", "FILE DELETED.");
                                 }
                             })
                             .addOnFailureListener(new OnFailureListener() {
@@ -353,7 +350,9 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    Intent intent = new Intent(context,NotesViewActivity.class);
+                   Intent intent = new Intent(context,NotesViewActivity.class);
+                    ((Activity)context).finish();
+
                     context.startActivity(intent);
                 }
             });
