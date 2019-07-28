@@ -53,7 +53,8 @@
         android:paddingStart="50pt"
         android:layout_gravity="center"
         android:gravity="center"
-        android:background="@drawable/solid_button_black"/>
+        android:background="@drawable/solid_button_black"
+        tools:ignore="RtlCompat" />
 
     <!--ListView-->
     <ListView

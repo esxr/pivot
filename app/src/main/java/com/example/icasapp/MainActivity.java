@@ -23,8 +23,7 @@ import com.example.icasapp.Menu_EditProfile.EditProfileActivity;
 import com.example.icasapp.Notes.NotesFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.sdsmdg.harjot.vectormaster.VectorMasterView;
-import com.sdsmdg.harjot.vectormaster.models.PathModel;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,9 +38,7 @@ public class MainActivity extends AppCompatActivity {
     NotesFragment notesFragment;
     ForumFragment forumFragment;
     FeedFragment feedFragment;
-    VectorMasterView fab,fab1,fab2,fab3;
     RelativeLayout lin_id;
-    PathModel outline;
 
     MenuItem prevMenuItem;
 

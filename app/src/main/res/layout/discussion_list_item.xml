@@ -53,6 +53,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:text="TextView"
+                android:textStyle="bold"
+                android:textSize="20dp"
                 android:textColor="@color/black"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -74,7 +76,8 @@
 
             <ImageView
                 android:id="@+id/blog_comment_icon"
-                android:layout_width="24dp"
+                android:layout_width="50dp"
+                android:src="@drawable/forward"
                 android:layout_height="30dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
@@ -96,6 +99,7 @@
 
             <ImageView
                 android:id="@+id/delete"
+                android:src="@drawable/ic_delete_forever_black_24dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"

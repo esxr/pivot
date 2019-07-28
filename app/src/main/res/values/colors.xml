@@ -23,5 +23,6 @@
     <color name="darkCyan">#258BD6</color>
     <color name="content_txt_color">#999da4</color>
     <color name="card_color">#D1CACA</color>
+    <color name="card_color2">#EEE7E7</color>
     <color name="black2">#88141414</color>
 </resources>

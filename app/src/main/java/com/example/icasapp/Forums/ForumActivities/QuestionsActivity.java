@@ -2,13 +2,16 @@ package com.example.icasapp.Forums.ForumActivities;
 
 import android.content.Intent;
 
+import androidx.annotation.NonNull;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.example.icasapp.Forums.ForumAdapters.QuestionRecyclerAdapter;
 import com.example.icasapp.Forums.OnBottomReachedListener;
@@ -37,6 +40,8 @@ public class QuestionsActivity extends AppCompatActivity {
     public static String docId;
     public static String id;
     private CollectionReference collectionReference;
+    private TextView parentTopic;
+    private String topic;
 
 
     @Override
@@ -47,8 +52,13 @@ public class QuestionsActivity extends AppCompatActivity {
         docId=intent.getStringExtra("post_id");
         Category= intent.getStringExtra("Category");
         i_d=intent.getStringExtra("ID");
+        topic=intent.getStringExtra("Topic");
 
         addQuestion=findViewById(R.id.addQuestion);
+
+        //Text that displays the topic you are in
+        parentTopic = findViewById(R.id.parentTopic);
+        parentTopic.setText(topic);
 
         firebaseFirestore = FirebaseFirestore.getInstance();
 
@@ -117,6 +127,18 @@ public class QuestionsActivity extends AppCompatActivity {
                 isFirstPageFirstLoad=false;
             }
         });
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT|ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+                questionRecyclerAdapter.lol();
+            }
+        });
     }
 
     @Override
@@ -127,5 +149,7 @@ public class QuestionsActivity extends AppCompatActivity {
         finish();
 
     }
+
+
 
     }
