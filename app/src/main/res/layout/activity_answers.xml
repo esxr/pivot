@@ -20,15 +20,20 @@
 
             <TextView
                 android:id="@+id/title"
+                android:textStyle="bold"
+                android:textSize="40dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="TextView" />
+                android:text="TextView"
+                android:layout_marginBottom="20dp" />
 
             <TextView
                 android:id="@+id/question"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="TextView" />
+                android:text="TextView"
+                android:textSize="15dp"
+                android:layout_marginBottom="10dp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -57,7 +62,8 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/answersView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"/>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
@@ -66,9 +72,9 @@
         android:id="@+id/add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="612dp"
-        android:layout_marginEnd="36dp"
-        android:layout_marginRight="36dp"
+        android:layout_marginTop="500dp"
+        android:layout_marginEnd="44dp"
+        android:layout_marginRight="44dp"
         android:clickable="true"
         android:foregroundGravity="bottom"
         app:layout_constraintEnd_toEndOf="@id/fab_const"

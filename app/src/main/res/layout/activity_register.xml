@@ -4,129 +4,134 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Auth.RegisterActivity"
-    android:background="@color/black">
-
-    <EditText
-        android:id="@+id/inputEmail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="168dp"
-        android:background="@drawable/text_black"
-        android:ems="10"
-        android:hint="EMAIL ADDRESS"
-        android:transitionName="email"
-        android:inputType="textEmailAddress"
-        android:padding="10dp"
-        android:textColor="@color/white"
-        android:textColorHint="@color/content_txt_color"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
-        android:id="@+id/inputUsername"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/text_black"
-        android:ems="10"
-        android:hint="USERNAME"
-        android:transitionName="username"
-        android:inputType="text"
-        android:padding="10dp"
-        android:textColor="@color/white"
-        android:textColorHint="@color/content_txt_color"
-        app:layout_constraintBottom_toTopOf="@+id/inputRegNo"
-        app:layout_constraintTop_toBottomOf="@+id/inputEmail"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        />
-    <EditText
-        android:id="@+id/inputRegNo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/text_black"
-        android:ems="10"
-        android:hint="REGISTRATION NO."
-        android:transitionName="reg_no"
-        android:inputType="text"
-        android:padding="10dp"
-        android:textColor="@color/white"
-        android:textColorHint="@color/content_txt_color"
-        app:layout_constraintBottom_toTopOf="@+id/inputPassword"
-        app:layout_constraintTop_toBottomOf="@+id/inputUsername"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        />
-
-    <EditText
-        android:transitionName="password"
-        android:padding="10dp"
-        android:id="@+id/inputPassword"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/text_black"
-        android:ems="10"
-        android:hint="PASSWORD"
-        android:inputType="textPassword"
-        android:textColor="@color/white"
-        android:textColorHint="@color/content_txt_color"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/inputRegNo" />
+    android:layout_gravity="center"
+    android:background="@color/black"
+    tools:context=".Auth.RegisterActivity">
 
 
-    <Button
-        android:id="@+id/button4"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="56dp"
-        android:background="@drawable/solid_button_white"
-        android:onClick="onRegister"
-        android:paddingLeft="50dp"
-        android:paddingRight="50dp"
-        android:text="REGISTER"
-        android:textColor="@color/black"
+        android:gravity="center"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/reEnterPassword" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="88dp"
-        android:background="@android:color/transparent"
-        android:onClick="onLogin"
-        android:text="ALREADY HAVE AN ACCOUNT? LOGIN."
-        android:transitionName="register"
-        android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button4" />
+        <EditText
+            android:id="@+id/inputEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="168dp"
+            android:background="@drawable/text_black"
+            android:ems="10"
+            android:hint="EMAIL ADDRESS"
+            android:inputType="textEmailAddress"
+            android:padding="10dp"
+            android:textColor="@color/white"
+            android:textColorHint="@color/content_txt_color"
+            android:transitionName="email"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:inputType="textPassword"
-        android:id="@+id/reEnterPassword"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="96dp"
-        android:layout_marginRight="96dp"
-        android:background="@drawable/text_black"
-        android:ems="10"
-        android:hint="RE-ENTER PASSWORD"
-        android:padding="10dp"
-        android:textColor="@color/white"
-        android:textColorHint="@color/content_txt_color"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.968"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/inputPassword" />
+        <EditText
+            android:id="@+id/inputUsername"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/text_black"
+            android:ems="10"
+            android:hint="USERNAME"
+            android:inputType="text"
+            android:padding="10dp"
+            android:textColor="@color/white"
+            android:textColorHint="@color/content_txt_color"
+            android:transitionName="username"
+            app:layout_constraintBottom_toTopOf="@+id/inputRegNo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/inputEmail" />
+
+        <EditText
+            android:id="@+id/inputRegNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/text_black"
+            android:ems="10"
+            android:hint="REGISTRATION NO."
+            android:inputType="text"
+            android:padding="10dp"
+            android:textColor="@color/white"
+            android:textColorHint="@color/content_txt_color"
+            android:transitionName="reg_no"
+            app:layout_constraintBottom_toTopOf="@+id/inputPassword"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/inputUsername" />
+
+        <EditText
+            android:id="@+id/inputPassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/text_black"
+            android:ems="10"
+            android:hint="PASSWORD"
+            android:inputType="textPassword"
+            android:padding="10dp"
+            android:textColor="@color/white"
+            android:textColorHint="@color/content_txt_color"
+            android:transitionName="password"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/inputRegNo" />
+
+
+        <EditText
+            android:id="@+id/reEnterPassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/text_black"
+            android:ems="10"
+            android:hint="RE-ENTER PASSWORD"
+            android:inputType="textPassword"
+            android:padding="10dp"
+            android:textColor="@color/white"
+            android:textColorHint="@color/content_txt_color" />
+
+        <Button
+            android:id="@+id/button4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:background="@drawable/solid_button_white"
+            android:onClick="onRegister"
+            android:paddingLeft="50dp"
+            android:paddingRight="50dp"
+            android:text="REGISTER"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/reEnterPassword" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="35dp"
+            android:background="@android:color/transparent"
+            android:onClick="onLogin"
+            android:text="ALREADY HAVE AN ACCOUNT? LOGIN."
+            android:textColor="@color/white"
+            android:transitionName="register"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/button4" />
+
+    </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/rl"
