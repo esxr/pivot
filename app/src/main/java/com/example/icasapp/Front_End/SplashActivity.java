@@ -1,7 +1,7 @@
 package com.example.icasapp.Front_End;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -10,8 +10,6 @@ import android.widget.TextView;
 
 import com.example.icasapp.Auth.LoginActivity;
 import com.example.icasapp.R;
-
-import java.util.Objects;
 
 public class SplashActivity extends AppCompatActivity {
 

@@ -1,8 +1,8 @@
 package com.example.icasapp.Auth;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import in.codeshuffle.typewriterview.TypeWriterView;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -36,6 +37,8 @@ public class RegisterActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
 
+    TypeWriterView typeWriterView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +50,22 @@ public class RegisterActivity extends AppCompatActivity {
         inputPassword = findViewById(R.id.inputPassword);
         relativeLayout = findViewById(R.id.rl);
         circleImageView = findViewById(R.id.circle_avi);
+
+
+        //Create Object and refer to layout view
+        typeWriterView = findViewById(R.id.typeWriterView);
+
+
+
+
+        //Setting each character animation delay
+        typeWriterView.setDelay(300);
+
+        //Setting music effect On/Off
+        typeWriterView.setWithMusic(false);
+
+        //Animating Text
+        typeWriterView.animateText("By creating an account, you have to agree to the terms and conditions that you'll never read.");
 
 
         // Initialize Firebase Auth

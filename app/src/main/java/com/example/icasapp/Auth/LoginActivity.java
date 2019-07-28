@@ -1,13 +1,14 @@
 package com.example.icasapp.Auth;
 
 import android.app.ActivityOptions;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -17,7 +18,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.icasapp.Firebase.FirebaseHelper;
 import com.example.icasapp.MainActivity;
 import com.example.icasapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -26,7 +26,10 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class LoginActivity extends AppCompatActivity {
+import in.codeshuffle.typewriterview.TypeWriterListener;
+import in.codeshuffle.typewriterview.TypeWriterView;
+
+public class LoginActivity extends AppCompatActivity{
 
     private EditText inputEmail;
     private EditText inputPassword;
@@ -39,19 +42,46 @@ public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
 
+    private TypeWriterView typeWriterView;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        getSupportActionBar().setTitle("LOGIN");
+        getSupportActionBar().hide();
+
+
 
 
         inputEmail = findViewById(R.id.inputEmail);
         inputPassword = findViewById(R.id.inputPassword);
         onReg = findViewById(R.id.button3);
         Login = findViewById(R.id.login);
+
+        //Create Object and refer to layout view
+        typeWriterView = findViewById(R.id.typeWriterView);
+
+
+
+
+        //Setting each character animation delay
+        typeWriterView.setDelay(300);
+
+        //Setting music effect On/Off
+        typeWriterView.setWithMusic(false);
+
+        //Animating Text
+        typeWriterView.animateText("Start your ICAS JOURNEY now!");
+
+
+
+
+        //Remove Animation. This is required to be called when you want to minimize the app while animation is going on. Call this in onPause() or onStop()
+        //typeWriterView.removeAnimation();
+
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
@@ -85,6 +115,8 @@ public class LoginActivity extends AppCompatActivity {
         });
 
     }
+
+
 
     public void onLogin(View view) {
         try {
