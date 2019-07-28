@@ -29,6 +29,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -51,6 +52,7 @@ public class QuestionRecyclerAdapter extends RecyclerView.Adapter<QuestionRecycl
     private String user_name;
     private OnBottomReachedListener onBottomReachedListener;
     private FirebaseAuth firebaseAuth;
+    private ListenerRegistration listenerRegistration;
 
     public QuestionRecyclerAdapter(List<Questions> discussion_list){
         questionsList=discussion_list;
@@ -159,7 +161,7 @@ public class QuestionRecyclerAdapter extends RecyclerView.Adapter<QuestionRecycl
             }
         });
 
-    collectionReference.document(docId).collection("Questions").document(id).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+   listenerRegistration= collectionReference.document(docId).collection("Questions").document(id).addSnapshotListener(new EventListener<DocumentSnapshot>() {
         @Override
         public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
             try {
@@ -183,6 +185,27 @@ public class QuestionRecyclerAdapter extends RecyclerView.Adapter<QuestionRecycl
     @Override
     public int getItemCount() {
         return questionsList.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(@NonNull ViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+        listenerRegistration.remove();
+    }
+
+
+
+    public void lol() {
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

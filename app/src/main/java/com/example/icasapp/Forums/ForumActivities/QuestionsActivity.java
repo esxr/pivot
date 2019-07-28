@@ -2,15 +2,18 @@ package com.example.icasapp.Forums.ForumActivities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.icasapp.Forums.ForumAdapters.FirebaseAnswerAdapter;
 import com.example.icasapp.Forums.ForumAdapters.QuestionRecyclerAdapter;
 import com.example.icasapp.Forums.ForumFragment;
 import com.example.icasapp.Forums.OnBottomReachedListener;
@@ -122,6 +125,18 @@ public class QuestionsActivity extends AppCompatActivity {
                 isFirstPageFirstLoad=false;
             }
         });
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT|ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+                questionRecyclerAdapter.lol();
+            }
+        });
     }
 
     @Override
@@ -132,5 +147,7 @@ public class QuestionsActivity extends AppCompatActivity {
         finish();
 
     }
+
+
 
     }

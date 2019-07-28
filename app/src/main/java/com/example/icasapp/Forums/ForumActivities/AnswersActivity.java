@@ -2,12 +2,14 @@ package com.example.icasapp.Forums.ForumActivities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -66,7 +68,7 @@ public class AnswersActivity extends AppCompatActivity {
 
     private List<Answers> answersList;
     private AnswerRecyclerAdapter answerRecyclerAdapter;
-    private FirestoreRecyclerAdapter adapter;
+    public FirestoreRecyclerAdapter adapter;
 
     private Button recent;
     private Button votes;
@@ -197,17 +199,17 @@ public class AnswersActivity extends AppCompatActivity {
 
     public void setQuery(final String sort, final List<Answers> answersList, final AnswerRecyclerAdapter answerRecyclerAdapter)
     {
-      /*  try {
-            registration.remove();
-        }
-        catch(Exception e)
-        {
+       // try {
+       //     registration.remove();
+       // }
+       // catch(Exception e)
+       // {
 
-        }
-    answersList.clear();
+        //}
+//    answersList.clear();
       //  answerRecyclerAdapter.notifyDataSetChanged();
 
-       registration =collectionReference.document(docId).collection("Questions").document(ans_id).collection("Answers").orderBy(sort, Query.Direction.DESCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
+    /*   registration =collectionReference.document(docId).collection("Questions").document(ans_id).collection("Answers").orderBy(sort, Query.Direction.DESCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                 for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
@@ -217,10 +219,7 @@ public class AnswersActivity extends AppCompatActivity {
                             Answers answers = doc.getDocument().toObject(Answers.class).withId(post_id);
                             if(isFirstPageLoad) {
                                 answersList.add(answers);
-                                for (Answers o: answersList){
-                                    Log.i("ASSS",o.getAnswer());
-                                    Log.i("ASSS", String.valueOf(o.getUpvotes()));
-                                }
+
                             }
                             //if the page is not loaded for the first time. That means a new post or mode has been changed has been added then these conditions are invoked
                             else {
@@ -271,12 +270,27 @@ public class AnswersActivity extends AppCompatActivity {
 
         adapter = new FirebaseAnswerAdapter(options);
 
+
+
         RecyclerView recyclerView = findViewById(R.id.answersView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
-    if(!isFirstPageLoad ){
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT|ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+                        ((FirebaseAnswerAdapter) adapter).deleteItem(viewHolder.getAdapterPosition());
+            }
+        });
+
+
+        if(!isFirstPageLoad ){
         adapter.startListening();
     }
     }

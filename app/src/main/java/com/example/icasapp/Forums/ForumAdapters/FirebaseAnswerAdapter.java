@@ -1,7 +1,9 @@
 package com.example.icasapp.Forums.ForumAdapters;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -26,9 +28,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 
-import static com.example.icasapp.Forums.ForumActivities.AnswersActivity.ans_id;
-import static com.example.icasapp.Forums.ForumActivities.QuestionsActivity.docId;
-import static com.example.icasapp.Forums.ForumFragment.collectionReference;
 
 public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, FirebaseAnswerAdapter.FirebaseAnswerHolder> {
     private Context context;
@@ -62,10 +61,12 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
         else
             holder.delete.setVisibility(View.GONE);
 
+        holder.setAnswer(model.getAnswer());
+
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                delete(position);
+                deleteItem(position);
                 Log.i("POSITION", "INDELETE"+String.valueOf(position));
                 notifyDataSetChanged();
             }
@@ -132,16 +133,33 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
         return new FirebaseAnswerHolder(v);
     }
 
-    public void delete(int position){
-        getSnapshots().getSnapshot(position).getReference().delete();
+    public void deleteItem(final int position){
+        new AlertDialog.Builder(context)
+                .setTitle("Deleting the answer")
+                .setMessage("Are you sure you want to delete this entry?")
+
+                // Specifying a listener allows you to take an action before dismissing the dialog.
+                // The dialog is automatically dismissed when a dialog button is clicked.
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Continue with delete operation
+                        getSnapshots().getSnapshot(position).getReference().delete();
+                    }
+                })
+
+                // A null listener allows the button to dismiss the dialog and take no further action.
+                .setNegativeButton(android.R.string.no, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+
     }
 
     public void upvote(int position){
         getSnapshots().getSnapshot(position).getReference().update("upvotes",FieldValue.increment(1));
     }
 
-    public void downvote(int position){
-        getSnapshots().getSnapshot(position).getReference().update("upvotes",FieldValue.increment(-1));
+    public void downvote(int position) {
+        getSnapshots().getSnapshot(position).getReference().update("upvotes", FieldValue.increment(-1));
     }
 
     class FirebaseAnswerHolder extends RecyclerView.ViewHolder{

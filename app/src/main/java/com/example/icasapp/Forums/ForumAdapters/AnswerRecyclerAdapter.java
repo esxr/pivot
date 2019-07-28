@@ -60,15 +60,14 @@ public class AnswerRecyclerAdapter extends RecyclerView.Adapter<AnswerRecyclerAd
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        /*
+
         //inflating the view holder with xml objects
         context=viewGroup.getContext();
         View view=LayoutInflater.from(context).inflate(R.layout.answer_list_item,viewGroup,false);
-        firebaseAuth=firebaseAuth.getInstance();
+       /* firebaseAuth=firebaseAuth.getInstance();
         firebaseFirestore = firebaseFirestore.getInstance();
-        ForumFragment.setFirestoreReference(firebaseFirestore, ForumFragment.i_d,"c");
-        return new AnswerRecyclerAdapter.ViewHolder(view);*/
-        return null;
+        ForumFragment.setFirestoreReference(firebaseFirestore, ForumFragment.i_d,"c");*/
+        return new AnswerRecyclerAdapter.ViewHolder(view);
     }
 
     @Override

@@ -26,6 +26,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.FieldPosition;
@@ -47,6 +48,7 @@ public class DiscussionRecyclerAdapter extends RecyclerView.Adapter<DiscussionRe
     public Context context;
     FirebaseFirestore firebaseFirestore;
     FirebaseAuth firebaseAuth;
+    ListenerRegistration listenerRegistration;
 
     public DiscussionRecyclerAdapter(List<DiscussionTopic> discussion_list){
        discussionTopicList=discussion_list;
@@ -77,7 +79,7 @@ public class DiscussionRecyclerAdapter extends RecyclerView.Adapter<DiscussionRe
         String currentUser= firebaseAuth.getInstance().getUid();
 
 
-       collectionReference.document(blogPostId).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+       listenerRegistration = collectionReference.document(blogPostId).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
                 int n = 0;
@@ -159,6 +161,22 @@ public class DiscussionRecyclerAdapter extends RecyclerView.Adapter<DiscussionRe
         return discussionTopicList.size();
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(@NonNull ViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+        listenerRegistration.remove();
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder{
         //used to put values in card view elements
         private View mView;
@@ -195,4 +213,5 @@ public class DiscussionRecyclerAdapter extends RecyclerView.Adapter<DiscussionRe
             Time.setText(time);
         }
     }
+
 }
