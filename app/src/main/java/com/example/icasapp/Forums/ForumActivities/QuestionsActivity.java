@@ -1,21 +1,18 @@
 package com.example.icasapp.Forums.ForumActivities;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.annotation.NonNull;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
-import com.example.icasapp.Forums.ForumAdapters.FirebaseAnswerAdapter;
 import com.example.icasapp.Forums.ForumAdapters.QuestionRecyclerAdapter;
-import com.example.icasapp.Forums.ForumFragment;
 import com.example.icasapp.Forums.OnBottomReachedListener;
 import com.example.icasapp.MainActivity;
 import com.example.icasapp.ObjectClasses.Questions;
@@ -28,13 +25,10 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 import static android.util.Log.i;
 import static com.example.icasapp.Forums.ForumFragment.Category;
-import static com.example.icasapp.Forums.ForumFragment.collectionReference;
 import static com.example.icasapp.Forums.ForumFragment.i_d;
-import static com.example.icasapp.Forums.ForumFragment.setFirestoreReference;
 
 public class QuestionsActivity extends AppCompatActivity {
     private FloatingActionButton addQuestion;
