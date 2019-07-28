@@ -6,7 +6,6 @@
     android:layout_height="wrap_content">
 
     <android.support.v7.widget.CardView
-        android:id="@+id/main_blog_post"
         app:cardCornerRadius="20dp"
         android:layout_width="350dp"
         android:layout_height="wrap_content"
@@ -30,7 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
 
-            android:id="@+id/card_anim">
+            >
             <ImageView
                 android:id="@+id/forum_image"
                 android:layout_width="match_parent"

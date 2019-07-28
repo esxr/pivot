@@ -5,7 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/card_view"
     android:layout_margin="5dp"
     app:cardBackgroundColor="@color/black"
     app:cardCornerRadius="12dp"
@@ -20,17 +19,6 @@
         android:layout_height="wrap_content"
         android:padding="16dp" >
 
-        <ImageView
-            android:layout_width="100dp"
-            android:layout_height="140dp"
-            android:id="@+id/item_image"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            android:background="@color/white"/>
-
         <TextView
             android:id="@+id/item_title"
             android:layout_width="match_parent"
@@ -38,7 +26,6 @@
             android:layout_alignParentTop="true"
             android:text="NAME:"
             android:textColor="@color/white"
-            android:layout_toRightOf="@+id/item_image"
 
             android:textSize="30sp"
             android:textStyle="bold" />
@@ -49,7 +36,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/item_title"
             android:text="SEMESTER:"
-            android:layout_toRightOf="@+id/item_image"
             android:textColor="@color/white"
             android:textStyle="bold" />
 
@@ -58,7 +44,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/item_detail"
-            android:layout_toRightOf="@+id/item_image"
 
             android:text="SESSIONAL:"
             android:textColor="@color/white"
@@ -69,7 +54,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/item_detail2"
-            android:layout_toRightOf="@+id/item_image"
             android:text="SUBJECT:"
             android:textColor="@color/white"
             android:textStyle="bold" />
@@ -79,10 +63,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/item_detail3"
-            android:layout_toRightOf="@+id/item_image"
             android:background="@color/white"
             android:onClick="downloadFile"
             android:text="DOWNLOAD"
+            android:textStyle="bold" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/downloadButton"
+            android:textColor="@color/white"
+            android:background="@color/maroon"
+            android:onClick="downloadFile"
+            android:text="DELETE NOTES"
             android:textStyle="bold" />
 
     </RelativeLayout>

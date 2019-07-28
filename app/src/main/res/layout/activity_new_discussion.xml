@@ -66,7 +66,6 @@
         app:layout_constraintTop_toBottomOf="@+id/topic" />
 
     <ProgressBar
-        android:id="@+id/new_post_progress"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

@@ -1,42 +1,65 @@
 package com.example.icasapp.Notes;
 
 
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.example.icasapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class NotesViewActivity extends AppCompatActivity {
 
 
-    public ArrayList<String> arrayList, semesterList, sessionalList, subjectList, subjectAbr;
+    public ArrayList<String> arrayList, semesterList, sessionalList, subjectList, subjectAbr, semesterArrayList, sessionalArrayList;
+    //public ArrayList<String> farrayList, fsemesterList, fsessionalList, fsubjectList, fsubjectAbr;
+    //public ArrayList<Uri> DOWNLOAD_URL_LIST, f_DOWNLOAD_URL_LIST;
+
     FirebaseFirestore db;
     String TAG = "msg";
     StorageReference storageRef;
 
-    static RecyclerView recyclerView;
+    RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
-    static NotesAdapter notesAdapter;
+    NotesAdapter notesAdapter;
 
-    Uri DOWNLOAD_URL;
+    EditText editText;
+
+    ArrayList<Uri> DOWNLOAD_URL_LIST;
+
+    boolean isFirstPageLoad = true;
 
 
     @Override
@@ -47,13 +70,14 @@ public class NotesViewActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         storageRef = FirebaseStorage.getInstance().getReference();
 
-        getSupportActionBar().hide(); //HIDING ACTION BAR
+        getSupportActionBar().hide();
 
         arrayList = new ArrayList<>();
         semesterList = new ArrayList<>();
         sessionalList = new ArrayList<>();
         subjectList = new ArrayList<>();
         subjectAbr = new ArrayList<>();
+        DOWNLOAD_URL_LIST = new ArrayList<>();
         getdocumentList("NOTES");
 
         recyclerView = findViewById(R.id.recycler_view);
@@ -61,124 +85,106 @@ public class NotesViewActivity extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
 
+        editText = findViewById(R.id.editText);
+
+        editText.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+                notesAdapter.setFilter(editText.getText().toString());
+
+
+            }
+        });
+
+
     }
 
     public void getdocumentList(final String collection) {
 
         db = FirebaseFirestore.getInstance();
-        //FETCHED DOCUMENT LIST FROM COLLECTION
-        db.collection(collection).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        //NAME OF EACH DOCUMENT
-                        arrayList.add(document.getId());
 
-                        //HASHMAP ELEMENT OF EACH DOCUMENT.
-                        DocumentReference docRef = db.collection(collection).document(document.getId());
-                        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        db.collection("NOTES")
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot snapshots,
+                                        @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Log.w(TAG, "listen:error", e);
+                            return;
+                        }
 
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    DocumentSnapshot document = task.getResult();
-                                    if (document.exists()) {
-                                        Log.d(TAG, document.getId() + " ===========> " + document.getData().get("semester").toString());
-                                        Log.d(TAG, document.getId() + " ===========> " + document.getData().get("sessional").toString());
-                                        semesterList.add(document.getData().get("semester").toString());
+                        for (DocumentChange dc : snapshots.getDocumentChanges()) {
+                            DocumentSnapshot document = dc.getDocument();
+                            arrayList.add(dc.getDocument().getId());
+                            switch (dc.getType()) {
+                                case ADDED:
+                                    if (isFirstPageLoad) {
+                                        semesterList.add(document.get("semester").toString());
                                         sessionalList.add(document.getData().get("sessional").toString());
                                         subjectAbr.add(document.getData().get("subject_abr").toString());
                                         subjectList.add(document.getData().get("subject").toString());
-                                        DOWNLOAD_URL = Uri.parse(document.getData().get("downloadURL").toString());
+                                        DOWNLOAD_URL_LIST.add(Uri.parse(document.getData().get("downloadURL").toString()));
 
-                                        addData(semesterList,sessionalList,arrayList, subjectAbr, subjectList, DOWNLOAD_URL);
-                                    } else {
-                                        Log.d(TAG, "No such document");
+                                        addData(semesterList, sessionalList, arrayList, subjectAbr, subjectList, DOWNLOAD_URL_LIST);
                                     }
-                                } else {
-                                    Log.d(TAG, "get failed with ", task.getException());
-                                }
+                                    break;
+                                case MODIFIED:
+                                    Log.d(TAG, "Modified : " + dc.getDocument().getData());
+                                    break;
+                                case REMOVED:
+                                    Log.d(TAG, "Removed : " + dc.getDocument().getData());
+                                    break;
                             }
-
-
-                        });
-                        //
-
-                    }
-
-
-
-
-                } else {
-                    Log.d("msg", "Error getting documents: ", task.getException());
-                }
-
-                Log.d("msg", arrayList.toString());
-
-                // This is the array adapter, it takes the context of the activity as a
-                // first parameter, the type of list view as a second parameter and your
-                // array as a third parameter.
-
-            }
-        });
-    }
-    public static void addData(ArrayList<String> semesterList,ArrayList<String> sessionalList,ArrayList<String> arrayList, ArrayList<String> subjectAbr, ArrayList<String> subjectList , Uri DOWNLOAD_URL){
-        notesAdapter = new NotesAdapter(arrayList, semesterList, sessionalList, subjectList, subjectAbr, DOWNLOAD_URL);
-        recyclerView.setAdapter(notesAdapter);
-        Log.d("msg", "inside lol"+ semesterList.toString());
-        Log.d("msg", "inside lol"+ sessionalList.toString());
-
-    }
-
-
-}
-
-
-
-
-
-
-
-
-
-/*
-
-
-
-
-    /*
-    //FILE DOWNLOAD FUNCTION ON CLICK
-    public void downloadFile(Uri url, String fileName) {
-        Intent i = new Intent(Intent.ACTION_VIEW);
-        i.setData(url);
-        startActivity(i);
-    }
-
-}
-
-/*
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            //ON ITEM CLICK,DOWNLOAD FILE -- CARDVIEW BUTTON
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.i("msg", "ARRAYLIST POSITION:" + position + "DATA:" + arrayList.get(position));
-                DocumentReference docRef = db.collection("NOTES").document(arrayList.get(position));
-                docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
-                                Log.d("msg", "DocumentSnapshot data: " + document.getData().get("downloadURL"));
-                                DOWNLOAD_URL = Uri.parse(document.getData().get("downloadURL").toString());
-                                String fileName = document.getData().get("originalFileName").toString();
-                                downloadFile(DOWNLOAD_URL, fileName);
-                            } else {
-                                Log.d("msg", "No such document");
-                            }
-                        } else {
-                            Log.d("msg", "get failed with ", task.getException());
                         }
+
                     }
-                });*/
+                });
+
+
+    }
+
+
+    public void addData(
+            ArrayList<String> semesterList,
+            ArrayList<String> sessionalList,
+            ArrayList<String> arrayList,
+            ArrayList<String> subjectAbr,
+            ArrayList<String> subjectList,
+            ArrayList<Uri> DOWNLOAD_URL_LIST
+    ) {
+
+        notesAdapter = new NotesAdapter(
+                arrayList,
+                semesterList,
+                sessionalList,
+                subjectList,
+                subjectAbr,
+                DOWNLOAD_URL_LIST
+        );
+        Log.i("msg", "USER GIVEN DOWNLOAD LIST:" + DOWNLOAD_URL_LIST.toString());
+
+        recyclerView.setAdapter(notesAdapter);
+
+    }
+
+
+}
+
+
+
+
+
+
+
