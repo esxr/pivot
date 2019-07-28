@@ -1,6 +1,8 @@
 package com.example.icasapp.Notes;
 
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 
@@ -8,6 +10,8 @@ import android.net.Uri;
 import android.provider.OpenableColumns;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+
 import android.os.Bundle;
 
 import android.util.Log;
@@ -22,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.icasapp.Firebase.FirebaseHelper;
+import com.example.icasapp.MainActivity;
 import com.example.icasapp.R;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -56,6 +61,7 @@ public class NotesForm extends AppCompatActivity {
     List<String> semesterArrayList;
     List<String> sessionalArrayList;
 
+
     ArrayAdapter<String> spinnerArrayAdapter;
 
     StorageReference storageRef;
@@ -67,12 +73,25 @@ public class NotesForm extends AppCompatActivity {
 
     FirebaseFirestore db;
 
+    ProgressDialog progressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notes_form);
 
         db = FirebaseFirestore.getInstance();
+
+
+        progressBar = new ProgressDialog(this);
+        progressBar.setCancelable(false);//you can cancel it by pressing back button
+        progressBar.setMessage("File UPLOADING ...");
+        progressBar.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressBar.setMax(100);//sets the maximum value 100
+
+
+
+
 
         String v="";
         Bundle bundle = getIntent().getExtras();
@@ -286,8 +305,11 @@ public class NotesForm extends AppCompatActivity {
         Log.i("msg" , "INITIAL FILE NAME:"+ filename);
 
 
-        final StorageReference ref = storageRef.child("NOTES/"+ DATA.toString());
+        final StorageReference ref = storageRef.child("NOTES/"+ FILE_NAME_BY_USER);
         UploadTask uploadTask = ref.putFile(DATA);
+        progressBar.show();
+        progressBar.setProgress(0);//initially progress is 0
+
 
         Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
             @Override
@@ -306,6 +328,7 @@ public class NotesForm extends AppCompatActivity {
             public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                 double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
                 Log.i("msg" ,"Upload is " + progress + "% done");
+                progressBar.setProgress((int)progress);
             }
         }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -316,6 +339,8 @@ public class NotesForm extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Exception exception) {
                 // Handle unsuccessful uploads
+                progressBar.hide();
+                Toast.makeText(getApplicationContext(), "FILE UPLOAD FAILED.SOMETHING WENT WRONG", Toast.LENGTH_LONG).show();
                 Log.i("msg" ,"Upload has failed");
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -323,6 +348,9 @@ public class NotesForm extends AppCompatActivity {
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 // Handle successful uploads on complete
                 // ...
+                progressBar.setProgress(100);
+                Toast.makeText(getApplicationContext(), "FILE SUCCESSFULLY UPLOADED" , Toast.LENGTH_LONG).show();
+                progressBar.hide();
                 Log.i("msg" ,"Upload has been successful.");
             }
         });
@@ -336,6 +364,13 @@ public class NotesForm extends AppCompatActivity {
                     Log.i("msg" , "UPLOAD COMPLETED.");
                     //----------------------------------EXIT POINT OF UPLOAD --------------------------------------------------------
                     uploadMetaToFirebase( SEMESTER ,  SESSIONAL ,  SUBJECT ,  SUBJECT_ABR , FILE_NAME_BY_USER , downloadUri);
+                    Toast.makeText(getApplicationContext(), "SUCCESSFULLY UPLOADED TO THE DATABASE.", Toast.LENGTH_LONG).show();
+                    try {
+                        startActivity(new Intent(getApplicationContext(), NotesFragment.class));
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+
 
                 } else {
                     // Handle failures

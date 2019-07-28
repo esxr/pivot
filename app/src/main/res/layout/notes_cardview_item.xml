@@ -69,12 +69,12 @@
             android:textStyle="bold" />
 
         <Button
+            android:id="@+id/deleteButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/downloadButton"
             android:textColor="@color/white"
             android:background="@color/maroon"
-            android:onClick="downloadFile"
             android:text="DELETE NOTES"
             android:textStyle="bold" />
 

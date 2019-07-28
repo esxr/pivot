@@ -1,5 +1,6 @@
 package com.example.icasapp.Notes;
 
+import android.content.Context;
 import android.content.Intent;
 
 
@@ -9,6 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,14 +20,22 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.icasapp.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 
 import java.util.ArrayList;
 
 import java.util.Collections;
 import java.util.List;
+
+
 
 
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> {
@@ -45,6 +56,11 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
     private List<Integer> indexList;
     public Uri DOWNLOAD_URL;
+
+    FirebaseFirestore db;
+
+    public int in;
+    private Context context;
 
 
     public boolean isFilterActive;
@@ -69,6 +85,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
         this.indexList = new ArrayList<>();
         this.isFilterActive = false;
         DOWNLOAD_URL = null;
+
+        db = FirebaseFirestore.getInstance();
     }
 
     public void setFilter(String searchCriteria) {
@@ -79,6 +97,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
     public void clearFilter() {
         isFilterActive = false;
+
         notifyDataSetChanged();
     }
 
@@ -123,11 +142,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
                 for (int i = 0; i < indexList.size(); i++) {
                     int index = indexList.get(i);
-                    String notesName = notesNames.get(index);
-                    NotesAbstraction notesAbstraction = new NotesAbstraction();
                     //IN THE REFERENCE OF THIS notesName
-                    notesAbstraction.setNotesName(notesName);
-
                     fnotesNames.add(notesNames.get(index));
                     fsessionalNames.add(sessionalNames.get(index));
                     fsemesterNames.add(semesterNames.get(index));
@@ -138,6 +153,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
                 notifyDataSetChanged();
             } catch (Exception e) {
                 e.printStackTrace();
+
             }
         }
         notifyDataSetChanged();
@@ -151,6 +167,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.notes_cardview_item, viewGroup, false);
+        context=viewGroup.getContext();
         ViewHolder viewHolder = new ViewHolder(v);
         return viewHolder;
 
@@ -158,17 +175,19 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int i) {
+    public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
         //SET THE TEXT HERE.
 
+        in = i;
         if (isFilterActive) {
+            //in = viewHolder.getAdapterPosition();
 
-            DOWNLOAD_URL = f_DOWNLOAD_URL_LIST.get(i);
+            DOWNLOAD_URL = f_DOWNLOAD_URL_LIST.get(in);
 
-            viewHolder.notesName.setText(fnotesNames.get(i));
-            viewHolder.semesterName.setText("SEMESTER:  " + fsemesterNames.get(i));
-            viewHolder.sessionalName.setText("SESSIONAL:  " + fsessionalNames.get(i));
-            viewHolder.subjectName.setText("SUBJECT:  " + fsubjectNames.get(i) + "[" + fsubjectAbr.get(i) + "]");
+            viewHolder.notesName.setText(fnotesNames.get(in));
+            viewHolder.semesterName.setText("SEMESTER:  " + fsemesterNames.get(in));
+            viewHolder.sessionalName.setText("SESSIONAL:  " + fsessionalNames.get(in));
+            viewHolder.subjectName.setText("SUBJECT:  " + fsubjectNames.get(in) + "[" + fsubjectAbr.get(in) + "]");
 
             viewHolder.downloadButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -179,19 +198,163 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
                 }
             });
 
-        } else {
-
-
-            viewHolder.notesName.setText(notesNames.get(i));
-            viewHolder.semesterName.setText("SEMESTER:  " + semesterNames.get(i));
-            viewHolder.sessionalName.setText("SESSIONAL:  " + sessionalNames.get(i));
-            viewHolder.subjectName.setText("SUBJECT:  " + subjectNames.get(i) + "[" + subjectAbr.get(i) + "]"); //sub name and abbreviation.
-            viewHolder.downloadButton.setOnClickListener(new View.OnClickListener() {
+            viewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setData(DOWNLOAD_URL_LIST.get(i));
-                    view.getContext().startActivity(intent);
+                    in = i;
+                    Log.i("msg", "DELETE BUTTON CLICKED ON:" + fnotesNames.get(in));
+
+
+                    final int index = notesNames.indexOf(fnotesNames.get(in));
+
+
+                    db.collection("NOTES").document(notesNames.get(index))
+
+                            .delete()
+
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.d("msg", "DocumentSnapshot successfully deleted!");
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w("msg", "Error deleting document", e);
+                                }
+                            });
+
+
+                    // Create a storage reference from our app
+                    StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+
+
+                    // Create a reference to the file to delete
+                    StorageReference fileRef = storageRef.child("NOTES/" + notesNames.get(index));
+
+                    // Delete the file
+                    fileRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            // File deleted successfully
+                            Log.i("msg", "FILE DELETED:" + notesNames.get(index));
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            // Uh-oh, an error occurred!
+                            Log.i("msg", "FILE DID NOT GET DELETED:" + notesNames.get(index));
+                        }
+                    });
+
+                    semesterNames.remove(index);
+                    sessionalNames.remove(index);
+                    subjectAbr.remove(index);
+                    subjectNames.remove(index);
+                    DOWNLOAD_URL_LIST.remove(index);
+                    notesNames.remove(index);
+
+                    fnotesNames.remove(in);
+                    fsessionalNames.remove(in);
+                    fsemesterNames.remove(in);
+                    fsubjectNames.remove(in);
+                    fsubjectAbr.remove(in);
+                    f_DOWNLOAD_URL_LIST.remove(in);
+
+                    Intent intent = new Intent(context,NotesViewActivity.class);
+                    context.startActivity(intent);
+
+                    notifyItemRemoved(in);
+                }
+            });
+
+        } else {
+            try {
+
+                viewHolder.notesName.setText(notesNames.get(in));
+                viewHolder.semesterName.setText("SEMESTER:  " + semesterNames.get(in));
+                viewHolder.sessionalName.setText("SESSIONAL:  " + sessionalNames.get(in));
+                viewHolder.subjectName.setText("SUBJECT:  " + subjectNames.get(in) + "[" + subjectAbr.get(in) + "]"); //sub name and abbreviation.
+                viewHolder.downloadButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(DOWNLOAD_URL_LIST.get(in));
+                        view.getContext().startActivity(intent);
+                    }
+                });
+
+            }catch (Exception e){
+                e.printStackTrace();
+                Log.i("LOL","SUCCESS");
+
+            }
+
+            viewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    in = i;
+                    Log.i("msg", "DELETE BUTTON CLICKED ON:" + notesNames.get(in));
+
+                    db.collection("NOTES").document(notesNames.get(in))
+                            .delete()
+
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.d("msg", "DocumentSnapshot successfully deleted!");
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w("msg", "Error deleting document", e);
+                                }
+                            });
+
+
+                    // Create a storage reference from our app
+                    StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+
+
+                    // Create a reference to the file to delete
+                    StorageReference fileRef = storageRef.child("NOTES/" + notesNames.get(in));
+
+                    // Delete the file
+                    fileRef
+                            .delete()
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    // File deleted successfully
+                                    Log.i("msg", "FILE DELETED:" + notesNames.get(in));
+                                    notifyItemRemoved(in);
+
+
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception exception) {
+                                    // Uh-oh, an error occurred!
+                                    Log.i("msg", "FILE DID NOT GET DELETED:" + notesNames.get(in));
+                                }
+                            });
+
+                    try {
+                        semesterNames.remove(i);
+                        sessionalNames.remove(i);
+                        subjectAbr.remove(i);
+                        subjectNames.remove(i);
+                        DOWNLOAD_URL_LIST.remove(i);
+                        notesNames.remove(i);
+                        notifyItemRemoved(i);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    Intent intent = new Intent(context,NotesViewActivity.class);
+                    context.startActivity(intent);
                 }
             });
         }
@@ -202,9 +365,9 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
     @Override
     public int getItemCount() {
         if (isFilterActive) {
-            return fnotesNames.size();
+            return this.fnotesNames.size();
         }
-        return notesNames.size();
+        return this.notesNames.size();
     }
 
 
@@ -215,6 +378,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
         TextView sessionalName;
         TextView subjectName;
         Button downloadButton;
+        Button deleteButton;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -229,8 +393,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
                     itemView.findViewById(R.id.item_detail3);
             downloadButton =
                     itemView.findViewById(R.id.downloadButton);
-
-
+            deleteButton =
+                    itemView.findViewById(R.id.deleteButton);
         }
     }
 

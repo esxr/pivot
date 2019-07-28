@@ -30,7 +30,7 @@ import java.util.ArrayList;
 public class NotesViewActivity extends AppCompatActivity {
 
 
-    public ArrayList<String> arrayList, semesterList, sessionalList, subjectList, subjectAbr, semesterArrayList, sessionalArrayList;
+    public ArrayList<String> arrayList, semesterList, sessionalList, subjectList, subjectAbr;
     //public ArrayList<String> farrayList, fsemesterList, fsessionalList, fsubjectList, fsubjectAbr;
     //public ArrayList<Uri> DOWNLOAD_URL_LIST, f_DOWNLOAD_URL_LIST;
 
@@ -129,9 +129,11 @@ public class NotesViewActivity extends AppCompatActivity {
                                     break;
                                 case MODIFIED:
                                     Log.d(TAG, "Modified : " + dc.getDocument().getData());
+                                    notesAdapter.notifyDataSetChanged();
                                     break;
                                 case REMOVED:
                                     Log.d(TAG, "Removed : " + dc.getDocument().getData());
+                                    notesAdapter.notifyDataSetChanged();
                                     break;
                             }
                         }
