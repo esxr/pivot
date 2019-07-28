@@ -77,22 +77,19 @@ public class MainActivity extends AppCompatActivity {
                         switch (item.getItemId()) {
                             case R.id.navigation_home:
                                 viewPager.setCurrentItem(0);
-                                bottomNavigationView.setItemBackgroundResource(R.color.black2);
                                 break;
 
                             case R.id.navigation_notes:
                                 viewPager.setCurrentItem(1);
-                                bottomNavigationView.setItemBackgroundResource(R.color.black);
                                 break;
 
                             case R.id.navigation_forum:
                                 viewPager.setCurrentItem(2);
-                                bottomNavigationView.setItemBackgroundResource(R.color.yellow);
                                 break;
 
                             case R.id.navigation_feed:
                                 viewPager.setCurrentItem(3);
-                                bottomNavigationView.setItemBackgroundResource(R.color.colorPrimary);
+
                                 break;
                         }
 
@@ -198,8 +195,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void signOut() { //dialog box sign out
-        new AlertDialog.Builder(this)
-                .setIcon(android.R.drawable.ic_dialog_alert)
+        final AlertDialog.Builder signOutDialog = new AlertDialog.Builder(this);
+
+        this.setTheme(R.style.AlertDialogCustom);
+        signOutDialog
+                .setIcon(R.drawable.alert)
                 .setTitle("ARE YOU SURE?")
                 .setMessage("You will be shifted to the login screen and will have to sign in in order to continue using the app.")
                 .setPositiveButton("YES", new DialogInterface.OnClickListener() {
@@ -211,9 +211,12 @@ public class MainActivity extends AppCompatActivity {
                         }
                 )
                 .setNegativeButton("NO", null)
+                .create()
                 .show();
 
+
     }
+
 
     public void setLoginActivity() {
         finish();

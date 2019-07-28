@@ -60,6 +60,7 @@ dependencies {
     implementation  'com.sdsmdg.harjot:vectormaster:1.1.3'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'in.codeshuffle:typewriterview:1.1.0'
 
     implementation 'com.google.api-client:google-api-client:1.25.0'
 

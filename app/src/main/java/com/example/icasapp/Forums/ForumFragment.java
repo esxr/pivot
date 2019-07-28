@@ -237,7 +237,23 @@ public class ForumFragment extends Fragment implements AdapterView.OnItemClickLi
 
                         discussionRecyclerAdapter.notifyDataSetChanged();
                     }
+                    if (doc.getType() == DocumentChange.Type.REMOVED){
+                        String id = doc.getDocument().getId();
+                        int i = 0;
+                        int index=0;
+                        for(DiscussionTopic discussion : discussion_list){
+                            String disId=discussion.DiscussionPostid;
+                            if(disId.equals(id)){
+                             index=i;
+                            }
+                            i++;
+                        }
+                        discussion_list.remove(index);
+                        discussionRecyclerAdapter.notifyDataSetChanged();
+                    }
+
                 }
+
                 isFirstPageFirstLoad = false;
             }
         });

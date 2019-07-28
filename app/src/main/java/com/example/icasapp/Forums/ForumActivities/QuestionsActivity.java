@@ -123,6 +123,10 @@ public class QuestionsActivity extends AppCompatActivity {
 
                        questionRecyclerAdapter.notifyDataSetChanged();
                     }
+                    if(doc.getType() == DocumentChange.Type.REMOVED)
+                    {
+                        questionRecyclerAdapter.notifyDataSetChanged();
+                    }
                 }
                 isFirstPageFirstLoad=false;
             }
