@@ -114,7 +114,7 @@ public class RegisterActivity extends AppCompatActivity {
                                         getResources().getString(R.string.generic_profile_photo_path),
                                         user.getUid()
                                 );
-                                FirebaseHelper.addDocumentToCollection(user_USER.getFirebaseDocument(), "USER");
+                              //  FirebaseHelper.addDocumentToCollection(user_USER.getFirebaseDocument(), "USER");
 
                                 Log.e("Registration", "Registration successful");
                                 // ---------------------------------------

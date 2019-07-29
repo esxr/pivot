@@ -194,7 +194,7 @@ public class NewDiscussionActivity extends AppCompatActivity {
                                                 Toast.makeText(NewDiscussionActivity.this, "Post was added", Toast.LENGTH_LONG).show();
                                            //     Intent mainIntent = new Intent(getApplicationContext(), ForumFragment.class);
                                            //     startActivity(mainIntent);
-                                            //    finish();
+                                                //    finish();
 
                                             } else {
                                                 Toast.makeText(NewDiscussionActivity.this, "Post was not added", Toast.LENGTH_LONG).show();

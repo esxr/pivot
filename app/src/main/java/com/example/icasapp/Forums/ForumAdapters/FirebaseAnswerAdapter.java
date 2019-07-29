@@ -121,6 +121,8 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
 
         });
 
+
+
     }
 
     @NonNull

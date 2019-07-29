@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.icasapp.Forums.ForumActivities.AnswersActivity;
+import com.example.icasapp.Forums.ForumFragment;
 import com.example.icasapp.ObjectClasses.Questions;
 import com.example.icasapp.R;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -151,6 +152,7 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
     public QuestionHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         firebaseFirestore = FirebaseFirestore.getInstance();
         context = parent.getContext();
+        ForumFragment.setFirestoreReference(firebaseFirestore,i_d,"c");
         View v = LayoutInflater.from(context).inflate(R.layout.question_list_item,parent,false);
         return new QuestionHolder(v);
     }
@@ -232,5 +234,21 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
                 .setNegativeButton(android.R.string.no, null)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(@NonNull QuestionHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+        listenerRegistration.remove();
     }
 }
