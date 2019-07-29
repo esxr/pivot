@@ -248,19 +248,21 @@ public class NotesForm extends AppCompatActivity {
         SUBJECT = SubjectText.getText().toString();
         SUBJECT_ABR = SubjectAbrText.getText().toString();
         FILE_NAME_BY_USER = FileName.getText().toString();
+
+        Log.i("msg", "SUBJECT DATA:" + SUBJECT + SUBJECT_ABR + FILE_NAME_BY_USER);
         if (SUBJECT == null || SUBJECT == "" || SUBJECT == " ") {
             SubjectText.requestFocus();
-            Toast.makeText(getApplicationContext(), "ENTER SUBJECT NAME.", Toast.LENGTH_LONG);
+            Toast.makeText(getApplicationContext(), "ENTER SUBJECT NAME.", Toast.LENGTH_LONG).show();
         } else if (SUBJECT_ABR == null || SUBJECT_ABR == "" || SUBJECT_ABR == " ") {
             SubjectAbrText.requestFocus();
-            Toast.makeText(getApplicationContext(), "ENTER SUBJECT ABBREVIARTION.", Toast.LENGTH_LONG);
+            Toast.makeText(getApplicationContext(), "ENTER SUBJECT ABBREVIARTION.", Toast.LENGTH_LONG).show();
         } else if (FILE_NAME_BY_USER == null || FILE_NAME_BY_USER == "" || FILE_NAME_BY_USER == " ") {
             FileName.requestFocus();
-            Toast.makeText(getApplicationContext(), "ENTER FILE NAME.", Toast.LENGTH_LONG);
-        } else if (SEMESTER == null || SEMESTER == "" || SEMESTER == " ") {
-            Toast.makeText(getApplicationContext(), "SELECT SEMESTER.", Toast.LENGTH_LONG);
-        } else if (SESSIONAL == null || SESSIONAL == "" || SESSIONAL == " ") {
-            Toast.makeText(getApplicationContext(), "SELECT SESSIONAL.", Toast.LENGTH_LONG);
+            Toast.makeText(getApplicationContext(), "ENTER FILE NAME.", Toast.LENGTH_LONG).show();
+        } else if (SEMESTER == null || SEMESTER == "" || SEMESTER == " " || SEMESTER == "SELECT SEMESTER...") {
+            Toast.makeText(getApplicationContext(), "SELECT SEMESTER.", Toast.LENGTH_LONG).show();
+        } else if (SESSIONAL == null || SESSIONAL == "" || SESSIONAL == " " || SESSIONAL == "SELECT SESSIONAL...") {
+            Toast.makeText(getApplicationContext(), "SELECT SESSIONAL.", Toast.LENGTH_LONG).show();
         } else {
             Log.i("msg", "SEMESTER ON CLICK: " + SEMESTER);
             Log.i("msg", "SESSIONAL ON CLICK: " + SESSIONAL);
