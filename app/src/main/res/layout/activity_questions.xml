@@ -23,7 +23,7 @@
         app:srcCompat="@drawable/common_google_signin_btn_icon_dark" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/question_list_view"
+        android:id="@+id/questionView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
@@ -41,7 +41,7 @@
         android:layout_marginRight="306dp"
         android:layout_marginBottom="27dp"
         android:text="TextView"
-        app:layout_constraintBottom_toTopOf="@+id/question_list_view"
+        app:layout_constraintBottom_toTopOf="@+id/questionView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
