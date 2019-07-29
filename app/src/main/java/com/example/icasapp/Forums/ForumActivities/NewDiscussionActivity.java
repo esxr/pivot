@@ -13,9 +13,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.icasapp.Forums.ForumFragment;
@@ -59,13 +62,20 @@ public class NewDiscussionActivity extends AppCompatActivity {
     private String current_user_id;
     private Bitmap compressedImageFile;
     private String downloadUrl;
+    private TextView discuss_txt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_discussion);
 
+        Animation fade = AnimationUtils.loadAnimation(this, R.anim.fade_scale);
+
         setUpImage = findViewById(R.id.new_post_image);
+        discuss_txt = findViewById(R.id.discuss_text);
+
+        discuss_txt.setAnimation(fade);
+
         newPostBtn = findViewById(R.id.post_btn);
         editText = findViewById(R.id.topic);
         storageReference = FirebaseStorage.getInstance().getReference();
@@ -154,6 +164,7 @@ public class NewDiscussionActivity extends AppCompatActivity {
                                     postMap.put("content", content);
                                     postMap.put("user_id", current_user_id);
                                     postMap.put("timestamp", FieldValue.serverTimestamp());
+                                    postMap.put("question",0);
 
                                     setFirestoreReference(firebaseFirestore,i_d,"c");
 
@@ -164,7 +175,7 @@ public class NewDiscussionActivity extends AppCompatActivity {
                                             if (task.isSuccessful()) {
 
                                                 Toast.makeText(NewDiscussionActivity.this, "Post was added", Toast.LENGTH_LONG).show();
-                                                Intent mainIntent = new Intent(NewDiscussionActivity.this, ForumFragment.class);
+                                                Intent mainIntent = new Intent(getApplicationContext(), ForumFragment.class);
                                                 startActivity(mainIntent);
                                                 finish();
 

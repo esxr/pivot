@@ -14,7 +14,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.icasapp.Annonations.Hardcoded;
 import com.example.icasapp.MainActivity;
 import com.example.icasapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -30,8 +29,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private Button onReg;
     private Button Login;
-    @Hardcoded
-    private Button loginHardcoded;
 
     private String email;
     private String password;
@@ -51,10 +48,16 @@ public class LoginActivity extends AppCompatActivity {
         inputPassword = findViewById(R.id.inputPassword);
         onReg = findViewById(R.id.button3);
         Login = findViewById(R.id.login);
-        loginHardcoded = findViewById(R.id.loginHardcoded);
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
+
+        if (mAuth.getCurrentUser() != null) {
+            // User is signed in (getCurrentUser() will be null if not signed in)
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
 
         //register button
         onReg.setOnClickListener(new View.OnClickListener() {
@@ -65,28 +68,21 @@ public class LoginActivity extends AppCompatActivity {
 
 
                 Pair[] pairs = new Pair[4];
-                pairs[0] = new Pair<View , String>(inputEmail , "email");
-                pairs[1] = new Pair<View , String>(inputPassword , "password");
-                pairs[2] = new Pair<View , String>(onReg , "register");
-                pairs[3] = new Pair<View , String>(onReg , "login");
-
+                pairs[0] = new Pair<View, String>(inputEmail, "email");
+                pairs[1] = new Pair<View, String>(inputPassword, "password");
+                pairs[2] = new Pair<View, String>(onReg, "register");
+                pairs[3] = new Pair<View, String>(onReg, "login");
 
 
                 ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(LoginActivity.this, pairs);
-                startActivity(sharedIntent , options.toBundle());
+                startActivity(sharedIntent, options.toBundle());
 
             }
         });
 
-        loginHardcoded.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseLoginHardcoded();
-            }
-        });
     }
 
-    public void onLogin(View view){
+    public void onLogin(View view) {
         try {
 
             email = inputEmail.getText().toString().trim();
@@ -103,16 +99,15 @@ public class LoginActivity extends AppCompatActivity {
                 inputEmail.requestFocus();
             } else
                 FirebaseLogin();
-        } catch(IllegalArgumentException e){
-            Toast.makeText(getApplicationContext() , "EMPTY FIELDS" , Toast.LENGTH_LONG).show();
-        }
-        catch(Exception e){
-            Toast.makeText(getApplicationContext() , "AUTHENTICATION NOT SUCCESSFUL. RE-ENTER CREDENTIALS" , Toast.LENGTH_LONG).show();
+        } catch (IllegalArgumentException e) {
+            Toast.makeText(getApplicationContext(), "EMPTY FIELDS", Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(), "AUTHENTICATION NOT SUCCESSFUL. RE-ENTER CREDENTIALS", Toast.LENGTH_LONG).show();
         }
 
     }
 
-    public void FirebaseLogin(){
+    public void FirebaseLogin() {
 
         try {
 
@@ -138,51 +133,19 @@ public class LoginActivity extends AppCompatActivity {
                             // ...
                         }
                     });
-        }catch(IllegalArgumentException e){
-            Toast.makeText(getApplicationContext(),"EMPTY FIELDS" , Toast.LENGTH_LONG).show();
-        }catch(Exception e){
-            Toast.makeText(getApplicationContext(),"AUTHENTICATION FAILED",Toast.LENGTH_LONG).show();
+        } catch (IllegalArgumentException e) {
+            Toast.makeText(getApplicationContext(), "EMPTY FIELDS", Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(), "AUTHENTICATION FAILED", Toast.LENGTH_LONG).show();
         } finally {
             inputEmail.requestFocus();
         }
 
     }
 
-    @Hardcoded public void FirebaseLoginHardcoded(){
-        String email = "vgupta463@gmail.com", password = "xyzxyzxyz";
-        try {
-            mAuth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                // Sign in success, update UI with the signed-in user's information
-                                Log.d("msg", "signInWithEmail:success");
-                                FirebaseUser user = mAuth.getCurrentUser();
-                                finish();
-                                startActivity(new Intent(getApplicationContext(), MainActivity.class));
-
-                            } else {
-                                // If sign in fails, display a message to the user.
-                                Log.w("msg", "signInWithEmail:failure", task.getException());
-                                Toast.makeText(getApplicationContext(), "Authentication failed.",
-                                        Toast.LENGTH_SHORT).show();
-
-                            }
-
-                            // ...
-                        }
-                    });
-        }catch(IllegalArgumentException e){
-            Toast.makeText(getApplicationContext(),"EMPTY FIELDS" , Toast.LENGTH_LONG).show();
-        }catch(Exception e){
-            Toast.makeText(getApplicationContext(),"AUTHENTICATION FAILED",Toast.LENGTH_LONG).show();
-        }
-    }
-
     // public void onRegister(View view){
 
     //    startActivity(new Intent(LoginActivity.this , RegisterActivity.class));
 
-   // }
+    // }
 }

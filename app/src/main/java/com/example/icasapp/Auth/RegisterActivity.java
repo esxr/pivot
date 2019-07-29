@@ -84,10 +84,10 @@ public class RegisterActivity extends AppCompatActivity {
                 FirebaseRegister();
         }catch(IllegalArgumentException e){
             Toast.makeText(getApplicationContext() , "INVALID CREDENTIALS OR EMPTY FIELDS" , Toast.LENGTH_LONG).show();
-            }
-         catch(Exception e){
+        }
+        catch(Exception e){
             Toast.makeText(getApplicationContext() , "AUTHENTICATION NOT SUCCESSFUL. RE-ENTER CREDENTIALS" , Toast.LENGTH_LONG).show();
-         }
+        }
 
 
     }
@@ -131,11 +131,11 @@ public class RegisterActivity extends AppCompatActivity {
                         }
                     });
         }catch(IllegalArgumentException e){
-                Toast.makeText(getApplicationContext(),"EMPTY FIELDS" , Toast.LENGTH_LONG).show();
-            }catch(Exception e){
-                Toast.makeText(getApplicationContext(),"AUTHENTICATION FAILED",Toast.LENGTH_LONG).show();
-            } finally {
-                inputEmail.requestFocus();
+            Toast.makeText(getApplicationContext(),"EMPTY FIELDS" , Toast.LENGTH_LONG).show();
+        }catch(Exception e){
+            Toast.makeText(getApplicationContext(),"AUTHENTICATION FAILED",Toast.LENGTH_LONG).show();
+        } finally {
+            inputEmail.requestFocus();
         }
     }
 

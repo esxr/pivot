@@ -33,6 +33,9 @@
                 android:layout_marginTop="2dp"
                 android:layout_marginBottom="40dp"
                 android:text="TextView"
+                android:inputType="textMultiLine"
+                android:scrollbarAlwaysDrawVerticalTrack="true"
+                android:textSize="17dp"
                 app:layout_constraintBottom_toTopOf="@+id/upvote_btn"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -47,6 +50,8 @@
                 android:layout_marginLeft="9dp"
                 android:layout_marginEnd="7dp"
                 android:layout_marginRight="7dp"
+                android:background="@drawable/solid_button_black"
+                android:textColor="@color/white"
                 android:text="Button"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -67,6 +72,21 @@
                 app:layout_constraintEnd_toStartOf="@+id/upvote_btn"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/Answer" />
+
+            <ImageView
+                android:id="@+id/delete"
+                android:layout_width="34dp"
+                android:layout_height="33dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="59dp"
+                android:layout_marginEnd="163dp"
+                android:layout_marginRight="163dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/upvote_text"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/Answer"
+                app:srcCompat="@drawable/common_google_signin_btn_icon_dark" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>

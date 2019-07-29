@@ -2,6 +2,7 @@ package com.example.icasapp.Forums;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -38,6 +39,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.content.Context.MODE_PRIVATE;
+
 /**
 
  * A simple {@link Fragment} subclass.
@@ -57,7 +60,7 @@ public class ForumFragment extends Fragment implements AdapterView.OnItemClickLi
     private  ArrayList<String> subject;
     Spinner spinner;
     public static String i_d;
-    static String Category;
+    public static String Category;
     public static CollectionReference collectionReference;
     public static Query query;
     int c = 0;
@@ -96,9 +99,7 @@ public class ForumFragment extends Fragment implements AdapterView.OnItemClickLi
                         semester = document.get("semester").toString();
                         stream = document.get("stream").toString();
                         //sets the document id according to semester and stream
-                        setDocumentId(semester, stream,view);
-
-
+                        findDocumentId(semester, stream,view);
 
                     }
                 }
@@ -144,7 +145,7 @@ public class ForumFragment extends Fragment implements AdapterView.OnItemClickLi
 
     }
 
-    public String setDocumentId(String semester, String stream,final View view) {
+    public String findDocumentId(String semester, String stream,final View view) {
 
         Query query = firebaseFirestore.collection("Specific").whereEqualTo("semester", semester).whereEqualTo("stream", stream);
 
@@ -185,7 +186,10 @@ public class ForumFragment extends Fragment implements AdapterView.OnItemClickLi
                     @Override
                     public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                         Category =subject.get(position);
-                        Log.i("bv",Category);
+                        SharedPreferences pref = getContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = pref.edit();
+                        editor.putString("key", Category);
+                        editor.commit();
                         setFirestoreReference(firebaseFirestore,i_d,"q");
                        if(isFirstPageFirstLoad)
                        {
@@ -212,10 +216,10 @@ public class ForumFragment extends Fragment implements AdapterView.OnItemClickLi
     {
         if(changed)
         {
-           // discussion_list.clear();
-           // discussionRecyclerAdapter.notifyDataSetChanged();
+            discussion_list.clear();
+            discussionRecyclerAdapter.notifyDataSetChanged();
         }
-        query.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        query.orderBy("timestamp",Query.Direction.DESCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@javax.annotation.Nullable QuerySnapshot queryDocumentSnapshots, @javax.annotation.Nullable FirebaseFirestoreException e) {
                 //check for changes in document if data is added
@@ -225,19 +229,31 @@ public class ForumFragment extends Fragment implements AdapterView.OnItemClickLi
                         //this is the part where every item in the Firebase document gets stored in DiscussionTopic list
                         String blogPostId = doc.getDocument().getId();
                         DiscussionTopic discussionTopic = doc.getDocument().toObject(DiscussionTopic.class).withId(blogPostId);
-                        if (isFirstPageFirstLoad) {
+
 
                             discussion_list.add(discussionTopic);
 
-                        } else {
 
-                            discussion_list.add(0, discussionTopic);
-
-                        }
 
                         discussionRecyclerAdapter.notifyDataSetChanged();
                     }
+                    if (doc.getType() == DocumentChange.Type.REMOVED){
+                        String id = doc.getDocument().getId();
+                        int i = 0;
+                        int index=0;
+                        for(DiscussionTopic discussion : discussion_list){
+                            String disId=discussion.DiscussionPostid;
+                            if(disId.equals(id)){
+                             index=i;
+                            }
+                            i++;
+                        }
+                        discussion_list.remove(index);
+                        discussionRecyclerAdapter.notifyDataSetChanged();
+                    }
+
                 }
+
                 isFirstPageFirstLoad = false;
             }
         });
@@ -245,17 +261,19 @@ public class ForumFragment extends Fragment implements AdapterView.OnItemClickLi
 
     public static void setFirestoreReference(FirebaseFirestore firebaseFirestore,String ID,String type)
     {
-        if(type=="c") {
-            if (Category == "General" || Category == "Alumni") {
+        if(type.equals("c")) {
+            if (Category.equals("General") || Category.equals("Alumni")) {
+                Log.i("LOL","SUCC");
                 collectionReference = firebaseFirestore.collection("General").document(Category).collection("Posts");
             } else {
+                Log.i("LOL","SUC");
                 collectionReference = firebaseFirestore.collection("Specific").document(ID).collection("Subjects").document(Category).collection("Posts");
 
             }
         }
-        if(type=="q")
+        if(type.equals("q"))
         {
-            if (Category == "General" || Category == "Alumni") {
+            if (Category.equals("General") || Category.equals("Alumni")) {
                 query = firebaseFirestore.collection("General").document(Category).collection("Posts");
             } else {
                 query = firebaseFirestore.collection("Specific").document(ID).collection("Subjects").document(Category).collection("Posts");

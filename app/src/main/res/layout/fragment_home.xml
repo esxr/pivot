@@ -9,7 +9,7 @@
     android:layout_margin="8dp"
     android:padding="16dp">
 
-    <!--ONLY FOR DEBUGGING-->
+    <!--ONLY FOR DEBUGGING -->
 
     <Button
         android:visibility="gone"
@@ -19,16 +19,17 @@
         android:text="Generate Fake Users (10)"/>
 
     <LinearLayout
+        android:layout_marginTop="70dp"
         android:weightSum="3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <EditText
+            android:id="@+id/query"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:id="@+id/query"
-            android:layout_weight="2"/>
+            android:layout_weight="2" />
 
         <Spinner
             android:layout_width="wrap_content"
@@ -40,13 +41,24 @@
     </LinearLayout>
 
     <Button
+        android:id="@+id/profileSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/profileSearch"
-        android:text="Search"/>
+        android:text="Search"
+        android:elevation="2dp"
+        android:textColor="@color/white"
+        android:drawableLeft="@drawable/search_icon"
+        android:drawablePadding="20dp"
+        android:textAlignment="viewStart"
+        android:paddingStart="50pt"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:background="@drawable/solid_button_black"
+        tools:ignore="RtlCompat" />
 
     <!--ListView-->
     <ListView
+        android:layout_marginTop="40dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scrollbars="vertical"
@@ -61,3 +73,11 @@
         />
 
 </LinearLayout>
+
+
+
+
+
+
+
+
