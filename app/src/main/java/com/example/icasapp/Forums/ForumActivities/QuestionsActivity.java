@@ -50,7 +50,7 @@ public class QuestionsActivity extends AppCompatActivity {
         i_d=intent.getStringExtra("ID");
         topic=intent.getStringExtra("Topic");
 
-        addQuestion=findViewById(R.id.addQuestion);
+        addQuestion=findViewById(R.id.addNotes);
 
         //Text that displays the topic you are in
         parentTopic = findViewById(R.id.parentTopic);
