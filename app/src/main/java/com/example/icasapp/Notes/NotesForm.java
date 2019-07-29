@@ -264,12 +264,12 @@ public class NotesForm extends AppCompatActivity {
         } else if (SESSIONAL == null || SESSIONAL == "" || SESSIONAL == " " || SESSIONAL == "SELECT SESSIONAL...") {
             Toast.makeText(getApplicationContext(), "SELECT SESSIONAL.", Toast.LENGTH_LONG).show();
         } else {
+
             Log.i("msg", "SEMESTER ON CLICK: " + SEMESTER);
             Log.i("msg", "SESSIONAL ON CLICK: " + SESSIONAL);
             Log.i("msg", "SUBJECT ON CLICK: " + SUBJECT);
             Log.i("msg", "SUBJECT_ABR ON CLICK: " + SUBJECT_ABR);
             Log.i("msg", "FILE NAME ON CLICK: " + FILE_NAME_BY_USER);
-
             uploadFile(FILE_NAME_BY_USER);
 
         }
