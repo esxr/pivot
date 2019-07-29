@@ -1,18 +1,12 @@
 package com.example.icasapp.Profile;
 
-import android.content.Intent;
-import android.graphics.BitmapFactory;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.icasapp.R;
 import com.example.icasapp.User.TestUser;
-
-import java.io.Serializable;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
