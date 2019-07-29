@@ -48,6 +48,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import in.codeshuffle.typewriterview.TypeWriterView;
+
 public class NotesForm extends AppCompatActivity {
 
     String SEMESTER, SUBJECT, SUBJECT_ABR, SESSIONAL, FILE_NAME_BY_USER;
@@ -89,6 +91,8 @@ public class NotesForm extends AppCompatActivity {
         progressBar.setMessage("File UPLOADING ...");
         progressBar.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressBar.setMax(100);//sets the maximum value 100
+        progressBar.setProgress(0);//initially progress is 0
+
 
 
         String v = "";
@@ -247,7 +251,6 @@ public class NotesForm extends AppCompatActivity {
         if (SUBJECT == null || SUBJECT == "" || SUBJECT == " ") {
             SubjectText.requestFocus();
             Toast.makeText(getApplicationContext(), "ENTER SUBJECT NAME.", Toast.LENGTH_LONG);
-
         } else if (SUBJECT_ABR == null || SUBJECT_ABR == "" || SUBJECT_ABR == " ") {
             SubjectAbrText.requestFocus();
             Toast.makeText(getApplicationContext(), "ENTER SUBJECT ABBREVIARTION.", Toast.LENGTH_LONG);
@@ -313,8 +316,7 @@ public class NotesForm extends AppCompatActivity {
 
         final StorageReference ref = storageRef.child("NOTES/" + FILE_NAME_BY_USER);
         UploadTask uploadTask = ref.putFile(DATA);
-        progressBar.show();
-        progressBar.setProgress(0);//initially progress is 0
+
 
 
         Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
@@ -334,6 +336,7 @@ public class NotesForm extends AppCompatActivity {
             public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                 double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
                 Log.i("msg", "Upload is " + progress + "% done");
+                progressBar.show();
                 progressBar.setProgress((int) progress);
             }
         }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {

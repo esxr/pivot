@@ -44,8 +44,6 @@ public class NotesFragment extends Fragment {
         // Inflate the layout for this fragment
         notesView = inflater.inflate(R.layout.fragment_notes, container, false);
 
-
-
         uploadButton = notesView.findViewById(R.id.uploadButton);
         viewButton = notesView.findViewById(R.id.viewButton);
 
