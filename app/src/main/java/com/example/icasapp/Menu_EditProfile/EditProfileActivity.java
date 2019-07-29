@@ -43,7 +43,7 @@ public class EditProfileActivity extends AppCompatActivity {
     EditText inputDisplayName;
     ImageView profileView;
     Uri image;
-    String stream , semester;
+    String stream, semester;
 
     FirebaseUser user;
     FirebaseFirestore db;
@@ -62,9 +62,8 @@ public class EditProfileActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 
 
-
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.semester_array   , android.R.layout.simple_spinner_item);
+                R.array.semester_array, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
@@ -74,7 +73,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
 
         ArrayAdapter<CharSequence> adapterStream = ArrayAdapter.createFromResource(this,
-                R.array.stream_array   , android.R.layout.simple_spinner_item);
+                R.array.stream_array, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
         adapterStream.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
@@ -86,7 +85,7 @@ public class EditProfileActivity extends AppCompatActivity {
                                        int position, long id) {
                 Log.v("SpinnerSelected Item",
                         "" + semesterSpinner.getSelectedItem());
-                Log.v("Clicked position",""+position);
+                Log.v("Clicked position", "" + position);
                 setSemester(semesterSpinner.getSelectedItem().toString());
             }
 
@@ -104,10 +103,11 @@ public class EditProfileActivity extends AppCompatActivity {
                                        int position, long id) {
                 Log.v("SpinnerSelected Item",
                         "" + streamSpinner.getSelectedItem());
-                Log.v("Clicked position",""+position);
+                Log.v("Clicked position", "" + position);
                 setStream(streamSpinner.getSelectedItem().toString());
 
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> arg0) {
                 Log.v("NothingSelected Item",
@@ -118,21 +118,19 @@ public class EditProfileActivity extends AppCompatActivity {
         });
     }
 
-    public void uploadImage(View view){
-
+    public void uploadImage(View view) {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");
         startActivityForResult(intent, 1);
-
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
 
-        switch(requestCode) {
+        switch (requestCode) {
             case 1:
-                if(resultCode == RESULT_OK){
+                if (resultCode == RESULT_OK) {
                     try {
                         final Uri imageUri = imageReturnedIntent.getData();
                         final InputStream imageStream = getContentResolver().openInputStream(imageUri);
@@ -152,30 +150,32 @@ public class EditProfileActivity extends AppCompatActivity {
         return true;
     }
 
-    public void setImage(Uri image){
+    public void setImage(Uri image) {
         this.image = image;
     }
 
-    public Uri getImage(){
+    public Uri getImage() {
         return this.image;
     }
 
-    public String getUsername(){
-        String displayName = inputDisplayName.getText().toString();
-        return displayName;
+    public String getUsername() {
+        return inputDisplayName.getText().toString();
     }
-    public void setStream(String stream){
+
+    public void setStream(String stream) {
         this.stream = stream;
     }
-    public String getStream(){
+
+    public String getStream() {
         return this.stream;
 
     }
-    public void setSemester(String semester){
+
+    public void setSemester(String semester) {
         this.semester = semester;
     }
 
-    public String getSemester(){
+    public String getSemester() {
         return this.semester;
 
     }
@@ -212,7 +212,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
                                             try {
                                                 userNew.setProfilePhoto(user.getPhotoUrl().toString());
-                                            } catch(Exception e) {
+                                            } catch (Exception e) {
                                                 Log.e("Photo Uri display error", e.getMessage());
                                             }
 
@@ -223,37 +223,15 @@ public class EditProfileActivity extends AppCompatActivity {
                             });
 
 
-
                         }
                     }
                 });
         // [END update_profile]
-
-        Map<String, Object> USER = new HashMap<>();
-        USER.put("name",getUsername());
-        USER.put("semester", getSemester());
-        USER.put("stream", getStream());
-
-        db.collection("USER").document(user.getUid())
-                .set(USER)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d("msg", "DocumentSnapshot successfully written!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("msg", "Error writing document", e);
-                    }
-                });
     }
 
-    public void approveChanges(View view){
+    public void approveChanges(View view) {
         updateProfile();
     }
-
 
 
 }
