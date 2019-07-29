@@ -1,4 +1,6 @@
 package com.example.icasapp.Forums.ForumAdapters;
 
-public class FirebaseQuestionRecyclerAdapter {
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+
+public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter {
 }
