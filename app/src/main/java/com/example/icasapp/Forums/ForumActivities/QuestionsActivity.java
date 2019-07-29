@@ -2,30 +2,25 @@ package com.example.icasapp.Forums.ForumActivities;
 
 import android.content.Intent;
 
-import androidx.annotation.NonNull;
+import com.example.icasapp.Forums.ForumAdapters.FirebaseQuestionRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.ItemTouchHelper;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.example.icasapp.Forums.ForumAdapters.QuestionRecyclerAdapter;
-import com.example.icasapp.Forums.OnBottomReachedListener;
 import com.example.icasapp.MainActivity;
 import com.example.icasapp.ObjectClasses.Questions;
 import com.example.icasapp.R;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import java.util.ArrayList;
+import com.google.firebase.firestore.Query;
 
 import static android.util.Log.i;
 import static com.example.icasapp.Forums.ForumFragment.Category;
@@ -42,6 +37,7 @@ public class QuestionsActivity extends AppCompatActivity {
     private CollectionReference collectionReference;
     private TextView parentTopic;
     private String topic;
+    private FirebaseQuestionRecyclerAdapter adapter;
 
 
     @Override
@@ -62,7 +58,7 @@ public class QuestionsActivity extends AppCompatActivity {
 
         firebaseFirestore = FirebaseFirestore.getInstance();
 
-       question_list_view = findViewById(R.id.question_list_view);
+      /* question_list_view = findViewById(R.id.question_list_view);
 
         final ArrayList question_list= new ArrayList<Questions>();
         //initialising the adapter
@@ -76,7 +72,7 @@ public class QuestionsActivity extends AppCompatActivity {
             public void OnBottomReached(int position) {
 
             }
-        });
+        });    */
 
 
         addQuestion.setOnClickListener(new View.OnClickListener() {
@@ -90,6 +86,8 @@ public class QuestionsActivity extends AppCompatActivity {
             }
         });
 
+        Log.i("SDA",Category);
+
         //selecting the appropriate Category
         if (Category.equals("General") || Category.equals("Alumni")) {
 
@@ -99,7 +97,9 @@ public class QuestionsActivity extends AppCompatActivity {
             collectionReference = firebaseFirestore.collection("Specific").document(i_d).collection("Subjects").document(Category).collection("Posts");
         }
 
-        collectionReference.document(docId).collection("Questions").orderBy("timestamp").addSnapshotListener(new EventListener<QuerySnapshot>() {
+        Query query = collectionReference.document(docId).collection("Questions").orderBy("timestamp", Query.Direction.DESCENDING);
+
+      /*  collectionReference.document(docId).collection("Questions").orderBy("timestamp").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@javax.annotation.Nullable QuerySnapshot queryDocumentSnapshots, @javax.annotation.Nullable FirebaseFirestoreException e) {
                 //check for changes in document if data is added
@@ -130,19 +130,21 @@ public class QuestionsActivity extends AppCompatActivity {
                 }
                 isFirstPageFirstLoad=false;
             }
-        });
+        }); */
 
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT|ItemTouchHelper.RIGHT) {
-            @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
-                return false;
-            }
+        FirestoreRecyclerOptions<Questions> options = new FirestoreRecyclerOptions.Builder<Questions>()
+                .setQuery(query,Questions.class)
+                .build();
 
-            @Override
-            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-                questionRecyclerAdapter.lol();
-            }
-        });
+        adapter = new FirebaseQuestionRecyclerAdapter(options);
+
+        Log.i("ASD",docId);
+
+        RecyclerView recyclerView = findViewById(R.id.questionView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(adapter);
+        recyclerView.setNestedScrollingEnabled(true);
+
     }
 
     @Override
@@ -154,6 +156,15 @@ public class QuestionsActivity extends AppCompatActivity {
 
     }
 
-
-
+    @Override
+    protected void onStart() {
+        super.onStart();
+        adapter.startListening();
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        adapter.stopListening();
+    }
+}

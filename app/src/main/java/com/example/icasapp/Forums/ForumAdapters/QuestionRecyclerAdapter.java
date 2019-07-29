@@ -2,8 +2,7 @@ package com.example.icasapp.Forums.ForumAdapters;
 
 import android.content.Context;
 import android.content.Intent;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+
 import androidx.recyclerview.widget.RecyclerView;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -15,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.icasapp.Forums.ForumActivities.AnswersActivity;
+import com.example.icasapp.Forums.ForumFragment;
 import com.example.icasapp.Forums.OnBottomReachedListener;
 import com.example.icasapp.ObjectClasses.Questions;
 import com.example.icasapp.R;
@@ -31,6 +31,9 @@ import com.google.firebase.firestore.ListenerRegistration;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import io.reactivex.annotations.NonNull;
+import io.reactivex.annotations.Nullable;
 
 import static com.example.icasapp.Forums.ForumActivities.QuestionsActivity.docId;
 import static com.example.icasapp.Forums.ForumFragment.Category;
@@ -60,12 +63,11 @@ public class QuestionRecyclerAdapter extends RecyclerView.Adapter<QuestionRecycl
         //Layout inflator takes XML as input and put view objects
         //First XML objects are inflated
         //Then the view is passed to ViewHolder **CLASS** and the view is made.
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.question_list_item, viewGroup, false);
+     /*   View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.question_list_item, viewGroup, false);
         context=viewGroup.getContext();
         firebaseFirestore=firebaseFirestore.getInstance();
-
-        setFirestoreReference(firebaseFirestore,i_d,"c");
-        return new QuestionRecyclerAdapter.ViewHolder(view);
+        ForumFragment.setFirestoreReference(firebaseFirestore,i_d,"c"); */
+        return null;
     }
 
     public void setOnBottomReachedListener(OnBottomReachedListener onBottomReachedListener){
@@ -194,11 +196,6 @@ public class QuestionRecyclerAdapter extends RecyclerView.Adapter<QuestionRecycl
     public void onViewDetachedFromWindow(@NonNull ViewHolder holder) {
         super.onViewDetachedFromWindow(holder);
         listenerRegistration.remove();
-    }
-
-
-
-    public void lol() {
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
