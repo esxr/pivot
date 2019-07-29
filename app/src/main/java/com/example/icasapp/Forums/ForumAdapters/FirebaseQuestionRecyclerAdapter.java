@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.icasapp.Forums.ForumActivities.AnswersActivity;
+import com.example.icasapp.Forums.ForumFragment;
 import com.example.icasapp.ObjectClasses.Questions;
 import com.example.icasapp.R;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -30,6 +31,7 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -151,6 +153,7 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
     public QuestionHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         firebaseFirestore = FirebaseFirestore.getInstance();
         context = parent.getContext();
+        ForumFragment.setFirestoreReference(firebaseFirestore,i_d,"c");
         View v = LayoutInflater.from(context).inflate(R.layout.question_list_item,parent,false);
         return new QuestionHolder(v);
     }

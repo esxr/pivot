@@ -54,7 +54,7 @@ public class QuestionsActivity extends AppCompatActivity {
 
         //Text that displays the topic you are in
         parentTopic = findViewById(R.id.parentTopic);
-        parentTopic.setText(topic);
+        parentTopic.setText("TOPIC -"+ topic);
 
         firebaseFirestore = FirebaseFirestore.getInstance();
 
