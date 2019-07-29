@@ -2,6 +2,7 @@ package com.example.icasapp.Firebase;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import android.util.Log;
 
 import com.example.icasapp.Annonations.Hardcoded;
@@ -193,6 +194,7 @@ public class FirebaseHelper {
     public static void getDocumentFromCollectionWhere(String collection, Query query, final CallbackObject<List<Map<String, Object>>> callback) {
         CollectionReference colRef = db.collection(collection);
         final List<Map<String, Object>> matches = new ArrayList<>();
+
         String[] properties = {"name", "regNo", "stream", "semester", "UID"};
         for (String property : properties) {
             colRef
@@ -216,6 +218,33 @@ public class FirebaseHelper {
                     });
         }
     }
+
+    public static void replaceDocumentWithUID(String uid, final TestUser user) {
+        final CollectionReference userRef = getFirestore().collection("USER");
+        Log.e("Current user UID", FirebaseHelper.getUser().getUid());
+        userRef.whereEqualTo("UID", FirebaseHelper.getUser().getUid()).get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        String docId = task.getResult().getDocuments().get(0).getId();
+                        userRef.document(docId).set((TestUser) user);
+                    }
+                });
+    }
+
+    public static void findDocumentWithUID(String uid, final CallbackObject<String> callback) {
+        final CollectionReference userRef = getFirestore().collection("USER");
+        Log.e("Current user UID", FirebaseHelper.getUser().getUid());
+        userRef.whereEqualTo("UID", FirebaseHelper.getUser().getUid()).get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        String docId = task.getResult().getDocuments().get(0).getId();
+                        callback.callbackCall(docId);
+                    }
+                });
+    }
+
 
     public static void getCollection(String collection, final CallBackList<Map<String, Object>> callback) {
         db.collection(collection)

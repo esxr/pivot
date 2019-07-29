@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -16,7 +14,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.icasapp.Firebase.FirebaseHelper;
 import com.example.icasapp.R;
+import com.example.icasapp.User.TestUser;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -24,6 +27,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.FileNotFoundException;
@@ -38,7 +43,7 @@ public class EditProfileActivity extends AppCompatActivity {
     EditText inputDisplayName;
     ImageView profileView;
     Uri image;
-    String stream, semester;
+    String stream , semester;
 
     FirebaseUser user;
     FirebaseFirestore db;
@@ -57,8 +62,9 @@ public class EditProfileActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 
 
+
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.semester_array, android.R.layout.simple_spinner_item);
+                R.array.semester_array   , android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
@@ -68,7 +74,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
 
         ArrayAdapter<CharSequence> adapterStream = ArrayAdapter.createFromResource(this,
-                R.array.stream_array, android.R.layout.simple_spinner_item);
+                R.array.stream_array   , android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
         adapterStream.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
@@ -80,7 +86,7 @@ public class EditProfileActivity extends AppCompatActivity {
                                        int position, long id) {
                 Log.v("SpinnerSelected Item",
                         "" + semesterSpinner.getSelectedItem());
-                Log.v("Clicked position", "" + position);
+                Log.v("Clicked position",""+position);
                 setSemester(semesterSpinner.getSelectedItem().toString());
             }
 
@@ -98,11 +104,10 @@ public class EditProfileActivity extends AppCompatActivity {
                                        int position, long id) {
                 Log.v("SpinnerSelected Item",
                         "" + streamSpinner.getSelectedItem());
-                Log.v("Clicked position", "" + position);
+                Log.v("Clicked position",""+position);
                 setStream(streamSpinner.getSelectedItem().toString());
 
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> arg0) {
                 Log.v("NothingSelected Item",
@@ -113,7 +118,7 @@ public class EditProfileActivity extends AppCompatActivity {
         });
     }
 
-    public void uploadImage(View view) {
+    public void uploadImage(View view){
 
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");
@@ -125,9 +130,9 @@ public class EditProfileActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
 
-        switch (requestCode) {
+        switch(requestCode) {
             case 1:
-                if (resultCode == RESULT_OK) {
+                if(resultCode == RESULT_OK){
                     try {
                         final Uri imageUri = imageReturnedIntent.getData();
                         final InputStream imageStream = getContentResolver().openInputStream(imageUri);
@@ -147,40 +152,37 @@ public class EditProfileActivity extends AppCompatActivity {
         return true;
     }
 
-    public void setImage(Uri image) {
+    public void setImage(Uri image){
         this.image = image;
     }
 
-    public Uri getImage() {
+    public Uri getImage(){
         return this.image;
     }
 
-    public String getUsername() {
+    public String getUsername(){
         String displayName = inputDisplayName.getText().toString();
         return displayName;
     }
-
-    public void setStream(String stream) {
+    public void setStream(String stream){
         this.stream = stream;
     }
-
-    public String getStream() {
+    public String getStream(){
         return this.stream;
 
     }
-
-    public void setSemester(String semester) {
+    public void setSemester(String semester){
         this.semester = semester;
     }
 
-    public String getSemester() {
+    public String getSemester(){
         return this.semester;
 
     }
 
     public void updateProfile() {
         // [START update_profile]
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                 .setDisplayName(getUsername())
@@ -189,18 +191,46 @@ public class EditProfileActivity extends AppCompatActivity {
 
         user.updateProfile(profileUpdates)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
-
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             Log.d("msg", "User profile updated.");
+
+                            // find docId and update the details
+                            FirebaseHelper.findDocumentWithUID(user.getUid(), new FirebaseHelper.CallbackObject<String>() {
+                                @Override
+                                public void callbackCall(String docId) {
+                                    final DocumentReference docRef = FirebaseHelper.getFirestore()
+                                            .collection("USER")
+                                            .document(docId);
+
+                                    docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            TestUser userNew = new TestUser(task.getResult().getData());
+                                            userNew.setName(user.getDisplayName());
+
+                                            try {
+                                                userNew.setProfilePhoto(user.getPhotoUrl().toString());
+                                            } catch(Exception e) {
+                                                Log.e("Photo Uri display error", e.getMessage());
+                                            }
+
+                                            docRef.set(userNew.getFirebaseDocument());
+                                        }
+                                    });
+                                }
+                            });
+
+
+
                         }
                     }
                 });
         // [END update_profile]
 
         Map<String, Object> USER = new HashMap<>();
-        USER.put("name", getUsername());
+        USER.put("name",getUsername());
         USER.put("semester", getSemester());
         USER.put("stream", getStream());
 
@@ -220,9 +250,10 @@ public class EditProfileActivity extends AppCompatActivity {
                 });
     }
 
-    public void approveChanges(View view) {
+    public void approveChanges(View view){
         updateProfile();
     }
+
 
 
 }
