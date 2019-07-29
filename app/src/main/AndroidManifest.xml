@@ -26,6 +26,11 @@
         <activity android:name=".Forums.ForumActivities.AnswersActivity" />
         <activity android:name=".Forums.ForumActivities.newQuestionActivity" />
         <activity android:name=".Forums.ForumActivities.QuestionsActivity" />
+
+        <!--Profile display Activity-->
+        <activity android:name=".Profile.ProfileDisplayActivity" />
+        <!---->
+
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
