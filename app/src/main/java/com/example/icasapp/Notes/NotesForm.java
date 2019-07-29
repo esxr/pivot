@@ -11,7 +11,7 @@ import android.provider.OpenableColumns;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
+
 
 import android.os.Bundle;
 
@@ -27,7 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.icasapp.Firebase.FirebaseHelper;
-import com.example.icasapp.MainActivity;
+
 import com.example.icasapp.R;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -48,7 +48,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import in.codeshuffle.typewriterview.TypeWriterView;
 
 public class NotesForm extends AppCompatActivity {
 
@@ -92,8 +91,6 @@ public class NotesForm extends AppCompatActivity {
         progressBar.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressBar.setMax(100);//sets the maximum value 100
         progressBar.setProgress(0);//initially progress is 0
-
-
 
         String v = "";
         Bundle bundle = getIntent().getExtras();
