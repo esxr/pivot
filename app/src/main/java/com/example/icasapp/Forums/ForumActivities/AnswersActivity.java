@@ -67,7 +67,6 @@ public class AnswersActivity extends AppCompatActivity {
 
     private TextView topic;
     private TextView content;
-
     private ListenerRegistration registration;
 
     @Override

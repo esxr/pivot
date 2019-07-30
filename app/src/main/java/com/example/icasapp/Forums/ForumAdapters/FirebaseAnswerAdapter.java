@@ -45,9 +45,10 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
 
         //progress dialogue box
         final ProgressDialog progressBar = new ProgressDialog(context);
-        progressBar.setCancelable(true);//you can cancel it by pressing back button
-        progressBar.setMessage("Uploading");
-        progressBar.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressBar.setCancelable(false);//you can cancel it by pressing back button
+        progressBar.setMessage("Upvoting.....");
+
+        progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressBar.setProgress(0);//initially progress is 0
         progressBar.setMax(100);//sets the maximum value 100
 

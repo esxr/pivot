@@ -1,5 +1,6 @@
 package com.example.icasapp.Forums.ForumActivities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 import com.example.icasapp.Forums.ForumFragment;
 import com.example.icasapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -44,6 +46,8 @@ public class newQuestionActivity extends AppCompatActivity {
     private CheckBox checkBox;
     String option;
 
+    private ProgressDialog progressBar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +61,15 @@ public class newQuestionActivity extends AppCompatActivity {
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseFirestore=firebaseFirestore.getInstance();
+
+
+        progressBar = new ProgressDialog(this);
+        progressBar.setCancelable(false);//you can cancel it by pressing back button
+        progressBar.setMessage("File UPLOADING ...");
+        progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressBar.setMax(100);//sets the maximum value 100
+
+
 
         current_user_id = firebaseAuth.getCurrentUser().getUid();
         //getting name of the user
@@ -95,6 +108,9 @@ public class newQuestionActivity extends AppCompatActivity {
                 String content=Content.getText().toString();
                 if (!TextUtils.isEmpty(content) &&!TextUtils.isEmpty(title)) {
 
+                    progressBar.setProgress(0);
+                    progressBar.show();
+
                     Map<String, Object> postMap = new HashMap<>();
                     postMap.put("topic", title);
                     // postMap.put("image_thumb",ls);
@@ -117,6 +133,8 @@ public class newQuestionActivity extends AppCompatActivity {
                                     collectionReference.document(docId).update("question", FieldValue.increment(1)).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                                                                                               @Override
                                                                                                                                               public void onComplete(@NonNull Task<Void> task) {
+                                                                                                                                                  progressBar.setProgress(100);
+                                                                                                                                                  progressBar.hide();
                                                                                                                                                   Intent intent = new Intent(getApplicationContext(), QuestionsActivity.class);
                                                                                                                                                   intent.putExtra("Category",Category);
                                                                                                                                                   intent.putExtra("ID",i_d);
@@ -126,7 +144,15 @@ public class newQuestionActivity extends AppCompatActivity {
                                                                                                                                               }
                                                                                                                                           });
                                 }
-                            });
+                            })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getApplicationContext(), "SOMETHING WENT WRONG.", Toast.LENGTH_LONG).show();
+                            progressBar.hide();
+                        }
+                    });
+
                 }
             }
         });
