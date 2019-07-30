@@ -30,7 +30,7 @@ public class TestUser implements Serializable {
         this.semester = (String) object.get("semester");
         this.stream = (String) object.get("stream");
         this.regNo = (String) object.get("regNo");
-        this.profilePhoto = (String) object.get("profile_photo");
+        this.profilePhoto = (String) object.get("downloadURL");
         this.UID = (String) object.get("UID");
     }
 

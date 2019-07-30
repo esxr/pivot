@@ -145,6 +145,7 @@ public class HomeFragment extends Fragment {
                                 Log.d("Callback", ""+object);
                                 for(Map<String, Object> obj : object) {
                                     items.add(new TestUser(obj));
+                                    Log.i("Downloaded List Item", obj.toString());
                                 }
                                 itemsAdapter.notifyDataSetChanged();
                             }
