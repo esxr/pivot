@@ -142,6 +142,8 @@ public class RegisterActivity extends AppCompatActivity {
                                 );
                                 FirebaseHelper.addDocumentToCollection(user_USER.getFirebaseDocument(), "USER");
 
+
+
                                 Log.e("Registration", "Registration successful");
                                 // ---------------------------------------
 

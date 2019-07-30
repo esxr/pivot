@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,6 +31,8 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
+import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -44,6 +47,7 @@ public class EditProfileActivity extends AppCompatActivity {
     ImageView profileView;
     Uri image;
     String stream, semester;
+    private Uri postImageUri = null;
 
     FirebaseUser user;
     FirebaseFirestore db;
@@ -189,44 +193,30 @@ public class EditProfileActivity extends AppCompatActivity {
                 .setPhotoUri(getImage())
                 .build();
 
-        user.updateProfile(profileUpdates)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Log.d("msg", "User profile updated.");
-
-                            // find docId and update the details
-                            FirebaseHelper.findDocumentWithUID(user.getUid(), new FirebaseHelper.CallbackObject<String>() {
-                                @Override
-                                public void callbackCall(String docId) {
-                                    final DocumentReference docRef = FirebaseHelper.getFirestore()
-                                            .collection("USER")
-                                            .document(docId);
-
-                                    docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                            TestUser userNew = new TestUser(task.getResult().getData());
-                                            userNew.setName(user.getDisplayName());
-
-                                            try {
-                                                userNew.setProfilePhoto(user.getPhotoUrl().toString());
-                                            } catch (Exception e) {
-                                                Log.e("Photo Uri display error", e.getMessage());
-                                            }
-
-                                            docRef.set(userNew.getFirebaseDocument());
-                                        }
-                                    });
-                                }
-                            });
 
 
-                        }
-                    }
-                });
-        // [END update_profile]
+        Map<String,Object> USER = new HashMap<>();
+        USER.put("name",getUsername());
+        USER.put("semester",getSemester());
+        USER.put("stream",getStream());
+
+        Log.i("msg","USER ID"+user.getUid());
+        Log.i("msg","SEMESTER"+getSemester());
+        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+
+       firebaseFirestore.collection("USER").document(user.getUid())
+               .set(USER,SetOptions.merge())
+               .addOnSuccessListener(new OnSuccessListener<Void>() {
+           @Override
+           public void onSuccess(Void aVoid) {
+               Toast.makeText(getApplicationContext(),"Changes applied",Toast.LENGTH_LONG).show();
+           }
+       }).addOnFailureListener(new OnFailureListener() {
+           @Override
+           public void onFailure(@NonNull Exception e) {
+               Toast.makeText(getApplicationContext(),"Something went wrong",Toast.LENGTH_LONG).show();
+           }
+       });
     }
 
     public void approveChanges(View view) {

@@ -235,6 +235,5 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
     @Override
     public void onViewDetachedFromWindow(@androidx.annotation.NonNull FirebaseAnswerHolder holder) {
         super.onViewDetachedFromWindow(holder);
-        listener2.remove();
     }
 }
