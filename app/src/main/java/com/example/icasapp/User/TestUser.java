@@ -1,5 +1,7 @@
 package com.example.icasapp.User;
 
+import android.net.Uri;
+
 import androidx.annotation.Nullable;
 
 import com.example.icasapp.Annonations.Hardcoded;
@@ -46,7 +48,7 @@ public class TestUser implements Serializable {
             put("regNo", getRegNo());
             put("semester", getSemester());
             put("stream", getStream());
-            put("profile_photo", getProfilePhoto());
+            put("profile_photo", getProfilePhoto().toString());
             put("UID", getUID());
         }};
     }

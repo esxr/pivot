@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -16,7 +14,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.icasapp.Firebase.FirebaseHelper;
 import com.example.icasapp.R;
+import com.example.icasapp.User.TestUser;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -24,6 +27,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.FileNotFoundException;
@@ -114,11 +119,9 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     public void uploadImage(View view) {
-
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");
         startActivityForResult(intent, 1);
-
     }
 
     @Override
@@ -156,8 +159,7 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     public String getUsername() {
-        String displayName = inputDisplayName.getText().toString();
-        return displayName;
+        return inputDisplayName.getText().toString();
     }
 
     public void setStream(String stream) {
@@ -180,7 +182,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
     public void updateProfile() {
         // [START update_profile]
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                 .setDisplayName(getUsername())
@@ -189,35 +191,42 @@ public class EditProfileActivity extends AppCompatActivity {
 
         user.updateProfile(profileUpdates)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
-
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             Log.d("msg", "User profile updated.");
+
+                            // find docId and update the details
+                            FirebaseHelper.findDocumentWithUID(user.getUid(), new FirebaseHelper.CallbackObject<String>() {
+                                @Override
+                                public void callbackCall(String docId) {
+                                    final DocumentReference docRef = FirebaseHelper.getFirestore()
+                                            .collection("USER")
+                                            .document(docId);
+
+                                    docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            TestUser userNew = new TestUser(task.getResult().getData());
+                                            userNew.setName(user.getDisplayName());
+
+                                            try {
+                                                userNew.setProfilePhoto(user.getPhotoUrl().toString());
+                                            } catch (Exception e) {
+                                                Log.e("Photo Uri display error", e.getMessage());
+                                            }
+
+                                            docRef.set(userNew.getFirebaseDocument());
+                                        }
+                                    });
+                                }
+                            });
+
+
                         }
                     }
                 });
         // [END update_profile]
-
-        Map<String, Object> USER = new HashMap<>();
-        USER.put("name", getUsername());
-        USER.put("semester", getSemester());
-        USER.put("stream", getStream());
-
-        db.collection("USER").document(user.getUid())
-                .set(USER)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d("msg", "DocumentSnapshot successfully written!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("msg", "Error writing document", e);
-                    }
-                });
     }
 
     public void approveChanges(View view) {
