@@ -137,7 +137,7 @@ public class HomeFragment extends Fragment {
                         query.getText().toString().trim();
                 FirebaseHelper.getDocumentFromCollectionWhere(
                         "USER",
-                        new Query(getQueryProperty().toLowerCase(), queryValue.toLowerCase()),
+                        new Query(getQueryProperty(), queryValue),
                         new FirebaseHelper.CallbackObject<List<Map<String, Object>>>() {
                             @Override
                             public void callbackCall(List<Map<String, Object>> object) {
