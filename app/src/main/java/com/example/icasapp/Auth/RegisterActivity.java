@@ -23,6 +23,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import in.codeshuffle.typewriterview.TypeWriterView;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -36,6 +37,7 @@ public class RegisterActivity extends AppCompatActivity {
     private CircleImageView circleImageView;
 
     private FirebaseAuth mAuth;
+    private TypeWriterView typeWriterView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +52,21 @@ public class RegisterActivity extends AppCompatActivity {
         inputPassword = findViewById(R.id.inputPassword);
         relativeLayout = findViewById(R.id.rl);
         circleImageView = findViewById(R.id.circle_avi);
+
+        //TYPE WRITER EFFECT
+        //Create Object and refer to layout view
+         typeWriterView=(TypeWriterView)findViewById(R.id.typeWriterView);
+
+        //Setting each character animation delay
+        typeWriterView.setDelay(300);
+
+        //Setting music effect On/Off
+        typeWriterView.setWithMusic(false);
+
+        //Animating Text
+        typeWriterView.animateText("Hello, welcome to the Official ICAS App. \nBy registering, you'll agree to the terms and conditions that you never read.");
+
+
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();

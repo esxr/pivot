@@ -1,28 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout"
+    android:layout_marginTop="-20dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Auth.RegisterActivity"
-    android:background="@color/black">
+    android:layout_gravity="center"
+    android:background="@color/black"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:context=".Auth.RegisterActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/circle_avi"
+            android:layout_width="62dp"
+            android:layout_height="49dp"
+            android:layout_marginRight="235dp"
+            android:elevation="2dp"
+            android:src="@drawable/avi"
+            app:layout_constraintRight_toRightOf="@id/rl"
+            app:layout_constraintTop_toTopOf="@+id/rl" />
+
+
+        <RelativeLayout
+            android:id="@+id/rl"
+            android:layout_width="250dp"
+            android:layout_height="130dp"
+            android:layout_marginTop="0dp"
+            android:background="@drawable/register_back"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <in.codeshuffle.typewriterview.TypeWriterView
+                android:id="@+id/typeWriterView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:layout_marginLeft="14dp"
+                android:textSize="20sp"
+                android:textStyle="italic" />
+
+
+
+        </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <EditText
         android:id="@+id/inputEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="168dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/text_black"
         android:ems="10"
         android:hint="EMAIL ADDRESS"
-        android:transitionName="email"
         android:inputType="textEmailAddress"
         android:padding="10dp"
         android:textColor="@color/white"
         android:textColorHint="@color/content_txt_color"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:transitionName="email" />
 
     <EditText
         android:id="@+id/inputUsername"
@@ -32,16 +76,12 @@
         android:background="@drawable/text_black"
         android:ems="10"
         android:hint="USERNAME"
-        android:transitionName="username"
         android:inputType="text"
         android:padding="10dp"
         android:textColor="@color/white"
         android:textColorHint="@color/content_txt_color"
-        app:layout_constraintBottom_toTopOf="@+id/inputRegNo"
-        app:layout_constraintTop_toBottomOf="@+id/inputEmail"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        />
+        android:transitionName="username" />
+
     <EditText
         android:id="@+id/inputRegNo"
         android:layout_width="wrap_content"
@@ -50,20 +90,15 @@
         android:background="@drawable/text_black"
         android:ems="10"
         android:hint="REGISTRATION NO."
-        android:transitionName="reg_no"
         android:inputType="text"
         android:padding="10dp"
         android:textColor="@color/white"
         android:textColorHint="@color/content_txt_color"
-        app:layout_constraintBottom_toTopOf="@+id/inputPassword"
-        app:layout_constraintTop_toBottomOf="@+id/inputUsername"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:transitionName="reg_no"
+
         />
 
     <EditText
-        android:transitionName="password"
-        android:padding="10dp"
         android:id="@+id/inputPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -72,11 +107,22 @@
         android:ems="10"
         android:hint="PASSWORD"
         android:inputType="textPassword"
+        android:padding="10dp"
         android:textColor="@color/white"
         android:textColorHint="@color/content_txt_color"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/inputRegNo" />
+        android:transitionName="password" />
+    <EditText
+
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/text_black"
+        android:layout_marginTop="20dp"
+        android:ems="10"
+        android:hint="RE-ENTER PASSWORD"
+        android:padding="10dp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/content_txt_color" />
 
 
     <Button
@@ -84,82 +130,25 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="56dp"
+        android:background="@drawable/solid_button_white"
+        android:onClick="onRegister"
         android:paddingLeft="50dp"
         android:paddingRight="50dp"
-        android:background="@drawable/ghost_button_black"
-        android:onClick="onRegister"
         android:text="REGISTER"
-        android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+        android:textColor="@color/black"
+        android:textStyle="bold" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="88dp"
+        android:layout_marginTop="18dp"
         android:background="@android:color/transparent"
         android:onClick="onLogin"
         android:text="ALREADY HAVE AN ACCOUNT? LOGIN."
-        android:transitionName="register"
         android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button4" />
+        android:transitionName="register" />
 
-    <EditText
 
-        android:id="@+id/textView6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="96dp"
-        android:layout_marginRight="96dp"
-        android:background="@drawable/text_black"
-        android:ems="10"
-        android:hint="RE-ENTER PASSWORD"
-        android:padding="10dp"
-        android:textColor="@color/white"
-        android:textColorHint="@color/content_txt_color"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.968"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/inputPassword" />
 
-    <RelativeLayout
-        android:id="@+id/rl"
-        android:layout_width="248dp"
-        android:layout_height="109dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="80dp"
-        android:layout_marginRight="80dp"
-        android:background="@drawable/register_back"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="14dp"
-            android:layout_marginTop="10dp"
-            android:padding="15dp"
-            android:paddingLeft="20dp"
-            android:text="Hello, Welcome to the official ICAS Android app...Start your journey by registering an account."
-            android:textSize="13dp" />
-
-    </RelativeLayout>
-
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/circle_avi"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="216dp"
-        android:layout_marginRight="216dp"
-        android:src="@drawable/avi"
-        app:layout_constraintEnd_toEndOf="@+id/rl"
-        app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
