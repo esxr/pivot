@@ -5,24 +5,30 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Profile.ProfileDisplayActivity"
-    android:id="@+id/profile_list_item">
+    android:id="@+id/profile_list_item"
+    >
 
     <LinearLayout
+        android:gravity="center_vertical"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:orientation="horizontal">
+        android:layout_height="125dp"
+        android:orientation="horizontal"
+        android:weightSum="3">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:id="@+id/list_profilePhoto"/>
+            android:id="@+id/list_profilePhoto"
+            android:layout_weight="0.5"/>
 
         <LinearLayout
+            android:layout_weight="2.5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <TextView
+                android:gravity="fill_horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/list_profileName"
@@ -30,6 +36,7 @@
                 android:textSize="32sp"/>
 
             <TextView
+                android:gravity="fill_horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/list_profileRegNo"
