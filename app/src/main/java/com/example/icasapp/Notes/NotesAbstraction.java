@@ -34,8 +34,6 @@ public class NotesAbstraction {
     }
 
 
-
-
     public List<String> getNotesNameList() {
         db.collection("NOTES")
                 .get()

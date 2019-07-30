@@ -351,9 +351,10 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
                         e.printStackTrace();
                     }
                    Intent intent = new Intent(context,NotesViewActivity.class);
-                    ((Activity)context).finish();
 
                     context.startActivity(intent);
+                    ((Activity)context).finish();
+
                 }
             });
         }

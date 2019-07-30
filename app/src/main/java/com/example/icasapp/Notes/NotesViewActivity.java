@@ -17,6 +17,8 @@ import android.util.Log;
 import android.widget.EditText;
 
 
+import com.example.icasapp.Feed.FeedFragment;
+import com.example.icasapp.MainActivity;
 import com.example.icasapp.R;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -174,10 +176,14 @@ public class NotesViewActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+        startActivity(new Intent(getApplicationContext(), MainActivity.class));
 
 
-
-
+    }
 }
 
 

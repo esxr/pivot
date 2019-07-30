@@ -11,7 +11,7 @@ import android.provider.OpenableColumns;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
+
 
 import android.os.Bundle;
 
@@ -27,7 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.icasapp.Firebase.FirebaseHelper;
-import com.example.icasapp.MainActivity;
+
 import com.example.icasapp.R;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -47,6 +47,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 
 public class NotesForm extends AppCompatActivity {
 
@@ -89,7 +90,7 @@ public class NotesForm extends AppCompatActivity {
         progressBar.setMessage("File UPLOADING ...");
         progressBar.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressBar.setMax(100);//sets the maximum value 100
-
+        progressBar.setProgress(0);//initially progress is 0
 
         String v = "";
         Bundle bundle = getIntent().getExtras();
@@ -244,27 +245,28 @@ public class NotesForm extends AppCompatActivity {
         SUBJECT = SubjectText.getText().toString();
         SUBJECT_ABR = SubjectAbrText.getText().toString();
         FILE_NAME_BY_USER = FileName.getText().toString();
+
+        Log.i("msg", "SUBJECT DATA:" + SUBJECT + SUBJECT_ABR + FILE_NAME_BY_USER);
         if (SUBJECT == null || SUBJECT == "" || SUBJECT == " ") {
             SubjectText.requestFocus();
-            Toast.makeText(getApplicationContext(), "ENTER SUBJECT NAME.", Toast.LENGTH_LONG);
-
+            Toast.makeText(getApplicationContext(), "ENTER SUBJECT NAME.", Toast.LENGTH_LONG).show();
         } else if (SUBJECT_ABR == null || SUBJECT_ABR == "" || SUBJECT_ABR == " ") {
             SubjectAbrText.requestFocus();
-            Toast.makeText(getApplicationContext(), "ENTER SUBJECT ABBREVIARTION.", Toast.LENGTH_LONG);
+            Toast.makeText(getApplicationContext(), "ENTER SUBJECT ABBREVIARTION.", Toast.LENGTH_LONG).show();
         } else if (FILE_NAME_BY_USER == null || FILE_NAME_BY_USER == "" || FILE_NAME_BY_USER == " ") {
             FileName.requestFocus();
-            Toast.makeText(getApplicationContext(), "ENTER FILE NAME.", Toast.LENGTH_LONG);
-        } else if (SEMESTER == null || SEMESTER == "" || SEMESTER == " ") {
-            Toast.makeText(getApplicationContext(), "SELECT SEMESTER.", Toast.LENGTH_LONG);
-        } else if (SESSIONAL == null || SESSIONAL == "" || SESSIONAL == " ") {
-            Toast.makeText(getApplicationContext(), "SELECT SESSIONAL.", Toast.LENGTH_LONG);
+            Toast.makeText(getApplicationContext(), "ENTER FILE NAME.", Toast.LENGTH_LONG).show();
+        } else if (SEMESTER == null || SEMESTER == "" || SEMESTER == " " || SEMESTER == "SELECT SEMESTER...") {
+            Toast.makeText(getApplicationContext(), "SELECT SEMESTER.", Toast.LENGTH_LONG).show();
+        } else if (SESSIONAL == null || SESSIONAL == "" || SESSIONAL == " " || SESSIONAL == "SELECT SESSIONAL...") {
+            Toast.makeText(getApplicationContext(), "SELECT SESSIONAL.", Toast.LENGTH_LONG).show();
         } else {
+
             Log.i("msg", "SEMESTER ON CLICK: " + SEMESTER);
             Log.i("msg", "SESSIONAL ON CLICK: " + SESSIONAL);
             Log.i("msg", "SUBJECT ON CLICK: " + SUBJECT);
             Log.i("msg", "SUBJECT_ABR ON CLICK: " + SUBJECT_ABR);
             Log.i("msg", "FILE NAME ON CLICK: " + FILE_NAME_BY_USER);
-
             uploadFile(FILE_NAME_BY_USER);
 
         }
@@ -313,8 +315,7 @@ public class NotesForm extends AppCompatActivity {
 
         final StorageReference ref = storageRef.child("NOTES/" + FILE_NAME_BY_USER);
         UploadTask uploadTask = ref.putFile(DATA);
-        progressBar.show();
-        progressBar.setProgress(0);//initially progress is 0
+
 
 
         Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
@@ -334,6 +335,7 @@ public class NotesForm extends AppCompatActivity {
             public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                 double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
                 Log.i("msg", "Upload is " + progress + "% done");
+                progressBar.show();
                 progressBar.setProgress((int) progress);
             }
         }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {

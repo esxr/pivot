@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.example.icasapp.R;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import com.google.firebase.storage.FirebaseStorage;
@@ -30,6 +31,8 @@ public class NotesFragment extends Fragment {
     FirebaseFirestore db;
     Uri DATA;
 
+    FloatingActionButton floatingActionButton;
+
 
 
 
@@ -44,14 +47,21 @@ public class NotesFragment extends Fragment {
         // Inflate the layout for this fragment
         notesView = inflater.inflate(R.layout.fragment_notes, container, false);
 
-
-
         uploadButton = notesView.findViewById(R.id.uploadButton);
         viewButton = notesView.findViewById(R.id.viewButton);
 
         storageRef = FirebaseStorage.getInstance().getReference();
 
         db = FirebaseFirestore.getInstance();
+
+        floatingActionButton = notesView.findViewById(R.id.addNotes);
+
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showFileChooser();
+            }
+        });
 
 
 
