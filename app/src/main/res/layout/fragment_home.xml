@@ -68,10 +68,13 @@
         android:id="@+id/profile_menu"/>
 
     <TextView
+        android:layout_marginTop="16dp"
+        android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="No Results ..."
-        android:textSize="33sp"
+        android:text="No matches found ..."
+        android:textSize="32sp"
+        android:textColor="@color/gray"
         android:id="@+id/emptyElement"
         />
 
