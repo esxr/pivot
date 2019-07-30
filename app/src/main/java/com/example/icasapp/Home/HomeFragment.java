@@ -71,7 +71,7 @@ public class HomeFragment extends Fragment {
         homeView = inflater.inflate(R.layout.fragment_home, container, false);
 
         // reference of all views
-      /*  query = homeView.findViewById(R.id.query);
+        query = homeView.findViewById(R.id.query);
         profileSearch = homeView.findViewById(R.id.profileSearch);
 
         // intitialize the array and listview adapter
@@ -150,7 +150,7 @@ public class HomeFragment extends Fragment {
                             }
                         });
             }
-        }); */
+        });
 
         // Inflate the layout for this fragment
         return homeView;
