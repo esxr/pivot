@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.icasapp.Forums.ForumFragment;
 import com.example.icasapp.ObjectClasses.Answers;
 import com.example.icasapp.R;
@@ -40,7 +41,7 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
     private Context context;
     FirebaseFirestore firebaseFirestore;
     private ListenerRegistration listener2;
-
+    private ListenerRegistration listener3;
 
 
     public FirebaseAnswerAdapter(@NonNull FirestoreRecyclerOptions<Answers> options) {
@@ -61,7 +62,7 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
         progressBar.setMax(100);//sets the maximum value 100
 
         final String currentUser=firebaseAuth.getCurrentUser().getUid();
-        final String id=model.AnswerPostId;
+        final String id=model.getUser_id();
 
         //if current user is logged
         if( model.getUser_id().equals(currentUser)){
@@ -84,7 +85,7 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
         holder.setupvote(String.valueOf(model.upvotes));
 
         //button blue and empty is upvoted or not
-        listener2 = getSnapshots().getSnapshot(position).getReference().collection("Upvotes").document(currentUser).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+        listener2 = getSnapshots().getSnapshot(position).getReference().collection("Upvotes").document().addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
                 if(documentSnapshot.exists()){
@@ -100,53 +101,61 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
             }
         });
 
-        holder.upvotes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                progressBar.show();
-                // viewHolder.upvotes.setEnabled(false);//displays the progress bar
-                getSnapshots().getSnapshot(position).getReference().collection("Upvotes")
-                        .document(currentUser).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        listener3 = firebaseFirestore.collection("USER").document(id).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                                                                                                       @Override
+                                                                                                       public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                                                                                                           String url = documentSnapshot.get("downloadURL").toString();
+                                                                                                           holder.setProfilePic(url);
+                                                                                                       }
+                                                                                                   });
+
+                holder.upvotes.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if (documentSnapshot.exists()) {
-                            getSnapshots().getSnapshot(position).getReference().collection("Upvotes").document(currentUser).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Log.i("FLOW", "downvoted" + String.valueOf(position));
-                                  getSnapshots().getSnapshot(position).getReference().update("upvotes", FieldValue.increment(-1)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    public void onClick(View v) {
+                        progressBar.show();
+                        // viewHolder.upvotes.setEnabled(false);//displays the progress bar
+                        getSnapshots().getSnapshot(position).getReference().collection("Upvotes")
+                                .document(currentUser).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                if (documentSnapshot.exists()) {
+                                    getSnapshots().getSnapshot(position).getReference().collection("Upvotes").document(currentUser).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
-                                            // viewHolder.upvotes.setEnabled(true);//displays the progress bar
-                                            progressBar.cancel();
+                                            Log.i("FLOW", "downvoted" + String.valueOf(position));
+                                            getSnapshots().getSnapshot(position).getReference().update("upvotes", FieldValue.increment(-1)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    // viewHolder.upvotes.setEnabled(true);//displays the progress bar
+                                                    progressBar.cancel();
+                                                }
+                                            });
+                                        }
+                                    });
+
+                                } else {
+
+                                    HashMap<String, Object> postMap = new HashMap<>();
+                                    postMap.put("timestamp", FieldValue.serverTimestamp());
+                                    getSnapshots().getSnapshot(position).getReference().collection("Upvotes").document(currentUser).set(postMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Log.i("FLOW", "upvoted" + String.valueOf(position));
+                                            getSnapshots().getSnapshot(position).getReference().update("upvotes", FieldValue.increment(1)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    //viewHolder.upvotes.setEnabled(true);
+                                                    progressBar.cancel();
+                                                }
+                                            });
                                         }
                                     });
                                 }
-                            });
-
-                        } else {
-
-                            HashMap<String, Object> postMap = new HashMap<>();
-                            postMap.put("timestamp", FieldValue.serverTimestamp());
-                            getSnapshots().getSnapshot(position).getReference().collection("Upvotes").document(currentUser).set(postMap).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Log.i("FLOW", "upvoted" + String.valueOf(position));
-                                    getSnapshots().getSnapshot(position).getReference().update("upvotes", FieldValue.increment(1)).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            //viewHolder.upvotes.setEnabled(true);
-                                            progressBar.cancel();
-                                        }
-                                    });
-                                }
-                            });
-                        }
+                            }
+                        });
                     }
-                });
-            }
 
-        });
+                });
 
 
 
@@ -197,6 +206,7 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
         TextView answers;
         TextView upVotes;
         ImageView delete;
+        ImageView profilePic;
 
         public FirebaseAnswerHolder(@NonNull View itemView) {
             super(itemView);
@@ -205,7 +215,7 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
             upVotes=mView.findViewById(R.id.upvote_text);
             answers=mView.findViewById(R.id.Answer);
             delete=mView.findViewById(R.id.delete);
-
+            profilePic=mView.findViewById(R.id.profilePic);
         }
 
         public void setAnswer(String answer){
@@ -218,6 +228,11 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
 
         public void setupvote(String upvote){
             upVotes.setText(upvote);
+        }
+
+        public void setProfilePic(String url)
+        {
+            Glide.with(context).load(url).into(profilePic);
         }
 
     }
@@ -236,4 +251,6 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
     public void onViewDetachedFromWindow(@androidx.annotation.NonNull FirebaseAnswerHolder holder) {
         super.onViewDetachedFromWindow(holder);
     }
+
+
 }
