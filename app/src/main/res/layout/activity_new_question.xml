@@ -39,6 +39,7 @@
 
 
     <RelativeLayout
+        android:id="@+id/relativeLayout"
         android:layout_width="421dp"
         android:layout_height="240dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -50,13 +51,13 @@
             android:id="@+id/Content"
             android:layout_width="386dp"
             android:layout_height="214dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginLeft="15dp"
             android:layout_marginTop="48dp"
             android:background="@drawable/black_textfield"
             android:drawableRight="@drawable/arrow_white"
             android:ems="10"
             android:gravity="top"
-            android:layout_marginStart="15dp"
-            android:layout_marginLeft="15dp"
             android:hint="Content"
             android:inputType="textMultiLine"
             android:paddingLeft="20dp"
@@ -98,4 +99,22 @@
         app:layout_constraintHorizontal_bias="0.557"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/animation_view" />
+
+    <CheckBox
+        android:id="@+id/anonymous"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="284dp"
+        android:layout_marginRight="284dp"
+        android:text="Upload anonymously"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
+        app:layout_constraintVertical_bias="0.557" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

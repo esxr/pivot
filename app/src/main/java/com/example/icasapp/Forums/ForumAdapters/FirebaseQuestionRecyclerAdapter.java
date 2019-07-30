@@ -70,6 +70,7 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
         String currentUser= FirebaseAuth.getInstance().getCurrentUser().getUid();
         String uid = questions.getUser_id();
 
+        if(!uid.equals("empty"))
         firebaseFirestore.collection("USER").document(uid).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
@@ -80,6 +81,9 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
                 }
             }
         });
+        else{
+            questionHolder.setUsername("Anonymous");
+        }
 
         questionHolder.setQuestion(question);
         questionHolder.setBestAnswer(best_answer);

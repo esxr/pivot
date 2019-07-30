@@ -7,8 +7,11 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.MultiAutoCompleteTextView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.icasapp.Forums.ForumFragment;
@@ -22,6 +25,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,6 +41,8 @@ public class newQuestionActivity extends AppCompatActivity {
     private String current_user_id;
     private String name;
     private FirebaseFirestore firebaseFirestore;
+    private CheckBox checkBox;
+    String option;
 
 
     @Override
@@ -44,9 +50,10 @@ public class newQuestionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_question);
 
-        addQuestion=findViewById(R.id.Add);
-        Content=findViewById(R.id.Content);
-        Title=findViewById(R.id.Title);
+        addQuestion = findViewById(R.id.Add);
+        Content     = findViewById(R.id.Content);
+        Title       = findViewById(R.id.Title);
+        checkBox     = findViewById(R.id.anonymous);
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseFirestore=firebaseFirestore.getInstance();
@@ -57,12 +64,27 @@ public class newQuestionActivity extends AppCompatActivity {
                                                                                                        @Override
                                                                                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                                                                                            DocumentSnapshot doc=task.getResult();
-                                                                                                           name= doc.get("name").toString();
+                                                                                                         name= doc.get("name").toString();
                                                                                                        }
                                                                                                    });
+        option = "";
+        checkBox.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            if(((CompoundButton) v).isChecked())
+                                            {
+                                                option = "anonymous";
+
+                                            }
+                                            else
+                                            {
+                                                option = "";
+                                            }
+                                        }
+                                    });
 
 
-        Intent intent=getIntent();
+                Intent intent = getIntent();
         final String docId = intent.getStringExtra("post_id");
         Category=intent.getStringExtra("Category");
         i_d=intent.getStringExtra("ID");
@@ -77,11 +99,16 @@ public class newQuestionActivity extends AppCompatActivity {
                     postMap.put("topic", title);
                     // postMap.put("image_thumb",ls);
                     postMap.put("content", content);
-                    postMap.put("user_id", current_user_id);
                     postMap.put("timestamp", FieldValue.serverTimestamp());
-                    postMap.put("name",name);
+                    if(!option.equals("anonymous")){
+                        postMap.put("name",name);
+                        postMap.put("user_id", current_user_id);
+                    }
+                    else{
+                        postMap.put("name","");
+                        postMap.put("user_id", "empty");
+                    }
                     postMap.put("best_answer","");
-
                     ForumFragment.setFirestoreReference(firebaseFirestore, ForumFragment.i_d, "c");
                     collectionReference.document(docId).collection("Questions").add(postMap)
                             .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {

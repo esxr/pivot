@@ -86,16 +86,21 @@ public class QuestionRecyclerAdapter extends RecyclerView.Adapter<QuestionRecycl
         String currentUser=FirebaseAuth.getInstance().getUid();
         String uid=questionsList.get(i).getUser_id();
 
-        firebaseFirestore.collection("USER").document(uid).addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                                                                                   @Override
-                                                                                   public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
-                                                                                       if(documentSnapshot.exists()){
-                                                                                           Log.d("NAME", documentSnapshot.get("name").toString());
-                                                                                           user_name = documentSnapshot.get("name").toString();
-                                                                                           viewHolder.setUsername(user_name);
-                                                                                       }
-                                                                                   }
-                                                                               });
+
+        if(!uid.equals("empty")) {
+            firebaseFirestore.collection("USER").document(uid).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                @Override
+                public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
+                    if (documentSnapshot.exists()) {
+                        Log.d("NAME", documentSnapshot.get("name").toString());
+                        user_name = documentSnapshot.get("name").toString();
+                        viewHolder.setUsername(user_name);
+                    }
+                }
+            });
+        }
+        else
+            viewHolder.setUsername("Anonymous");
 
         viewHolder.setQuestion(question);
         viewHolder.setBestAnswer(best_answer);
