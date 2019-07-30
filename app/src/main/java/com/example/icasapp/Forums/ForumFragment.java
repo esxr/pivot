@@ -1,11 +1,16 @@
 package com.example.icasapp.Forums;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+
+import com.example.icasapp.Forums.ForumActivities.QuestionsActivity;
+import com.example.icasapp.Forums.ForumAdapters.FirebaseAnswerAdapter;
+import com.example.icasapp.Forums.ForumAdapters.FirebaseDiscussionRecyclerAdapter;
+import com.example.icasapp.ObjectClasses.Answers;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.fragment.app.Fragment;
 import androidx.core.view.ViewCompat;
@@ -15,6 +20,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
@@ -38,6 +44,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.reactivex.annotations.NonNull;
+import io.reactivex.annotations.Nullable;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -63,6 +72,8 @@ public class ForumFragment extends Fragment implements AdapterView.OnItemClickLi
     public static String Category;
     public static CollectionReference collectionReference;
     public static Query query;
+    private FirebaseDiscussionRecyclerAdapter adapter;
+    private View view;
     int c = 0;
 
     public ForumFragment() {
@@ -73,21 +84,21 @@ public class ForumFragment extends Fragment implements AdapterView.OnItemClickLi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.fragment_forum, container, false);
+        view = inflater.inflate(R.layout.fragment_forum, container, false);
         // Inflate the layout for this fragment
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
 
-        discussion_list_view = view.findViewById(R.id.discussion_list_view);
+      /*  discussion_list_view = view.findViewById(R.id.discussion_list_view);
 
         discussion_list = new ArrayList<>();
         //initialising the adapter
         discussionRecyclerAdapter = new DiscussionRecyclerAdapter(discussion_list);
 
         discussion_list_view.setLayoutManager(new LinearLayoutManager(container.getContext()));
-        discussion_list_view.setAdapter(discussionRecyclerAdapter);
-        ViewCompat.setNestedScrollingEnabled(discussion_list_view, false);
+        discussion_list_view.setAdapter(discussionRecyclerAdapter); */
+//        ViewCompat.setNestedScrollingEnabled(discussion_list_view, false);
 
         //creates subjects menu
         firebaseFirestore.collection("USER").document(firebaseAuth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -113,6 +124,9 @@ public class ForumFragment extends Fragment implements AdapterView.OnItemClickLi
             @Override
             public void onClick(View v) {
                 Intent postBtnIntent = new Intent(getActivity(), NewDiscussionActivity.class);
+                //Category is passed between activities so that the value can be used
+                postBtnIntent.putExtra("Category",Category);
+                postBtnIntent.putExtra("ID",i_d);
                 startActivity(postBtnIntent);
             }
         });
@@ -128,12 +142,21 @@ public class ForumFragment extends Fragment implements AdapterView.OnItemClickLi
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        if(isFirstPageFirstLoad)
+        adapter.startListening();
+    }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(isFirstPageFirstLoad)
+        adapter.stopListening();
     }
 
     public void getMenuItem() {
@@ -214,11 +237,12 @@ public class ForumFragment extends Fragment implements AdapterView.OnItemClickLi
 
     void addSnapshotToQuery(Query query,Boolean changed)
     {
-        if(changed)
+     /*   if(changed)
         {
             discussion_list.clear();
             discussionRecyclerAdapter.notifyDataSetChanged();
         }
+
         query.orderBy("timestamp",Query.Direction.DESCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@javax.annotation.Nullable QuerySnapshot queryDocumentSnapshots, @javax.annotation.Nullable FirebaseFirestoreException e) {
@@ -238,25 +262,33 @@ public class ForumFragment extends Fragment implements AdapterView.OnItemClickLi
                         discussionRecyclerAdapter.notifyDataSetChanged();
                     }
                     if (doc.getType() == DocumentChange.Type.REMOVED){
-                        String id = doc.getDocument().getId();
-                        int i = 0;
-                        int index=0;
-                        for(DiscussionTopic discussion : discussion_list){
-                            String disId=discussion.DiscussionPostid;
-                            if(disId.equals(id)){
-                             index=i;
-                            }
-                            i++;
-                        }
-                        discussion_list.remove(index);
-                        discussionRecyclerAdapter.notifyDataSetChanged();
+                       discussionRecyclerAdapter.notifyDataSetChanged();
                     }
 
                 }
 
                 isFirstPageFirstLoad = false;
             }
-        });
+        }); */
+        Query query1 = query.orderBy("timestamp",Query.Direction.DESCENDING);
+
+
+
+        FirestoreRecyclerOptions<DiscussionTopic> options = new FirestoreRecyclerOptions.Builder<DiscussionTopic>()
+                .setQuery(query1,DiscussionTopic.class)
+                .build();
+
+        adapter = new FirebaseDiscussionRecyclerAdapter(options);
+
+        Context context = getContext();
+        RecyclerView recyclerView = view.findViewById(R.id.discussion_list_view);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        recyclerView.setAdapter(adapter);
+        recyclerView.setNestedScrollingEnabled(true);
+
+        adapter.startListening();
+        isFirstPageFirstLoad=true;
     }
 
     public static void setFirestoreReference(FirebaseFirestore firebaseFirestore,String ID,String type)
@@ -281,6 +313,4 @@ public class ForumFragment extends Fragment implements AdapterView.OnItemClickLi
             }
         }
     }
-
-
 }

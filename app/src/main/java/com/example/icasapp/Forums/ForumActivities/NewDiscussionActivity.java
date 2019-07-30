@@ -6,12 +6,12 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
-import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -45,6 +45,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import id.zelory.compressor.Compressor;
+import io.reactivex.annotations.NonNull;
 
 import static com.example.icasapp.Forums.ForumFragment.collectionReference;
 import static com.example.icasapp.Forums.ForumFragment.i_d;
@@ -63,6 +64,8 @@ public class NewDiscussionActivity extends AppCompatActivity {
     private Bitmap compressedImageFile;
     private String downloadUrl;
     private TextView discuss_txt;
+    private String Category;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +84,11 @@ public class NewDiscussionActivity extends AppCompatActivity {
         storageReference = FirebaseStorage.getInstance().getReference();
         firebaseFirestore = FirebaseFirestore.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
+
+        Intent intent = getIntent();
+        Category = intent.getStringExtra("Category");
+        i_d = intent.getStringExtra("ID");
+
 
         current_user_id = firebaseAuth.getCurrentUser().getUid();
         //if the build if it is greater than Marshmellow. If it is permission is asked from the user to access storage
@@ -166,18 +174,27 @@ public class NewDiscussionActivity extends AppCompatActivity {
                                     postMap.put("timestamp", FieldValue.serverTimestamp());
                                     postMap.put("question",0);
 
-                                    setFirestoreReference(firebaseFirestore,i_d,"c");
+
+                                        if (Category.equals("General") || Category.equals("Alumni")) {
+                                            Log.i("LOL","SUCC");
+                                            collectionReference = firebaseFirestore.collection("General").document(Category).collection("Posts");
+                                        } else {
+                                            Log.i("LOL","SUC");
+                                            collectionReference = firebaseFirestore.collection("Specific").document(i_d).collection("Subjects").document(Category).collection("Posts");
+
+                                        }
+
 
                                     collectionReference.add(postMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                                         @Override
 
                                         public void onComplete(@NonNull Task<DocumentReference> task) {
                                             if (task.isSuccessful()) {
-
-                                                Toast.makeText(NewDiscussionActivity.this, "Post was added", Toast.LENGTH_LONG).show();
-                                                Intent mainIntent = new Intent(getApplicationContext(), ForumFragment.class);
-                                                startActivity(mainIntent);
                                                 finish();
+                                                Toast.makeText(NewDiscussionActivity.this, "Post was added", Toast.LENGTH_LONG).show();
+                                           //     Intent mainIntent = new Intent(getApplicationContext(), ForumFragment.class);
+                                           //     startActivity(mainIntent);
+                                            //    finish();
 
                                             } else {
                                                 Toast.makeText(NewDiscussionActivity.this, "Post was not added", Toast.LENGTH_LONG).show();

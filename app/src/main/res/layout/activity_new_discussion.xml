@@ -71,6 +71,8 @@
         android:padding="16dp"
         android:text="Add topic"
         android:textAllCaps="false"
+        android:foreground="?attr/selectableItemBackground"
+        android:focusable="true"
         android:clickable="true"
         android:textColor="@color/white"
         android:textSize="18sp"

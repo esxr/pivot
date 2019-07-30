@@ -50,12 +50,13 @@ public class DiscussionRecyclerAdapter extends RecyclerView.Adapter<DiscussionRe
 
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.discussion_list_item, viewGroup, false);
+      /*  View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.discussion_list_item, viewGroup, false);
         context=viewGroup.getContext();
         firebaseFirestore=FirebaseFirestore.getInstance();
         firebaseAuth=FirebaseAuth.getInstance();
         ForumFragment.setFirestoreReference(firebaseFirestore,i_d,"c");
-        return new ViewHolder(view);
+        return new ViewHolder(view); */
+      return null;
     }
 
     //bind actual data in the elements

@@ -4,14 +4,15 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
+import android.provider.DocumentsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.icasapp.Forums.ForumFragment;
 import com.example.icasapp.ObjectClasses.Answers;
@@ -21,15 +22,24 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
+
+import javax.annotation.Nullable;
+
+import io.reactivex.annotations.NonNull;
 
 
 public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, FirebaseAnswerAdapter.FirebaseAnswerHolder> {
     private Context context;
     FirebaseFirestore firebaseFirestore;
+    private ListenerRegistration listener2;
 
 
 
@@ -38,7 +48,7 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull FirebaseAnswerHolder holder, final int position, @NonNull Answers model) {
+    protected void onBindViewHolder(@NonNull final FirebaseAnswerHolder holder, final int position, @NonNull Answers model) {
         FirebaseAuth firebaseAuth=FirebaseAuth.getInstance();
 
         //progress dialogue box
@@ -72,6 +82,23 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
 
         holder.setupvote(String.valueOf(model.upvotes));
 
+        //button blue and empty is upvoted or not
+        listener2 = getSnapshots().getSnapshot(position).getReference().collection("Upvotes").document(currentUser).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                if(documentSnapshot.exists()){
+                    //if upvoted
+                    holder.upvotes.setImageDrawable(context.getDrawable(R.drawable.upvote_blue));
+                    Log.i("msg","upvote drawable upvote invoked");
+                }
+                else
+                {
+                    holder.upvotes.setImageDrawable(context.getDrawable(R.drawable.upvote));
+                    Log.i("msg","upvote drawable downvote invoked");
+                }
+            }
+        });
+
         holder.upvotes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,6 +124,7 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
                             });
 
                         } else {
+
                             HashMap<String, Object> postMap = new HashMap<>();
                             postMap.put("timestamp", FieldValue.serverTimestamp());
                             getSnapshots().getSnapshot(position).getReference().collection("Upvotes").document(currentUser).set(postMap).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -201,5 +229,9 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
         return position;
     }
 
-
+    @Override
+    public void onViewDetachedFromWindow(@androidx.annotation.NonNull FirebaseAnswerHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+        listener2.remove();
+    }
 }

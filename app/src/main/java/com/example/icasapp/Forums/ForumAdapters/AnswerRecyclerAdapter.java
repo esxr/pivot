@@ -4,7 +4,6 @@ package com.example.icasapp.Forums.ForumAdapters;
 import android.app.ProgressDialog;
 import android.content.Context;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,6 +32,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Nullable;
+
+import io.reactivex.annotations.NonNull;
 
 import static com.example.icasapp.Forums.ForumActivities.AnswersActivity.ans_id;
 import static com.example.icasapp.Forums.ForumActivities.QuestionsActivity.docId;
