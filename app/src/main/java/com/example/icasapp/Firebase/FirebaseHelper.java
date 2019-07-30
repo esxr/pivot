@@ -233,16 +233,18 @@ public class FirebaseHelper {
     }
 
     public static void findDocumentWithUID(String uid, final CallbackObject<String> callback) {
-        final CollectionReference userRef = getFirestore().collection("USER");
-        Log.e("Current user UID", FirebaseHelper.getUser().getUid());
-        userRef.whereEqualTo("UID", FirebaseHelper.getUser().getUid()).get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        String docId = task.getResult().getDocuments().get(0).getId();
-                        callback.callbackCall(docId);
-                    }
-                });
+        try {
+            final CollectionReference userRef = getFirestore().collection("USER");
+            Log.e("Current user UID", FirebaseHelper.getUser().getUid());
+            userRef.whereEqualTo("UID", FirebaseHelper.getUser().getUid()).get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            String docId = task.getResult().getDocuments().get(0).getId();
+                            callback.callbackCall(docId);
+                        }
+                    });
+        } catch(Exception e) { Log.e("msg", e.getMessage()); }
     }
 
 
