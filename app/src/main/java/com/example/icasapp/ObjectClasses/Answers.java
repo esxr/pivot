@@ -4,8 +4,8 @@ import java.util.Date;
 
 public class Answers extends AnswersPostId{
 
-    private String answer ,user_id;
-    public String upvotes;
+    private String answer ,user_id, name;
+    public int upvotes;
     public Date timestamp;
 
 
@@ -13,11 +13,12 @@ public class Answers extends AnswersPostId{
 
     }
 
-    public Answers(String answer,String upvotes, String user_id, Date timestamp) {
+    public Answers(String answer,int upvotes, String user_id, Date timestamp, String name) {
         this.answer=answer;
         this.upvotes = upvotes;
         this.user_id = user_id;
         this.timestamp = timestamp;
+        this.name = name;
     }
 
     public String getAnswer() {
@@ -44,9 +45,16 @@ public class Answers extends AnswersPostId{
         this.timestamp = timestamp;
     }
 
-    public String getUpvotes(){ return upvotes; }
+    public int getUpvotes(){ return upvotes; }
 
-    public void setUpvotes(String upvotes){ this.upvotes=upvotes; }
+    public void setUpvotes(int upvotes){ this.upvotes=upvotes; }
 
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

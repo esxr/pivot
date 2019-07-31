@@ -1,24 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/navigation_home"
-        android:icon="@drawable/ic_home_black_24dp"
-        android:title="@string/title_home" />
+        android:icon="@drawable/home_account"
+        android:title="@string/title_home"
+        android:enabled="true"
+        app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/navigation_notes"
-        android:icon="@drawable/ic_dashboard_black_24dp"
-        android:title="@string/notes" />
+        android:icon="@drawable/pencil_plus"
+        android:title="@string/notes"
+        android:enabled="true"
+        app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/navigation_forum"
-        android:icon="@drawable/ic_notifications_black_24dp"
-        android:title="@string/forum" />
+        android:icon="@drawable/forum"
+        android:title="@string/forum"
+        android:enabled="true"
+        app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/navigation_feed"
-        android:icon="@drawable/ic_home_black_24dp"
-        android:title="@string/feed" />
+        android:icon="@drawable/worker"
+        android:title="@string/feed"
+        android:enabled="true"
+        app:showAsAction="ifRoom"/>
 
 </menu>

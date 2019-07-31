@@ -1,29 +1,32 @@
 package com.example.icasapp.Forums.ForumActivities;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.icasapp.Forums.ForumFragment;
 import com.example.icasapp.R;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -43,6 +46,11 @@ import java.util.Map;
 import java.util.UUID;
 
 import id.zelory.compressor.Compressor;
+import io.reactivex.annotations.NonNull;
+
+import static com.example.icasapp.Forums.ForumFragment.collectionReference;
+import static com.example.icasapp.Forums.ForumFragment.i_d;
+import static com.example.icasapp.Forums.ForumFragment.setFirestoreReference;
 
 
 public class NewDiscussionActivity extends AppCompatActivity {
@@ -56,18 +64,41 @@ public class NewDiscussionActivity extends AppCompatActivity {
     private String current_user_id;
     private Bitmap compressedImageFile;
     private String downloadUrl;
+    private TextView discuss_txt;
+    private String Category;
+    private ProgressDialog progressBar;
+    UploadTask uploadTask;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_discussion);
 
+        Animation fade = AnimationUtils.loadAnimation(this, R.anim.fade_scale);
+
         setUpImage = findViewById(R.id.new_post_image);
+        discuss_txt = findViewById(R.id.discuss_text);
+
+        discuss_txt.setAnimation(fade);
+
         newPostBtn = findViewById(R.id.post_btn);
         editText = findViewById(R.id.topic);
         storageReference = FirebaseStorage.getInstance().getReference();
         firebaseFirestore = FirebaseFirestore.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
+
+        //SET PROGRESS DIALOG.
+        progressBar = new ProgressDialog(this);
+        progressBar.setCancelable(false);//you can cancel it by pressing back button
+        progressBar.setMessage("File UPLOADING ...");
+        progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressBar.setMax(100);//sets the maximum value 100
+
+        Intent intent = getIntent();
+        Category = intent.getStringExtra("Category");
+        i_d = intent.getStringExtra("ID");
+
 
         current_user_id = firebaseAuth.getCurrentUser().getUid();
         //if the build if it is greater than Marshmellow. If it is permission is asked from the user to access storage
@@ -112,6 +143,9 @@ public class NewDiscussionActivity extends AppCompatActivity {
 
                     final String randomName = UUID.randomUUID().toString();
 
+                    progressBar.setProgress(0);
+                    progressBar.show();
+
                     // PHOTO UPLOAD
                     File newImageFile = new File(postImageUri.getPath());
                     try {
@@ -133,15 +167,21 @@ public class NewDiscussionActivity extends AppCompatActivity {
                     // PHOTO UPLOAD
                     final StorageReference FilePath = storageReference.child("post_images").child(randomName + ".jpg");
                     FilePath.putBytes(imageData).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+
+
+
+
                         @Override
                         public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
                             if(!task.isSuccessful())
                             {
                                 Toast.makeText(NewDiscussionActivity.this,"Cant Upload",Toast.LENGTH_SHORT).show();
                             }
+
                             return FilePath.getDownloadUrl();
                         }
                     })
+
                             .addOnCompleteListener(new OnCompleteListener<Uri>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Uri> task) {
@@ -151,17 +191,32 @@ public class NewDiscussionActivity extends AppCompatActivity {
                                     postMap.put("content", content);
                                     postMap.put("user_id", current_user_id);
                                     postMap.put("timestamp", FieldValue.serverTimestamp());
+                                    postMap.put("question",0);
 
-                                    firebaseFirestore.collection("Posts").add(postMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+
+
+                                        if (Category.equals("General") || Category.equals("Alumni")) {
+                                            Log.i("LOL","SUCC");
+                                            collectionReference = firebaseFirestore.collection("General").document(Category).collection("Posts");
+                                        } else {
+                                            Log.i("LOL","SUC");
+                                            collectionReference = firebaseFirestore.collection("Specific").document(i_d).collection("Subjects").document(Category).collection("Posts");
+
+                                        }
+
+
+                                    collectionReference.add(postMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                                         @Override
 
                                         public void onComplete(@NonNull Task<DocumentReference> task) {
                                             if (task.isSuccessful()) {
-
+                                                finish();
                                                 Toast.makeText(NewDiscussionActivity.this, "Post was added", Toast.LENGTH_LONG).show();
-                                                //Intent mainIntent = new Intent(NewDiscussionActivity.this, MainActivity.class);
-                                                //startActivity(mainIntent);
-                                                //finish();
+                                           //     Intent mainIntent = new Intent(getApplicationContext(), ForumFragment.class);
+                                                progressBar.setProgress(100);
+                                                progressBar.hide();
+                                           //     startActivity(mainIntent);
+                                                //    finish();
 
                                             } else {
                                                 Toast.makeText(NewDiscussionActivity.this, "Post was not added", Toast.LENGTH_LONG).show();
@@ -175,7 +230,9 @@ public class NewDiscussionActivity extends AppCompatActivity {
                             .addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(NewDiscussionActivity.this,"Cant Uplaod",Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(NewDiscussionActivity.this,"Something went wrong.",Toast.LENGTH_LONG).show();
+
+                                    progressBar.hide();
                                 }
                             });
                 }

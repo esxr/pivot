@@ -1,29 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+<LinearLayout android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Home.HomeFragment">
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".Home.HomeFragment"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_margin="8dp"
+    android:padding="16dp">
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/query"/>
+    <!--ONLY FOR DEBUGGING -->
 
     <Button
-        app:layout_constraintTop_toBottomOf="@+id/query"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/generateUsers"
+        android:text="Generate Fake Users (10)"/>
+
+    <LinearLayout
+        android:layout_marginTop="70dp"
+        android:weightSum="3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/query"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="2" />
+
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:id="@+id/querySpinner">
+        </Spinner>
+
+    </LinearLayout>
+
+    <Button
         android:id="@+id/profileSearch"
-        android:text="Search"/>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Search"
+        android:elevation="2dp"
+        android:textColor="@color/white"
+        android:drawableLeft="@drawable/search_icon"
+        android:drawablePadding="20dp"
+        android:textAlignment="viewStart"
+        android:foreground="?attr/selectableItemBackground"
+        android:focusable="true"
+        android:clickable="true"
+        android:paddingStart="50pt"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:background="@drawable/solid_button_black"
+        tools:ignore="RtlCompat" />
+
+    <!--ListView-->
+    <ListView
+        android:layout_marginTop="40dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="vertical"
+        android:id="@+id/profile_menu"/>
 
     <TextView
-        app:layout_constraintTop_toBottomOf="@+id/profileSearch"
-        android:id="@+id/info"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Search Results..."
-        android:textSize="30sp" />
+        android:text="No matches found ..."
+        android:textSize="32sp"
+        android:textColor="@color/gray"
+        android:id="@+id/emptyElement"
+        />
 
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>
+
+
+
+
+
+
+
+

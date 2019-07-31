@@ -6,16 +6,18 @@ public class DiscussionTopic extends com.example.icasapp.ObjectClasses.Discussio
 
     public String user_id, image_url, content, image_thumb;
     public Date timestamp;
+    public int question;
 
     public DiscussionTopic() {
     }
 
-    public DiscussionTopic(String user_id, String image_url, String content, String image_thumb, Date timestamp) {
+    public DiscussionTopic(String user_id, String image_url, String content, String image_thumb, Date timestamp, int question) {
         this.user_id = user_id;
         this.image_url = image_url;
         this.content = content;
         this.image_thumb = image_thumb;
         this.timestamp = timestamp;
+        this.question = question;
     }
 
     public String getUser_id() {
@@ -57,6 +59,10 @@ public class DiscussionTopic extends com.example.icasapp.ObjectClasses.Discussio
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
+
+    public int getQuestion() { return question; }
+
+    public void setQuestion(int question) { this.question = question; }
 
 
 }

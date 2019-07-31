@@ -3,18 +3,27 @@
     <string name="title_home">Home</string>
     <string name="notes">Notes</string>
     <string name="forum">Forum</string>
-    <string name="Feed">Feed</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="feed">Feed</string>
-    <string name="title_activity_comments">CommentsActivity</string>
+
+    <string name="generic_profile_photo_path">
+        https://i.stack.imgur.com/IHLNO.jpg
+    </string>
 
     <string-array name="semester_array">
         <item>1</item>
         <item>2</item>
         <item>3</item>
         <item>4</item>
+        <item>None</item>
+    </string-array>
+
+    <string-array name="query_property_array">
+        <item>name</item>
+        <item>regNo</item>
+        <item>stream</item>
+        <item>semester</item>
     </string-array>
 
     <string-array name="stream_array">
@@ -25,10 +34,4 @@
         <item>Mechatronics</item>
     </string-array>
 
-    <string-array name="sessional_array">
-        <item>I</item>
-        <item>II</item>
-        <item>Make-up</item>
-        <item>None</item>
-    </string-array>
 </resources>
