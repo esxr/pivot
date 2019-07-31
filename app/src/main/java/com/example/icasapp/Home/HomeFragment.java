@@ -1,6 +1,8 @@
 package com.example.icasapp.Home;
 
 import android.content.Intent;
+import android.net.Uri;
+import android.opengl.Visibility;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -12,10 +14,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.icasapp.Firebase.FirebaseHelper;
 import com.example.icasapp.Firebase.Query;
 import com.example.icasapp.Profile.ProfileAdapter;
@@ -47,9 +52,13 @@ public class HomeFragment extends Fragment {
     ProfileAdapter itemsAdapter;
     ListView listView;
 
+    ImageView profileImage;
+
     Spinner querySpinner;
 
     String queryProperty;
+
+    boolean visible;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -80,6 +89,20 @@ public class HomeFragment extends Fragment {
         listView.setEmptyView(homeView.findViewById(R.id.emptyElement));
         itemsAdapter = new ProfileAdapter(getContext(), items);
         listView.setAdapter(itemsAdapter);
+
+        // initialize the user profile image
+        profileImage = homeView.findViewById(R.id.userProfileImage);
+        Glide.with(getContext())
+                .load(FirebaseHelper.getUser().getPhotoUrl())
+                .into(profileImage);
+
+        Button searchInitButton = homeView.findViewById(R.id.initSearch);
+        searchInitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggle();
+            }
+        });
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -155,5 +178,17 @@ public class HomeFragment extends Fragment {
 
         // Inflate the layout for this fragment
         return homeView;
+    }
+
+    void toggle() {
+        profileImage.setVisibility(visibilityOf(!visible));
+
+        homeView.findViewById(R.id.search).setVisibility(visibilityOf(visible));
+        profileSearch.setVisibility(visibilityOf(visible));
+        visible = !visible;
+    }
+
+    int visibilityOf(boolean visible) {
+        return visible ? View.VISIBLE : View.GONE;
     }
 }

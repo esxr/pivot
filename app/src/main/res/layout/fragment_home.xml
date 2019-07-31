@@ -18,12 +18,27 @@
         android:id="@+id/generateUsers"
         android:text="Generate Fake Users (10)"/>
 
+    <!--Search Button-->
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/initSearch"
+        android:layout_gravity="right" />
+
+    <!--Profile View-->
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/userProfileImage"/>
+
     <LinearLayout
-        android:layout_marginTop="70dp"
+        android:visibility="gone"
+        android:layout_marginTop="5dp"
         android:weightSum="3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:id="@+id/search">
 
         <EditText
             android:id="@+id/query"
@@ -41,6 +56,7 @@
     </LinearLayout>
 
     <Button
+        android:visibility="gone"
         android:id="@+id/profileSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
