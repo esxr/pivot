@@ -8,12 +8,15 @@ import com.bumptech.glide.Glide;
 import com.example.icasapp.R;
 import com.example.icasapp.User.TestUser;
 
+import org.w3c.dom.Text;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileDisplayActivity extends AppCompatActivity {
 
     // all the views
     TextView profileName, profileRegNo, profileStream, profileSemester;
+    TextView profileDescription;
     CircleImageView profilePhoto;
 
     @Override
@@ -27,6 +30,7 @@ public class ProfileDisplayActivity extends AppCompatActivity {
         profileRegNo = (TextView) findViewById(R.id.profileRegNo);
         profileStream = (TextView) findViewById(R.id.profileStream);
         profileSemester = (TextView) findViewById(R.id.profileSemester);
+        profileDescription = (TextView) findViewById(R.id.profileDescription);
 
         // get data for user object
         TestUser user = (TestUser) getIntent().getExtras().getSerializable("user");
@@ -34,7 +38,7 @@ public class ProfileDisplayActivity extends AppCompatActivity {
         profileRegNo.setText(user.getRegNo());
         profileStream.setText(user.getStream());
         profileSemester.setText(user.getSemester());
-
+        profileDescription.setText(user.getDescription());
         Glide.with(this).load(user.getProfilePhoto()).into(profilePhoto);
 
     }
