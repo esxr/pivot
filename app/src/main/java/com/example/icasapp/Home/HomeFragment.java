@@ -5,7 +5,9 @@ import android.net.Uri;
 import android.opengl.Visibility;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +29,12 @@ import com.example.icasapp.Profile.ProfileAdapter;
 import com.example.icasapp.Profile.ProfileDisplayActivity;
 import com.example.icasapp.R;
 import com.example.icasapp.User.TestUser;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -58,7 +65,7 @@ public class HomeFragment extends Fragment {
 
     String queryProperty;
 
-    boolean visible;
+    boolean visible = true;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -92,9 +99,29 @@ public class HomeFragment extends Fragment {
 
         // initialize the user profile image
         profileImage = homeView.findViewById(R.id.userProfileImage);
-        Glide.with(getContext())
-                .load(FirebaseHelper.getUser().getPhotoUrl())
-                .into(profileImage);
+        FirebaseHelper.findDocumentWithUID(
+                FirebaseHelper.getUser().getUid(),
+                new FirebaseHelper.CallbackObject<String>() {
+                    @Override
+                    public void callbackCall(String docID) {
+                        // get the image from docId
+                        FirebaseHelper.getFirestore()
+                                .collection("USER")
+                                .document(docID).get()
+                                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        String imagePath = (String) task.getResult().get("downloadURL");
+
+                                        // now display the image
+                                        Glide.with(getContext())
+                                                .load(Uri.parse(imagePath))
+                                                .into(profileImage);
+                                    }
+                                });
+                    }
+                }
+        );
 
         Button searchInitButton = homeView.findViewById(R.id.initSearch);
         searchInitButton.setOnClickListener(new View.OnClickListener() {
@@ -155,7 +182,7 @@ public class HomeFragment extends Fragment {
         profileSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(query.length() == 0) return;
+                if (query.length() == 0) return;
                 String queryValue =
                         query.getText().toString().trim();
                 FirebaseHelper.getDocumentFromCollectionWhere(
@@ -165,8 +192,8 @@ public class HomeFragment extends Fragment {
                             @Override
                             public void callbackCall(List<Map<String, Object>> object) {
                                 items.clear();
-                                Log.d("Callback", ""+object);
-                                for(Map<String, Object> obj : object) {
+                                Log.d("Callback", "" + object);
+                                for (Map<String, Object> obj : object) {
                                     items.add(new TestUser(obj));
                                     Log.i("Downloaded List Item", obj.toString());
                                 }
