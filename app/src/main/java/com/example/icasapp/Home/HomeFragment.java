@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -98,32 +99,37 @@ public class HomeFragment extends Fragment {
         listView.setAdapter(itemsAdapter);
 
         // initialize the user profile image
-        profileImage = homeView.findViewById(R.id.userProfileImage);
-        FirebaseHelper.findDocumentWithUID(
-                FirebaseHelper.getUser().getUid(),
-                new FirebaseHelper.CallbackObject<String>() {
-                    @Override
-                    public void callbackCall(String docID) {
-                        // get the image from docId
-                        FirebaseHelper.getFirestore()
-                                .collection("USER")
-                                .document(docID).get()
-                                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                        String imagePath = (String) task.getResult().get("downloadURL");
+//        profileImage = homeView.findViewById(R.id.userProfileImage);
+//        FirebaseHelper.findDocumentWithUID(
+//                FirebaseHelper.getUser().getUid(),
+//                new FirebaseHelper.CallbackObject<String>() {
+//                    @Override
+//                    public void callbackCall(String docID) {
+//                        // get the image from docId
+//                        FirebaseHelper.getFirestore()
+//                                .collection("USER")
+//                                .document(docID).get()
+//                                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//                                    @Override
+//                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                                        String imagePath = (String) task.getResult().get("downloadURL");
+//
+//                                        // now display the image
+//                                        Glide.with(getContext())
+//                                                .load(Uri.parse(imagePath))
+//                                                .into(profileImage);
+//                                    }
+//                                });
+//                    }
+//                }
+//        );
 
-                                        // now display the image
-                                        Glide.with(getContext())
-                                                .load(Uri.parse(imagePath))
-                                                .into(profileImage);
-                                    }
-                                });
-                    }
-                }
-        );
+//        String imageUri = "drawable://" + R.drawable.avi;
+//        Glide.with(getContext())
+//                                                .load(imageUri)
+//                                                .into(profileImage);
 
-        Button searchInitButton = homeView.findViewById(R.id.initSearch);
+        ImageButton searchInitButton = homeView.findViewById(R.id.initSearch);
         searchInitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -208,7 +214,7 @@ public class HomeFragment extends Fragment {
     }
 
     void toggle() {
-        profileImage.setVisibility(visibilityOf(!visible));
+//        profileImage.setVisibility(visibilityOf(!visible));
 
         homeView.findViewById(R.id.search).setVisibility(visibilityOf(visible));
         profileSearch.setVisibility(visibilityOf(visible));
