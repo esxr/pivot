@@ -5,8 +5,19 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="340dp"
+        android:layout_marginRight="340dp"
+        app:layout_constraintEnd_toEndOf="@+id/cardView"
+        app:layout_constraintTop_toTopOf="@+id/cardView"
+        android:src="@drawable/avi"
+        android:elevation="3dp"/>
+
     <androidx.cardview.widget.CardView
-        app:cardCornerRadius="0dp"
+        app:cardCornerRadius="40dp"
         android:background="@drawable/answer_back"
         android:foregroundTint="@color/darkCyan"
         android:id="@+id/cardView"
@@ -23,12 +34,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:padding="15dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/answer_back"
+            android:layout_marginBottom="0dp"
+            android:background="@drawable/answer_back_curved"
             app:layout_constraintBottom_toBottomOf="parent">
+
+
 
             <TextView
                 android:id="@+id/Answer"
@@ -36,7 +51,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="25dp"
                 android:layout_marginBottom="8dp"
+                android:layout_marginLeft="12dp"
                 android:hint="Answer"
+                android:text="3*10^8. Exact value not necessary"
                 app:layout_constraintBottom_toTopOf="@+id/Answers"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
@@ -73,18 +90,16 @@
 
             <TextView
                 android:id="@+id/user_name"
-                android:layout_width="95dp"
+                android:layout_width="wrap_content"
                 android:layout_height="24dp"
-                android:layout_marginStart="2dp"
-                android:layout_marginLeft="2dp"
+                android:layout_marginStart="56dp"
+                android:layout_marginLeft="56dp"
                 android:layout_marginTop="2dp"
-                android:layout_marginEnd="207dp"
-                android:layout_marginRight="207dp"
+                android:textStyle="bold"
                 android:layout_marginBottom="12dp"
                 android:hint="Username"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 app:layout_constraintBottom_toTopOf="@+id/Question"
-                app:layout_constraintEnd_toStartOf="@+id/time"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -92,11 +107,15 @@
                 android:id="@+id/Content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:layout_marginEnd="312dp"
-                android:layout_marginRight="312dp"
+                android:layout_marginStart="12dp"
+                android:textStyle="italic"
+                android:layout_marginLeft="12dp"
+                android:layout_marginTop="36dp"
                 android:hint="Content"
+                android:inputType="textMultiLine"
+                android:scrollbarAlwaysDrawVerticalTrack="true"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.009"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/Question" />
 
@@ -114,7 +133,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/Answers"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/Answer"
-                app:srcCompat="@drawable/common_google_signin_btn_icon_dark" />
+                app:srcCompat="@drawable/ic_delete_forever_black_24dp" />
 
             <TextView
                 android:id="@+id/time"
