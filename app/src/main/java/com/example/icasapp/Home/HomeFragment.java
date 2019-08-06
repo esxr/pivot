@@ -1,8 +1,6 @@
 package com.example.icasapp.Home;
 
 import android.content.Intent;
-import android.net.Uri;
-import android.opengl.Visibility;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,33 +12,26 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.example.icasapp.Annonations.Hardcoded;
 import com.example.icasapp.Firebase.FirebaseHelper;
-import com.example.icasapp.Firebase.Query;
 import com.example.icasapp.Profile.ProfileAdapter;
 import com.example.icasapp.Profile.ProfileDisplayActivity;
 import com.example.icasapp.R;
 import com.example.icasapp.User.TestUser;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -67,10 +58,6 @@ public class HomeFragment extends Fragment {
 
     //Search
     private EditText query;
-    private String queryProperty;
-    private String getQueryProperty() {
-        return queryProperty;
-    }
 
     //toggle
     private Group group;
@@ -181,7 +168,7 @@ public class HomeFragment extends Fragment {
                         query.getText().toString().trim();
                 FirebaseHelper.getDocumentFromCollectionWhere(
                         "USER",
-                        new Query(getQueryProperty(), queryValue),
+                        queryValue,
                         new FirebaseHelper.CallbackObject<List<Map<String, Object>>>() {
                             @Override
                             public void callbackCall(List<Map<String, Object>> object) {
@@ -194,6 +181,36 @@ public class HomeFragment extends Fragment {
                                 itemsAdapter.notifyDataSetChanged();
                             }
                         });
+            }
+        });
+    }
+
+    private void setProfileSearchEXPERIMENTAL() {
+        query = (EditText) homeView.findViewById(R.id.query);
+        final String queryValue =
+                query.getText().toString().trim();
+        Button profileSearch = (Button) homeView.findViewById(R.id.profileSearch);
+        profileSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                // set the fields for search
+                String[] properties = {"name", "regNo", "stream", "semester", "UID"};
+                CollectionReference USER = FirebaseHelper.getFirestore()
+                        .collection("USER");
+
+                for (String property : properties) {
+                    USER
+                            .whereEqualTo(property, queryValue)
+                            .get()
+                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    items.clear();
+                                    List<DocumentSnapshot> documents = task.getResult().getDocuments();
+                                }
+                            });
+                }
             }
         });
     }
