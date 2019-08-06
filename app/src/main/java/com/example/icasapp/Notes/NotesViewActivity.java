@@ -1,12 +1,8 @@
 package com.example.icasapp.Notes;
 
-
-import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -15,9 +11,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.widget.EditText;
-
-
-import com.example.icasapp.Feed.FeedFragment;
 import com.example.icasapp.MainActivity;
 import com.example.icasapp.R;
 import com.google.firebase.firestore.DocumentChange;
@@ -28,16 +21,13 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-
 import java.util.ArrayList;
-
 
 public class NotesViewActivity extends AppCompatActivity {
 
 
     public ArrayList<String> arrayList, semesterList, sessionalList, subjectList, subjectAbr;
-    //public ArrayList<String> farrayList, fsemesterList, fsessionalList, fsubjectList, fsubjectAbr;
-    //public ArrayList<Uri> DOWNLOAD_URL_LIST, f_DOWNLOAD_URL_LIST;
+
 
     FirebaseFirestore db;
     String TAG = "msg";
