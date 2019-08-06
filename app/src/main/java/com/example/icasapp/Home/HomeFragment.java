@@ -67,9 +67,11 @@ public class HomeFragment extends Fragment {
     //Search
     private EditText query;
     private String queryProperty;
+
     private String getQueryProperty() {
         return queryProperty;
     }
+
     private Button profileSearch;
 
     //toggle
@@ -88,10 +90,31 @@ public class HomeFragment extends Fragment {
 
         // Inflate the layout for this fragment
         homeView = inflater.inflate(R.layout.fragment_home, container, false);
-        setSearchToggle();
-        setListView();
-        setProfileSearch();
-        setHardcodedUsers(); //ONLY FOR DEBUG
+
+        new Thread(new Runnable() {
+            public void run() {
+                setSearchToggle();
+            }
+        }).start();
+
+        new Thread(new Runnable() {
+            public void run() {
+                setListView();
+            }
+        }).start();
+
+        new Thread(new Runnable() {
+            public void run() {
+                setProfileSearch();
+            }
+        }).start();
+
+        new Thread(new Runnable() {
+            public void run() {
+                setHardcodedUsers(); //ONLY FOR DEBUG
+            }
+        }).start();
+
 
         return homeView;
     }
@@ -102,11 +125,9 @@ public class HomeFragment extends Fragment {
         selfProfile.setVisibility(visibilityOf(!visible));
         visible = !visible;
     }
-
     private int visibilityOf(boolean visible) {
         return visible ? View.VISIBLE : View.GONE;
     }
-
 
     //set all functionality
     @Hardcoded
@@ -179,4 +200,5 @@ public class HomeFragment extends Fragment {
             }
         });
     }
+
 }
