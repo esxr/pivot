@@ -68,16 +68,12 @@ public class HomeFragment extends Fragment {
     //Search
     private EditText query;
     private String queryProperty;
-
     private String getQueryProperty() {
         return queryProperty;
     }
 
-    private Button profileSearch;
-
     //toggle
     private Group group;
-    private ImageButton searchInitButton;
     private View selfProfile;
     private boolean visible = true;
 
@@ -148,7 +144,7 @@ public class HomeFragment extends Fragment {
     private void setSearchToggle() {
         group = (Group) homeView.findViewById(R.id.group);
         selfProfile = homeView.findViewById(R.id.selfProfile);
-        searchInitButton = homeView.findViewById(R.id.initSearch);
+        ImageButton searchInitButton = homeView.findViewById(R.id.initSearch);
         searchInitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -176,7 +172,7 @@ public class HomeFragment extends Fragment {
 
     private void setProfileSearch() {
         query = (EditText) homeView.findViewById(R.id.query);
-        profileSearch = (Button) homeView.findViewById(R.id.profileSearch);
+        Button profileSearch = (Button) homeView.findViewById(R.id.profileSearch);
         profileSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

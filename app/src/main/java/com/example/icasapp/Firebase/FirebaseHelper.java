@@ -46,14 +46,6 @@ public class FirebaseHelper {
             return true;
     }
 
-    public static String userEmail() {
-        return user.getEmail();
-    }
-
-    public static FirebaseAuth getmAuth() {
-        return mAuth;
-    }
-
     public static FirebaseUser getUser() {
         return user;
     }
@@ -61,48 +53,6 @@ public class FirebaseHelper {
     /*
      * Functions related to Firestore
      */
-
-    // authentication
-    public static void FirebaseLogin(String email, String password) {
-
-        try {
-            mAuth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                // Sign in success, update UI with the signed-in user's information
-                                Log.d("msg", "signInWithEmail:success");
-                                System.out.println("Firebase Log In Success");
-                                FirebaseUser user = mAuth.getCurrentUser();
-                            } else {
-                                // If sign in fails, display a message to the user.
-                                Log.w("msg", "signInWithEmail:failure", task.getException());
-                            }
-
-                            // ...
-                            FirebaseHelper.initiate();
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            System.out.println("Firebase Login Failed");
-                        }
-                    });
-        } catch (Exception e) {
-            System.out.println("Firebase Login Failed \n" + e);
-        }
-    }
-
-
-    //initiation
-    public static void initiate() {
-        mAuth = FirebaseAuth.getInstance();
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        db = FirebaseFirestore.getInstance();
-    }
-
     public static FirebaseFirestore getFirestore() {
         return db;
     }
@@ -155,20 +105,6 @@ public class FirebaseHelper {
         void callbackCall(T object);
     }
 
-    public static void getDocumentFromCollection(String documentName, String collectionName, final CallbackObject<TestUser> callback) {
-        DocumentReference docRef = db.collection(collectionName).document(documentName);
-        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            TestUser user;
-
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                user = documentSnapshot.toObject(TestUser.class);
-
-                callback.callbackCall(user);
-            }
-        });
-    }
-
     @Deprecated
     public static void getDocumentFromCollectionWhere(@Nullable final Query query, String collectionName, final CallbackObject<List<HashMap<String, String>>> callback) {
         FirebaseHelper.getCollection(collectionName, new CallBackList<Map<String, Object>>() {
@@ -218,46 +154,6 @@ public class FirebaseHelper {
                     });
         }
     }
-
-    public static void replaceDocumentWithUID(String uid, final TestUser user) {
-        try {
-            final CollectionReference userRef = getFirestore().collection("USER");
-            Log.e("Current user UID", FirebaseHelper.getUser().getUid());
-            userRef.whereEqualTo("UID", FirebaseHelper.getUser().getUid()).get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            String docId = task.getResult().getDocuments().get(0).getId();
-                            userRef.document(docId).set((TestUser) user);
-                        }
-                    });
-        } catch (Exception e) {
-            Log.e("FirebaseHelper", e.getMessage());
-        }
-    }
-
-    public static void findDocumentWithUID(String uid, final CallbackObject<String> callback) {
-        try {
-            final CollectionReference userRef = getFirestore().collection("USER");
-            Log.e("Current user UID", getUser().getUid());
-            userRef.whereEqualTo("UID", getUser().getUid())
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            try {
-                                String docId = task.getResult().getDocuments().get(0).getId();
-                                callback.callbackCall(docId);
-                            } catch (Exception e) {
-                                Log.e("Firebase UID", e.getLocalizedMessage());
-                            }
-                        }
-                    });
-        } catch (Exception e) {
-            Log.e("FirebaseHelper", e.getMessage());
-        }
-    }
-
 
     public static void getCollection(String collection, final CallBackList<Map<String, Object>> callback) {
         db.collection(collection)
