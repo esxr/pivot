@@ -25,6 +25,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.icasapp.Annonations.Hardcoded;
 import com.example.icasapp.Firebase.FirebaseHelper;
 import com.example.icasapp.Firebase.Query;
 import com.example.icasapp.Profile.ProfileAdapter;
@@ -52,33 +53,33 @@ public class HomeFragment extends Fragment {
     FirebaseFirestore db;
     FirebaseUser user;
 
-    View homeView;
-    EditText query;
-    Button profileSearch, generateUsers;
-    ImageButton searchInitButton;
+
+    private View homeView;
+
+    @Hardcoded
+    private Button generateUsers;
 
     // listview and adapter
-    ArrayList<TestUser> items;
-    ProfileAdapter itemsAdapter;
-    ListView listView;
+    private ArrayList<TestUser> items;
+    private ProfileAdapter itemsAdapter;
+    private ListView listView;
 
+    //Search
+    private EditText query;
+    private String queryProperty;
+    private String getQueryProperty() {
+        return queryProperty;
+    }
+    private Button profileSearch;
 
-    String queryProperty;
-    Group group;
-    View selfProfile;
-
-    boolean visible = true;
+    //toggle
+    private Group group;
+    private ImageButton searchInitButton;
+    private View selfProfile;
+    private boolean visible = true;
 
     public HomeFragment() {
         // Required empty public constructor
-    }
-
-    public String getQueryProperty() {
-        return queryProperty;
-    }
-
-    public void setQueryProperty(String queryProperty) {
-        this.queryProperty = queryProperty;
     }
 
     @Override
@@ -87,37 +88,30 @@ public class HomeFragment extends Fragment {
 
         // Inflate the layout for this fragment
         homeView = inflater.inflate(R.layout.fragment_home, container, false);
+        setSearchToggle();
+        setListView();
+        setProfileSearch();
+        setHardcodedUsers(); //ONLY FOR DEBUG
 
-        // reference of all views
-        query = (EditText) homeView.findViewById(R.id.query);
-        profileSearch = (Button) homeView.findViewById(R.id.profileSearch);
-        group = (Group) homeView.findViewById(R.id.group);
-        selfProfile = homeView.findViewById(R.id.selfProfile);
+        return homeView;
+    }
 
-        // intitialize the array and listview adapter
-        items = new ArrayList<>();
-        listView = (ListView) homeView.findViewById(R.id.profile_menu);
-        listView.setEmptyView(homeView.findViewById(R.id.emptyElement));
-        itemsAdapter = new ProfileAdapter(getContext(), items);
-        listView.setAdapter(itemsAdapter);
+    //toggle functionality
+    private void toggle() {
+        group.setVisibility(visibilityOf(visible));
+        selfProfile.setVisibility(visibilityOf(!visible));
+        visible = !visible;
+    }
 
-        searchInitButton = homeView.findViewById(R.id.initSearch);
-        searchInitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggle();
-            }
-        });
+    private int visibilityOf(boolean visible) {
+        return visible ? View.VISIBLE : View.GONE;
+    }
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getActivity(), ProfileDisplayActivity.class);
-                intent.putExtra("user", (TestUser) listView.getItemAtPosition(position));
-                startActivity(intent);
-            }
-        });
 
+    //set all functionality
+    @Hardcoded
+    @Deprecated
+    private void setHardcodedUsers() {
         // Hardcoded
         generateUsers = homeView.findViewById(R.id.generateUsers);
         generateUsers.setOnClickListener(new View.OnClickListener() {
@@ -127,7 +121,40 @@ public class HomeFragment extends Fragment {
                 Toast.makeText(getContext(), "Generated 10 fake users", Toast.LENGTH_SHORT).show();
             }
         });
+    }
 
+    private void setSearchToggle() {
+        group = (Group) homeView.findViewById(R.id.group);
+        selfProfile = homeView.findViewById(R.id.selfProfile);
+        searchInitButton = homeView.findViewById(R.id.initSearch);
+        searchInitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggle();
+            }
+        });
+    }
+
+    private void setListView() {
+        // intitialize the array and listview adapter
+        items = new ArrayList<>();
+        listView = (ListView) homeView.findViewById(R.id.profile_menu);
+        listView.setEmptyView(homeView.findViewById(R.id.emptyElement));
+        itemsAdapter = new ProfileAdapter(getContext(), items);
+        listView.setAdapter(itemsAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getActivity(), ProfileDisplayActivity.class);
+                intent.putExtra("user", (TestUser) listView.getItemAtPosition(position));
+                startActivity(intent);
+            }
+        });
+    }
+
+    private void setProfileSearch() {
+        query = (EditText) homeView.findViewById(R.id.query);
+        profileSearch = (Button) homeView.findViewById(R.id.profileSearch);
         profileSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -151,18 +178,5 @@ public class HomeFragment extends Fragment {
                         });
             }
         });
-
-        // Inflate the layout for this fragment
-        return homeView;
-    }
-
-    void toggle() {
-        group.setVisibility(visibilityOf(visible));
-        selfProfile.setVisibility(visibilityOf(!visible));
-        visible = !visible;
-    }
-
-    int visibilityOf(boolean visible) {
-        return visible ? View.VISIBLE : View.GONE;
     }
 }
