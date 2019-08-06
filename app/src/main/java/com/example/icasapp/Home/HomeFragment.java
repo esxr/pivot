@@ -42,14 +42,7 @@ import java.util.Map;
 
 public class HomeFragment extends Fragment {
 
-    FirebaseFirestore db;
-    FirebaseUser user;
-
-
     private View homeView;
-
-    @Hardcoded
-    private Button generateUsers;
 
     // listview and adapter
     private ArrayList<TestUser> items;
@@ -93,13 +86,6 @@ public class HomeFragment extends Fragment {
             }
         }).start();
 
-        new Thread(new Runnable() {
-            public void run() {
-                setHardcodedUsers(); //ONLY FOR DEBUG
-            }
-        }).start();
-
-
         return homeView;
     }
 
@@ -114,19 +100,6 @@ public class HomeFragment extends Fragment {
     }
 
     //set all functionality
-    @Hardcoded
-    @Deprecated
-    private void setHardcodedUsers() {
-        // Hardcoded
-        generateUsers = homeView.findViewById(R.id.generateUsers);
-        generateUsers.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseHelper.generateFakeFirebaseUsers(10);
-                Toast.makeText(getContext(), "Generated 10 fake users", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
 
     private void setSearchToggle() {
         group = (Group) homeView.findViewById(R.id.group);
@@ -181,36 +154,6 @@ public class HomeFragment extends Fragment {
                                 itemsAdapter.notifyDataSetChanged();
                             }
                         });
-            }
-        });
-    }
-
-    private void setProfileSearchEXPERIMENTAL() {
-        query = (EditText) homeView.findViewById(R.id.query);
-        final String queryValue =
-                query.getText().toString().trim();
-        Button profileSearch = (Button) homeView.findViewById(R.id.profileSearch);
-        profileSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                // set the fields for search
-                String[] properties = {"name", "regNo", "stream", "semester", "UID"};
-                CollectionReference USER = FirebaseHelper.getFirestore()
-                        .collection("USER");
-
-                for (String property : properties) {
-                    USER
-                            .whereEqualTo(property, queryValue)
-                            .get()
-                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    items.clear();
-                                    List<DocumentSnapshot> documents = task.getResult().getDocuments();
-                                }
-                            });
-                }
             }
         });
     }

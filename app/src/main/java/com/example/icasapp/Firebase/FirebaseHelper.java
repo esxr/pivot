@@ -1,7 +1,6 @@
 package com.example.icasapp.Firebase;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import android.util.Log;
 
@@ -17,7 +16,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -25,6 +26,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Nullable;
 
 public class FirebaseHelper {
 
@@ -73,28 +76,6 @@ public class FirebaseHelper {
 
                     }
                 });
-    }
-
-    @Hardcoded
-    public static void generateFakeFirebaseUsers(int no_of_users) {
-        for (int i = 0; i < no_of_users; i++) {
-            db.collection("USER")
-                    .add(TestUser.getFirebaseDocumentHARDCODED())
-                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                        @Override
-                        public void onSuccess(DocumentReference documentReference) {
-                            Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.w(TAG, "Error adding document", e);
-
-                        }
-                    });
-        }
-
     }
 
     public interface CallBackList<T> {
