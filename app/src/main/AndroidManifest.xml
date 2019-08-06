@@ -17,11 +17,7 @@
         <activity android:name=".Notes.NotesForm"></activity>
         <activity android:name=".Notes.NotesViewActivity"></activity>
         <activity android:name=".Front_End.SplashActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".Menu_EditProfile.EditProfileActivity" />
         <activity android:name=".Forums.ForumActivities.AnswersActivity" />
@@ -37,7 +33,13 @@
             android:theme="@style/Base.Theme.AppCompat" />
         <activity android:name=".Forums.ForumActivities.NewDiscussionActivity" />
         <activity android:name=".Auth.RegisterActivity" />
-        <activity android:name=".MainActivity" />
+        <activity android:name=".MainActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".Auth.LoginActivity"
             android:label="@string/app_name">

@@ -1,15 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:layout_width="match_parent"
+<androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Home.HomeFragment"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_margin="8dp"
-    android:padding="16dp">
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!--ONLY FOR DEBUGGING -->
+
+    <!--Experimental-->
+    <androidx.constraintlayout.widget.Group
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="query, profileSearch, profile_menu, emptyElement"
+        android:visibility="gone"
+        android:id="@+id/group" />
+
+    <include layout="@layout/activity_profile_display"
+        android:id="@+id/selfProfile"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
     <Button
         android:visibility="gone"
@@ -19,44 +30,24 @@
         android:text="Generate Fake Users (10)"/>
 
     <!--Search Button-->
-    <Button
+    <ImageButton
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/initSearch"
-        android:layout_gravity="right" />
+        android:src="@drawable/search_icon"
+        />
 
-    <!--Profile View-->
-    <ImageView
+    <EditText
+        app:layout_constraintTop_toBottomOf="@id/initSearch"
+        android:id="@+id/query"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/userProfileImage"/>
-
-    <LinearLayout
-        android:visibility="gone"
-        android:layout_marginTop="5dp"
-        android:weightSum="3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:id="@+id/search">
-
-        <EditText
-            android:id="@+id/query"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="2" />
-
-        <Spinner
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:id="@+id/querySpinner">
-        </Spinner>
-
-    </LinearLayout>
+        android:layout_weight="2" />
 
     <Button
-        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/query"
         android:id="@+id/profileSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -77,6 +68,7 @@
 
     <!--ListView-->
     <ListView
+        app:layout_constraintTop_toBottomOf="@id/profileSearch"
         android:layout_marginTop="40dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -84,6 +76,7 @@
         android:id="@+id/profile_menu"/>
 
     <TextView
+        app:layout_constraintTop_toBottomOf="@id/profile_menu"
         android:layout_marginTop="16dp"
         android:gravity="center"
         android:layout_width="match_parent"
@@ -94,7 +87,7 @@
         android:id="@+id/emptyElement"
         />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
 
 
 
