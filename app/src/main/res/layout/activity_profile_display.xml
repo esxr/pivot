@@ -18,7 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
         <RelativeLayout
-            android:background="@color/darkCyan"
+            android:background="@color/black"
             android:layout_width="match_parent"
             android:layout_height="220dp">
 
@@ -83,6 +83,7 @@
                 android:layout_width="0dp"                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:textSize="22sp"
+                android:drawableTint="@color/black"
                 android:textStyle="bold"
                 android:text="Reg. No."/>
 
@@ -107,7 +108,7 @@
                 android:drawablePadding="10dp"
                 android:paddingLeft="30dp"
                 android:drawableLeft="@drawable/book"
-                android:drawableTint="@color/darkCyan"
+                android:drawableTint="@color/black"
                 android:layout_width="0dp"                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:textSize="22sp"
@@ -138,10 +139,10 @@
                 android:includeFontPadding="true"
                 android:paddingLeft="30dp"
                 android:drawableLeft="@drawable/semester"
-                android:drawableTint="@color/darkCyan"
                 android:layout_width="0dp"                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:textSize="22sp"
+                android:drawableTint="@color/black"
                 android:textStyle="bold"
                 android:text="Semester"/>
 

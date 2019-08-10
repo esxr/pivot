@@ -7,7 +7,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.example.icasapp"
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -61,6 +61,7 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'in.codeshuffle:typewriterview:1.1.0'
+    implementation 'com.github.andremion:floatingnavigationview:1.1.1'
 
     implementation 'com.google.api-client:google-api-client:1.25.0'
 
