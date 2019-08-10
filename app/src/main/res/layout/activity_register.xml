@@ -45,7 +45,8 @@
                 android:layout_height="wrap_content"
                 android:textAlignment="center"
                 android:layout_marginLeft="14dp"
-                android:textSize="20sp"
+                android:textColor="@color/gray"
+                android:textSize="15sp"
                 android:textStyle="italic" />
 
 

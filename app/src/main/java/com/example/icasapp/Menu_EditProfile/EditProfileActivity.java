@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.icasapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -194,6 +195,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             Log.d("msg", "User profile updated.");
+                            Toast.makeText(EditProfileActivity.this, "", Toast.LENGTH_LONG).show();
                         }
                     }
                 });

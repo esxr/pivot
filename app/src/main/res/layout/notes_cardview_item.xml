@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView
+    android:id="@+id/notes_card"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -20,41 +21,49 @@
         android:padding="16dp" >
 
         <TextView
-            android:id="@+id/item_title"
+            android:id="@+id/inputFileName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:text="NAME:"
             android:textColor="@color/white"
-
             android:textSize="30sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/item_detail"
+            android:id="@+id/semesterInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/item_title"
+            android:layout_below="@+id/inputFileName"
             android:text="SEMESTER:"
             android:textColor="@color/white"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/item_detail2"
+            android:id="@+id/sessionalInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/item_detail"
+            android:layout_below="@+id/semesterInput"
 
             android:text="SESSIONAL:"
             android:textColor="@color/white"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/item_detail3"
+            android:id="@+id/subjectInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/item_detail2"
+            android:layout_below="@+id/sessionalInput"
             android:text="SUBJECT:"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/authorName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/subjectInput"
+            android:text="AUTHOR:"
             android:textColor="@color/white"
             android:textStyle="bold" />
 
@@ -62,7 +71,7 @@
             android:id="@+id/downloadButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/item_detail3"
+            android:layout_below="@+id/authorName"
             android:background="@color/white"
             android:onClick="downloadFile"
             android:text="DOWNLOAD"

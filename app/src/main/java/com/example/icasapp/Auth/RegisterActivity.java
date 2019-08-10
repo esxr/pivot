@@ -21,6 +21,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import in.codeshuffle.typewriterview.TypeWriterView;
@@ -120,6 +121,20 @@ public class RegisterActivity extends AppCompatActivity {
                                 // Sign in success, update UI with the signed-in user's information
                                 Log.d("msg", "createUserWithEmail:success");
                                 FirebaseUser user = mAuth.getCurrentUser();
+
+
+                                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                        .setDisplayName(username).build();
+
+                                user.updateProfile(profileUpdates)
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+                                                    Log.d("msg", "User profile updated.");
+                                                }
+                                            }
+                                        });
 
                                 // Add a database entry in "USER" database
                                 String generic_profile_photo_path = "https://firebasestorage.googleapis.com/v0/b/icas-phase-1.appspot.com/o/USER_profile_photos%2Fgeneric_profile_photo.png?alt=media&token=0eafbb20-0e6c-4c66-afd2-90b784c3d026";

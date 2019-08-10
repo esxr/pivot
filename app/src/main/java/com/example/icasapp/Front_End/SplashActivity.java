@@ -16,12 +16,13 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash); ImageView imageView;
+        setContentView(R.layout.activity_splash);
+        ImageView imageView;
         TextView tv;
 
 
 
-            getSupportActionBar().hide();
+
             tv = (TextView) findViewById(R.id.textview);
             imageView= (ImageView) findViewById(R.id.imageview);
             Animation anim = AnimationUtils.loadAnimation(this,R.anim.transition);
