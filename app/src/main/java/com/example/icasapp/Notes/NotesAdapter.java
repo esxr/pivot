@@ -1,7 +1,9 @@
 package com.example.icasapp.Notes;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
@@ -12,6 +14,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -77,19 +80,48 @@ public class NotesAdapter extends FirestoreRecyclerAdapter<Notes, NotesAdapter.N
 
         notesHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Log.d("msg", "DELETE BUTTON CLICKED:" + notes.getFileName());
-                progressBar = new ProgressDialog(view.getContext());
-                progressBar.setCancelable(false);//you can cancel it by pressing back button
-                progressBar.setMessage("DELETING...");
-                progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                progressBar.setMax(100);//sets the maximum value 100
-                progressBar.setProgress(0);
-                progressBar.show();//initially progress is 0
-                fileName = notes.getFileName();
-                deleteItem();
+            public void onClick(final View view) {
+                new AlertDialog.Builder(view.getContext())
+                        .setIcon(R.drawable.alert)
+                        .setTitle("ARE YOU SURE?")
+                        .setCancelable(false)
+                        .setMessage("This will delete the " + notes.getFileName() + " file forever.")
+
+                        .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        fileName = notes.getFileName();
+                                        progressBar = new ProgressDialog(view.getContext());
+                                        initiateDelete();
+                                    }
+                                }
+                        )
+                        .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        })
+                        .create()
+                        .show();
+
+
             }
         });
+
+    }
+
+    public void initiateDelete(){
+
+        Log.d("msg", "DELETE BUTTON CLICKED:" + fileName);
+
+        progressBar.setCancelable(false);//you can cancel it by pressing back button
+        progressBar.setMessage("DELETING...");
+        progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressBar.setMax(100);//sets the maximum value 100
+        progressBar.setProgress(0);
+        progressBar.show();//initially progress is 0
+        deleteItem();
 
     }
 

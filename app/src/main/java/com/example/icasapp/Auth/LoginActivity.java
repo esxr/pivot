@@ -1,12 +1,15 @@
 package com.example.icasapp.Auth;
 
 import android.app.ActivityOptions;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
@@ -42,9 +45,6 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-
-
 
         inputEmail = findViewById(R.id.inputEmail);
         inputPassword = findViewById(R.id.inputPassword);
@@ -145,9 +145,53 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    // public void onRegister(View view){
+    public void forgotPassword(View view) {
 
-    //    startActivity(new Intent(LoginActivity.this , RegisterActivity.class));
+        final EditText inputEmail = new EditText(this);
+        inputEmail.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
 
-    // }
+        new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_email)
+                .setTitle("FORGOT YOUR PASSWORD?")
+                .setMessage("Not a problem. Just enter your email.")
+                .setCancelable(false)
+                .setView(inputEmail)
+                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mAuth = FirebaseAuth.getInstance();
+                                String emailAddress = inputEmail.getText().toString();
+
+                                if(emailAddress == null || emailAddress == " " || emailAddress == "") {
+                                    inputEmail.requestFocus();
+                                    Toast.makeText(getApplicationContext() , "ENTER A VALID EMAIL ADDRESS" , Toast.LENGTH_LONG).show();
+                                }
+
+                                mAuth.sendPasswordResetEmail(emailAddress)
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+                                                    Log.d("msg", "Email sent.");
+                                                    Toast.makeText(getApplicationContext() , "EMAIL SENT.CHECK MAIL." , Toast.LENGTH_LONG).show();
+
+                                                }
+                                            }
+                                        });
+
+                            }
+                        }
+                )
+                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                })
+                .show();
+    }
+
+
+
+
 }

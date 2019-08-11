@@ -12,32 +12,16 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.algolia.search.saas.Client;
-import com.algolia.search.saas.Index;
 import com.example.icasapp.R;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -107,15 +91,15 @@ public class NotesFragment extends Fragment {
             public void onTextChanged(CharSequence s, int start,
                                       int before, int count) {
                 isFilterActive = true;
-                setFilter(s.toString(), "fileName");
+                setFilter(s.toString().trim());
 
             }
         });
         return notesView;
     }
 
-    public void setFilter(String s, String filterCategory) {
-        query = notesRef.orderBy(filterCategory).startAt(s).endAt(s + "\uf8ff");
+    private void setFilter(String s) {
+        query = notesRef.orderBy("fileName").startAt(s).endAt(s + "\uf8ff");
 
         if (!s.trim().isEmpty()) {
             setUpRecyclerView();

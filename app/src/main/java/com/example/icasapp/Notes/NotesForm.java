@@ -84,7 +84,6 @@ public class NotesForm extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
 
-        getSupportActionBar().setTitle("NOTES ADMIN DASHBOARD.");
 
 
         progressBar = new ProgressDialog(this);
