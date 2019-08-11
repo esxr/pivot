@@ -14,11 +14,13 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -31,7 +33,7 @@ import javax.annotation.Nullable;
 
 public class FirebaseHelper {
 
-    static String TAG = "Firebase Helper";
+    static String TAG = "mfc";
 
     private static FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private static FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -84,6 +86,18 @@ public class FirebaseHelper {
 
     public interface CallbackObject<T> {
         void callbackCall(T object);
+    }
+
+    public static void getUserDetails(final String UID, final CallbackObject<Map<String, Object>> callback) {
+        Log.d(TAG, "getUserDetails() called");
+        db.collection("USER").document(UID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()) {
+                    callback.callbackCall(task.getResult().getData());
+                }
+            }
+        });
     }
 
     public static void getDocumentFromCollectionWhere(String collection, String value, final CallbackObject<List<Map<String, Object>>> callback) {

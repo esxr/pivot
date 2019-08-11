@@ -41,7 +41,7 @@ import java.util.Map;
  */
 
 public class HomeFragment extends Fragment {
-
+    private String TAG = "mfc";
     private View homeView;
 
     // listview and adapter
@@ -86,29 +86,61 @@ public class HomeFragment extends Fragment {
             }
         }).start();
 
+        new Thread(new Runnable() {
+            public void run() {
+                setViewSelfProfile();
+            }
+        }).start();
+
         return homeView;
     }
 
     //toggle functionality
     private void toggle() {
         group.setVisibility(visibilityOf(visible));
-        selfProfile.setVisibility(visibilityOf(!visible));
+//        selfProfile.setVisibility(visibilityOf(!visible));
         visible = !visible;
     }
     private int visibilityOf(boolean visible) {
         return visible ? View.VISIBLE : View.GONE;
     }
 
-    //set all functionality
+    // sending intent to view self profile
+    private void sendIntent() {
+        Log.d(TAG, "sendIntent() Triggered");
+        FirebaseHelper.getUserDetails(
+                FirebaseHelper.getUser().getUid(),
+                new FirebaseHelper.CallbackObject<Map<String, Object>>() {
+                    @Override
+                    public void callbackCall(Map<String, Object> object) {
+                        Intent intent = new Intent(getActivity(), ProfileDisplayActivity.class);
+                        intent.putExtra("user", new TestUser((Map) object));
+                        startActivity(intent);
+                    }
+                }
+        );
 
+    }
+
+    //set all functionality
     private void setSearchToggle() {
         group = (Group) homeView.findViewById(R.id.group);
-        selfProfile = homeView.findViewById(R.id.selfProfile);
+//        selfProfile = homeView.findViewById(R.id.selfProfile);
         ImageButton searchInitButton = homeView.findViewById(R.id.initSearch);
         searchInitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 toggle();
+            }
+        });
+    }
+
+    private void setViewSelfProfile() {
+        Button profileToggle = homeView.findViewById(R.id.selfProfileView);
+        profileToggle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendIntent();
             }
         });
     }
@@ -157,4 +189,6 @@ public class HomeFragment extends Fragment {
             }
         });
     }
+
+
 }
