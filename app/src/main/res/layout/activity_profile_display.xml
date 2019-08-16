@@ -5,56 +5,163 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Profile.ProfileDisplayActivity"
-    android:id="@+id/profile_display">
+    android:id="@+id/profile_display"
+    android:layout_margin="0dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        android:gravity="center"
+
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+        <RelativeLayout
+            android:background="@color/black"
+            android:layout_width="match_parent"
+            android:layout_height="220dp">
 
         <de.hdodenhof.circleimageview.CircleImageView
+            android:src="@drawable/avi"
+            android:layout_marginTop="42dp"
             android:id="@+id/profilePhoto"
+            android:elevation="2dp"
+            app:civ_border_color="@color/white"
+            app:civ_border_width="2dp"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
             android:layout_width="100dp"
             android:layout_height="100dp" />
 
-        <TextView
-            android:id="@+id/profileName"
+        </RelativeLayout>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="300dp"
+            android:outlineAmbientShadowColor="@color/black"
+            android:layout_gravity="center_horizontal"
+            android:layout_height="90dp"
+            android:layout_marginTop="-30dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="26dp"
+                android:layout_gravity="center_horizontal"
+                android:orientation="horizontal"
+                android:weightSum="1">
+
+
+
+
+                <TextView
+                    android:text="Avijit"
+                    android:id="@+id/profileName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textSize="42sp"
+                    android:textStyle="bold"
+                    app:layout_constraintTop_toBottomOf="@+id/profilePhoto" />
+
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <LinearLayout
+            android:layout_marginTop="66dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="55sp"
-            app:layout_constraintTop_toBottomOf="@+id/profilePhoto" />
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <TextView
+                android:drawablePadding="10dp"
+                android:paddingLeft="30dp"
+                android:drawableLeft="@drawable/number"
+                android:layout_width="0dp"                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:drawableTint="@color/black"
+                android:textStyle="bold"
+                android:text="Reg. No."/>
+
+            <TextView
+                android:gravity="center"
+                android:layout_width="0dp"                android:id="@+id/profileRegNo"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                app:layout_constraintTop_toBottomOf="@+id/profileName" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginTop="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <TextView
+                android:drawablePadding="10dp"
+                android:paddingLeft="30dp"
+                android:drawableLeft="@drawable/book"
+                android:drawableTint="@color/black"
+                android:layout_width="0dp"                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:text="Stream"/>
+
+            <TextView
+
+                android:layout_width="0dp"
+                android:gravity="center"
+                android:id="@+id/profileStream"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                app:layout_constraintTop_toBottomOf="@+id/profileRegNo" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginTop="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <TextView
+                android:drawablePadding="10dp"
+                android:includeFontPadding="true"
+                android:paddingLeft="30dp"
+                android:drawableLeft="@drawable/semester"
+                android:layout_width="0dp"                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:drawableTint="@color/black"
+                android:textStyle="bold"
+                android:text="Semester"/>
+
+            <TextView
+                android:gravity="center"
+                android:id="@+id/profileSemester"
+                android:layout_weight="1"
+                android:layout_width="0dp"                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                app:layout_constraintTop_toBottomOf="@+id/profileStream" />
+
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/profileRegNo"
+            android:textSize="22sp"
+            android:layout_marginTop="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="32sp"
-            app:layout_constraintTop_toBottomOf="@+id/profileName" />
-
-        <TextView
-            android:id="@+id/profileStream"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="32sp"
-            app:layout_constraintTop_toBottomOf="@+id/profileRegNo" />
-
-        <TextView
-            android:id="@+id/profileSemester"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="32sp"
-            app:layout_constraintTop_toBottomOf="@+id/profileStream" />
+            android:id="@+id/profileDescription"/>
 
 
     </LinearLayout>

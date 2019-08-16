@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 
+import com.andremion.floatingnavigationview.FloatingNavigationView;
 import com.example.icasapp.Auth.RegisterLandingActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.viewpager.widget.ViewPager;
@@ -14,6 +15,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.example.icasapp.Auth.LoginActivity;
@@ -23,6 +25,8 @@ import com.example.icasapp.Home.HomeFragment;
 import com.example.icasapp.Firebase.FirebaseHelper;
 import com.example.icasapp.Menu_EditProfile.EditProfileActivity;
 import com.example.icasapp.Notes.NotesFragment;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -31,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
   //  BottomNavigationView bottomNavigationView;
     BottomNavigationView bottomNavigationView;
+    private FloatingNavigationView mFloatingNavigationView;
 
     //This is our viewPager
     private ViewPager viewPager;
@@ -70,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Initializing the bottomNavigationView. It changes depending on the button clicked.z
 
-        bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
+        bottomNavigationView = findViewById(R.id.navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(
 
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -131,8 +136,34 @@ public class MainActivity extends AppCompatActivity {
 
 
         setupViewPager(viewPager);
+        mFloatingNavigationView = findViewById(R.id.floating_navigation_view);
+        mFloatingNavigationView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mFloatingNavigationView.open();
+
+            }
+        });
+        mFloatingNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem item) {
+                Snackbar.make((View) mFloatingNavigationView.getParent(), item.getTitle() + " Selected!", Snackbar.LENGTH_SHORT).show();
+                mFloatingNavigationView.close();
+                return true;
+            }
+        });
+
 
     }
+    @Override
+    public void onBackPressed() {
+        if (mFloatingNavigationView.isOpened()) {
+            mFloatingNavigationView.close();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
 
     private void setupViewPager(ViewPager viewPager) {
 

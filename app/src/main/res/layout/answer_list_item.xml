@@ -53,6 +53,9 @@
                 android:background="@drawable/solid_button_black"
                 android:textColor="@color/white"
                 android:text="Button"
+                android:foreground="?attr/selectableItemBackground"
+                android:focusable="true"
+                android:clickable="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/upvote_text" />

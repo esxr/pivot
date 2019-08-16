@@ -71,6 +71,7 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
         String currentUser= FirebaseAuth.getInstance().getCurrentUser().getUid();
         String uid = questions.getUser_id();
 
+        if(!uid.equals("empty"))
         firebaseFirestore.collection("USER").document(uid).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
@@ -81,6 +82,9 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
                 }
             }
         });
+        else{
+            questionHolder.setUsername("Anonymous");
+        }
 
         questionHolder.setQuestion(question);
         questionHolder.setBestAnswer(best_answer);
@@ -235,5 +239,21 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
                 .setNegativeButton(android.R.string.no, null)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(@NonNull QuestionHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+        listenerRegistration.remove();
     }
 }

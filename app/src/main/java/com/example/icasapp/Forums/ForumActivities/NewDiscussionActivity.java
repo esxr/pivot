@@ -1,6 +1,7 @@
 package com.example.icasapp.Forums.ForumActivities;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -65,6 +66,8 @@ public class NewDiscussionActivity extends AppCompatActivity {
     private String downloadUrl;
     private TextView discuss_txt;
     private String Category;
+    private ProgressDialog progressBar;
+    UploadTask uploadTask;
 
 
     @Override
@@ -84,6 +87,13 @@ public class NewDiscussionActivity extends AppCompatActivity {
         storageReference = FirebaseStorage.getInstance().getReference();
         firebaseFirestore = FirebaseFirestore.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
+
+        //SET PROGRESS DIALOG.
+        progressBar = new ProgressDialog(this);
+        progressBar.setCancelable(false);//you can cancel it by pressing back button
+        progressBar.setMessage("File UPLOADING ...");
+        progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressBar.setMax(100);//sets the maximum value 100
 
         Intent intent = getIntent();
         Category = intent.getStringExtra("Category");
@@ -133,6 +143,9 @@ public class NewDiscussionActivity extends AppCompatActivity {
 
                     final String randomName = UUID.randomUUID().toString();
 
+                    progressBar.setProgress(0);
+                    progressBar.show();
+
                     // PHOTO UPLOAD
                     File newImageFile = new File(postImageUri.getPath());
                     try {
@@ -154,15 +167,21 @@ public class NewDiscussionActivity extends AppCompatActivity {
                     // PHOTO UPLOAD
                     final StorageReference FilePath = storageReference.child("post_images").child(randomName + ".jpg");
                     FilePath.putBytes(imageData).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+
+
+
+
                         @Override
                         public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
                             if(!task.isSuccessful())
                             {
                                 Toast.makeText(NewDiscussionActivity.this,"Cant Upload",Toast.LENGTH_SHORT).show();
                             }
+
                             return FilePath.getDownloadUrl();
                         }
                     })
+
                             .addOnCompleteListener(new OnCompleteListener<Uri>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Uri> task) {
@@ -173,6 +192,7 @@ public class NewDiscussionActivity extends AppCompatActivity {
                                     postMap.put("user_id", current_user_id);
                                     postMap.put("timestamp", FieldValue.serverTimestamp());
                                     postMap.put("question",0);
+
 
 
                                         if (Category.equals("General") || Category.equals("Alumni")) {
@@ -193,8 +213,10 @@ public class NewDiscussionActivity extends AppCompatActivity {
                                                 finish();
                                                 Toast.makeText(NewDiscussionActivity.this, "Post was added", Toast.LENGTH_LONG).show();
                                            //     Intent mainIntent = new Intent(getApplicationContext(), ForumFragment.class);
+                                                progressBar.setProgress(100);
+                                                progressBar.hide();
                                            //     startActivity(mainIntent);
-                                            //    finish();
+                                                //    finish();
 
                                             } else {
                                                 Toast.makeText(NewDiscussionActivity.this, "Post was not added", Toast.LENGTH_LONG).show();
@@ -208,7 +230,9 @@ public class NewDiscussionActivity extends AppCompatActivity {
                             .addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(NewDiscussionActivity.this,"Cant Uplaod",Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(NewDiscussionActivity.this,"Something went wrong.",Toast.LENGTH_LONG).show();
+
+                                    progressBar.hide();
                                 }
                             });
                 }

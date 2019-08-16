@@ -1,5 +1,7 @@
 package com.example.icasapp.User;
 
+import android.net.Uri;
+
 import androidx.annotation.Nullable;
 
 import com.example.icasapp.Annonations.Hardcoded;
@@ -13,6 +15,7 @@ public class TestUser implements Serializable {
     String name, semester, stream, regNo;
     private String profilePhoto;
     private String UID;
+    private String description;
 
     public TestUser(String name, String semester, String stream, String regNo, @Nullable String profilePhoto, String UID) {
         this.name = name;
@@ -23,13 +26,32 @@ public class TestUser implements Serializable {
         this.UID = UID;
     }
 
+    public TestUser(String name, String semester, String stream, String regNo, String profilePhoto, String UID, String description) {
+        this.name = name;
+        this.semester = semester;
+        this.stream = stream;
+        this.regNo = regNo;
+        this.profilePhoto = profilePhoto;
+        this.UID = UID;
+        this.description = description;
+    }
+
     public TestUser(Map<String, Object> object) {
         this.name = (String) object.get("name");
         this.semester = (String) object.get("semester");
         this.stream = (String) object.get("stream");
         this.regNo = (String) object.get("regNo");
-        this.profilePhoto = (String) object.get("profile_photo");
+        this.profilePhoto = (String) object.get("downloadURL");
         this.UID = (String) object.get("UID");
+        this.description = (String) object.get("description");
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getUID() {
@@ -46,7 +68,7 @@ public class TestUser implements Serializable {
             put("regNo", getRegNo());
             put("semester", getSemester());
             put("stream", getStream());
-            put("profile_photo", getProfilePhoto());
+            put("profile_photo", getProfilePhoto().toString());
             put("UID", getUID());
         }};
     }

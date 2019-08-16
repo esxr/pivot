@@ -3,6 +3,7 @@ package com.example.icasapp.Forums.ForumActivities;
 import android.content.Intent;
 
 import com.example.icasapp.Forums.ForumAdapters.FirebaseQuestionRecyclerAdapter;
+import com.example.icasapp.Forums.ForumFragment;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.appcompat.app.AppCompatActivity;
@@ -86,8 +87,6 @@ public class QuestionsActivity extends AppCompatActivity {
             }
         });
 
-        Log.i("SDA",Category);
-
         //selecting the appropriate Category
         if (Category.equals("General") || Category.equals("Alumni")) {
 
@@ -137,8 +136,6 @@ public class QuestionsActivity extends AppCompatActivity {
                 .build();
 
         adapter = new FirebaseQuestionRecyclerAdapter(options);
-
-        Log.i("ASD",docId);
 
         RecyclerView recyclerView = findViewById(R.id.questionView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

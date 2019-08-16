@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.provider.DocumentsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.icasapp.Forums.ForumFragment;
 import com.example.icasapp.ObjectClasses.Answers;
 import com.example.icasapp.R;
@@ -21,10 +23,16 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
+
+import javax.annotation.Nullable;
 
 import io.reactivex.annotations.NonNull;
 
@@ -32,7 +40,8 @@ import io.reactivex.annotations.NonNull;
 public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, FirebaseAnswerAdapter.FirebaseAnswerHolder> {
     private Context context;
     FirebaseFirestore firebaseFirestore;
-
+    private ListenerRegistration listener2;
+    private ListenerRegistration listener3;
 
 
     public FirebaseAnswerAdapter(@NonNull FirestoreRecyclerOptions<Answers> options) {
@@ -40,19 +49,20 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull FirebaseAnswerHolder holder, final int position, @NonNull Answers model) {
+    protected void onBindViewHolder(@NonNull final FirebaseAnswerHolder holder, final int position, @NonNull Answers model) {
         FirebaseAuth firebaseAuth=FirebaseAuth.getInstance();
 
         //progress dialogue box
         final ProgressDialog progressBar = new ProgressDialog(context);
-        progressBar.setCancelable(true);//you can cancel it by pressing back button
-        progressBar.setMessage("Uploading");
-        progressBar.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressBar.setCancelable(false);//you can cancel it by pressing back button
+        progressBar.setMessage("Upvoting.....");
+
+        progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressBar.setProgress(0);//initially progress is 0
         progressBar.setMax(100);//sets the maximum value 100
 
         final String currentUser=firebaseAuth.getCurrentUser().getUid();
-        final String id=model.AnswerPostId;
+        final String id=model.getUser_id();
 
         //if current user is logged
         if( model.getUser_id().equals(currentUser)){
@@ -74,52 +84,80 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
 
         holder.setupvote(String.valueOf(model.upvotes));
 
-        holder.upvotes.setOnClickListener(new View.OnClickListener() {
+        //button blue and empty is upvoted or not
+        listener2 = getSnapshots().getSnapshot(position).getReference().collection("Upvotes").document().addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
-            public void onClick(View v) {
-                progressBar.show();
-                // viewHolder.upvotes.setEnabled(false);//displays the progress bar
-                getSnapshots().getSnapshot(position).getReference().collection("Upvotes")
-                        .document(currentUser).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if (documentSnapshot.exists()) {
-                            getSnapshots().getSnapshot(position).getReference().collection("Upvotes").document(currentUser).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Log.i("FLOW", "downvoted" + String.valueOf(position));
-                                  getSnapshots().getSnapshot(position).getReference().update("upvotes", FieldValue.increment(-1)).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            // viewHolder.upvotes.setEnabled(true);//displays the progress bar
-                                            progressBar.cancel();
-                                        }
-                                    });
-                                }
-                            });
-
-                        } else {
-                            HashMap<String, Object> postMap = new HashMap<>();
-                            postMap.put("timestamp", FieldValue.serverTimestamp());
-                            getSnapshots().getSnapshot(position).getReference().collection("Upvotes").document(currentUser).set(postMap).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Log.i("FLOW", "upvoted" + String.valueOf(position));
-                                    getSnapshots().getSnapshot(position).getReference().update("upvotes", FieldValue.increment(1)).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            //viewHolder.upvotes.setEnabled(true);
-                                            progressBar.cancel();
-                                        }
-                                    });
-                                }
-                            });
-                        }
-                    }
-                });
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                if(documentSnapshot.exists()){
+                    //if upvoted
+                    holder.upvotes.setImageDrawable(context.getDrawable(R.drawable.upvote_blue));
+                    Log.i("msg","upvote drawable upvote invoked");
+                }
+                else
+                {
+                    holder.upvotes.setImageDrawable(context.getDrawable(R.drawable.upvote));
+                    Log.i("msg","upvote drawable downvote invoked");
+                }
             }
-
         });
+
+        listener3 = firebaseFirestore.collection("USER").document(id).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                                                                                                       @Override
+                                                                                                       public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                                                                                                           String url = documentSnapshot.get("downloadURL").toString();
+                                                                                                           holder.setProfilePic(url);
+                                                                                                       }
+                                                                                                   });
+
+                holder.upvotes.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        progressBar.show();
+                        // viewHolder.upvotes.setEnabled(false);//displays the progress bar
+                        getSnapshots().getSnapshot(position).getReference().collection("Upvotes")
+                                .document(currentUser).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                if (documentSnapshot.exists()) {
+                                    getSnapshots().getSnapshot(position).getReference().collection("Upvotes").document(currentUser).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Log.i("FLOW", "downvoted" + String.valueOf(position));
+                                            getSnapshots().getSnapshot(position).getReference().update("upvotes", FieldValue.increment(-1)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    // viewHolder.upvotes.setEnabled(true);//displays the progress bar
+                                                    progressBar.cancel();
+                                                }
+                                            });
+                                        }
+                                    });
+
+                                } else {
+
+                                    HashMap<String, Object> postMap = new HashMap<>();
+                                    postMap.put("timestamp", FieldValue.serverTimestamp());
+                                    getSnapshots().getSnapshot(position).getReference().collection("Upvotes").document(currentUser).set(postMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Log.i("FLOW", "upvoted" + String.valueOf(position));
+                                            getSnapshots().getSnapshot(position).getReference().update("upvotes", FieldValue.increment(1)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    //viewHolder.upvotes.setEnabled(true);
+                                                    progressBar.cancel();
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    }
+
+                });
+
+
 
     }
 
@@ -168,6 +206,7 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
         TextView answers;
         TextView upVotes;
         ImageView delete;
+        ImageView profilePic;
 
         public FirebaseAnswerHolder(@NonNull View itemView) {
             super(itemView);
@@ -176,7 +215,7 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
             upVotes=mView.findViewById(R.id.upvote_text);
             answers=mView.findViewById(R.id.Answer);
             delete=mView.findViewById(R.id.delete);
-
+            profilePic=mView.findViewById(R.id.profilePic);
         }
 
         public void setAnswer(String answer){
@@ -191,6 +230,11 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
             upVotes.setText(upvote);
         }
 
+        public void setProfilePic(String url)
+        {
+            Glide.with(context).load(url).into(profilePic);
+        }
+
     }
 
     @Override
@@ -201,6 +245,11 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
     @Override
     public long getItemId(int position) {
         return position;
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(@androidx.annotation.NonNull FirebaseAnswerHolder holder) {
+        super.onViewDetachedFromWindow(holder);
     }
 
 
