@@ -4,6 +4,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+
+import com.example.icasapp.Auth.RegisterLandingActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AlertDialog;
@@ -172,6 +174,7 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.Help:
                 //Help Functionality. Reporting Bugs Functionality goes here. Vital for debugging and maintainance.
+                startActivity(new Intent(getApplicationContext(), RegisterLandingActivity.class));
                 return true;
 
             case R.id.profile:

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    tools:context=".Auth.AlumniAuth.AlumniContactFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SELECT YOUR DESIGNATION"/>
+
+    <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+        <androidx.appcompat.widget.AppCompatRadioButton android:id="@+id/dr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dr"
+            />
+        <androidx.appcompat.widget.AppCompatRadioButton android:id="@+id/mr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mr"
+            />
+        <androidx.appcompat.widget.AppCompatRadioButton android:id="@+id/mrs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mrs"
+            />
+
+        <androidx.appcompat.widget.AppCompatRadioButton android:id="@+id/ms"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ms"
+            />
+    </RadioGroup>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="WHAT IS YOUR FULL NAME?"/>
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/inputFullName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Eg. John Doe"
+        android:inputType="textEmailAddress"
+        />
+
+    <!-- TODO: Update blank fragment layout -->
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="WORK PHONE NUMBER"/>
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/inputWorkNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Eg. +91 XXXXXXXXXX"
+        android:inputType="phone"
+        />
+
+</LinearLayout>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:layout_gravity="center_vertical"
+    tools:context=".Auth.FacultyAuth.FacultyDescribeFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SUBECT(S) OF CONCERN"/>
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/inputSubjects"
+        android:layout_width="match_parent"
+        android:layout_height="77dp"
+        android:hint="Eg. Physics, Data Science, Artificial Intelligence, Statistics"
+        android:inputType="textMultiLine" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="AREAS OF INTEREST AND HOBBIES"/>
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/inputInterest"
+        android:layout_width="match_parent"
+        android:layout_height="79dp"
+        android:hint="Eg. Machine Learning, Stock Market Analysis"
+        android:inputType="textMultiLine" />
+
+</LinearLayout>

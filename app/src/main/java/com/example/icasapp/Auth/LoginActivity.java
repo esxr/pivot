@@ -66,6 +66,7 @@ public class LoginActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
+
                 Intent sharedIntent = new Intent(LoginActivity.this, RegisterActivity.class);
 
 

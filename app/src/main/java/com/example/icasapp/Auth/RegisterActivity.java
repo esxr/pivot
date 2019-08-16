@@ -56,7 +56,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         //TYPE WRITER EFFECT
         //Create Object and refer to layout view
-         typeWriterView=(TypeWriterView)findViewById(R.id.typeWriterView);
+         typeWriterView = findViewById(R.id.typeWriterView);
 
         //Setting each character animation delay
         typeWriterView.setDelay(300);
@@ -66,8 +66,6 @@ public class RegisterActivity extends AppCompatActivity {
 
         //Animating Text
         typeWriterView.animateText("Hello, welcome to the Official ICAS App. \nBy registering, you'll agree to the terms and conditions that you never read.");
-
-
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
@@ -96,9 +94,15 @@ public class RegisterActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "PASSWORD IS MISSING", Toast.LENGTH_LONG).show();
                 inputPassword.requestFocus();
             } else if (email == null && password == null) {
-                Toast.makeText(getApplicationContext(), "BOTH FIELDS ARE EMPTY", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "EMAIL AND PASSWORD FIELDS ARE EMPTY", Toast.LENGTH_LONG).show();
                 inputEmail.requestFocus();
-            } else
+            } else if(username == null || username.isEmpty()){
+                Toast.makeText(getApplicationContext(), "USERNAME IS MISSING", Toast.LENGTH_LONG).show();
+                inputUsername.requestFocus();
+            }else if(regNo == null || regNo.isEmpty()){
+                Toast.makeText(getApplicationContext(), "REGISTERATION NO IS MISSING", Toast.LENGTH_LONG).show();
+                inputRegNo.requestFocus();
+            }else
                 FirebaseRegister();
         }catch(IllegalArgumentException e){
             Toast.makeText(getApplicationContext() , "INVALID CREDENTIALS OR EMPTY FIELDS" , Toast.LENGTH_LONG).show();
@@ -174,7 +178,5 @@ public class RegisterActivity extends AppCompatActivity {
     public void onLogin(View view){
         startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
     }
-
-
 
 }
