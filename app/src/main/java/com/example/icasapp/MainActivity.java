@@ -62,18 +62,8 @@ public class MainActivity extends AppCompatActivity {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         //Initializing viewPager
-        viewPager = (ViewPager) findViewById(R.id.viewPager);
-        //fab = (VectorMasterView) findViewById(R.id.fab);
-        //fab1 = (VectorMasterView) findViewById(R.id.fab1);
-        //fab2 = (VectorMasterView) findViewById(R.id.fab2);
+        viewPager = findViewById(R.id.viewPager);
 
-
-        //lin_id = (RelativeLayout)findViewById(R.id.lin_id);
-        //bottomNavigationView.setOnNavigationItemSelectedListener(MainActivity.this);
-
-
-
-        //Initializing the bottomNavigationView. It changes depending on the button clicked.z
 
         bottomNavigationView = findViewById(R.id.navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(
@@ -147,6 +137,33 @@ public class MainActivity extends AppCompatActivity {
         mFloatingNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
+
+                switch (item.getItemId()){
+                    case R.id.nav_home:
+                        viewPager.setCurrentItem(0);
+                        break;
+                    case R.id.nav_notes:
+                        viewPager.setCurrentItem(1);
+                        break;
+                    case R.id.nav_forums:
+                        viewPager.setCurrentItem(2);
+                        break;
+                    case R.id.nav_feed:
+                        viewPager.setCurrentItem(3);
+                        break;
+                    case R.id.nav_edit_profile:
+                        startActivity(new Intent(getApplicationContext(), EditProfileActivity.class));
+                        break;
+                    case R.id.nav_display_profile:
+                        return false;
+                    case R.id.nav_sign_out:
+                        signOut();
+                        return true;
+                    default:
+                        return false;
+
+                }
+
                 Snackbar.make((View) mFloatingNavigationView.getParent(), item.getTitle() + " Selected!", Snackbar.LENGTH_SHORT).show();
                 mFloatingNavigationView.close();
                 return true;
@@ -223,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        if (FirebaseHelper.checkLoginStatus() == false) {
+        if (!FirebaseHelper.checkLoginStatus()) {
             setLoginActivity();
         }
     }
@@ -256,95 +273,7 @@ public class MainActivity extends AppCompatActivity {
         finish();
         startActivity(new Intent(getApplicationContext(), LoginActivity.class));
     }
-   /* @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        switch (menuItem.getItemId())
-        {
-            case R.id.navigation_home:
 
-                //Animation
-                draw(6);
-                //findin the correct path
-                lin_id.setX(bottomNavigationView.mFirstCurveControlPoint1.x);
-                fab.setVisibility(View.VISIBLE);
-                fab1.setVisibility(View.GONE);
-                fab2.setVisibility(View.GONE);
-                drawAnimation(fab);
-                break;
-
-            case R.id.navigation_notes:
-
-                draw(2);
-                //findin the correct path
-                lin_id.setX(bottomNavigationView.mFirstCurveControlPoint1.x);
-                fab.setVisibility(View.GONE);
-                fab1.setVisibility(View.VISIBLE);
-                fab2.setVisibility(View.GONE);
-                drawAnimation(fab1);
-
-                break;
-
-            case R.id.navigation_forum:
-
-                draw(6);
-                //findin the correct path
-                lin_id.setX(bottomNavigationView.mFirstCurveControlPoint1.x);
-                fab.setVisibility(View.GONE);
-                fab1.setVisibility(View.GONE);
-                fab2.setVisibility(View.VISIBLE);
-                drawAnimation(fab2);
-                break;
-        }
-        return true;
-    }
-    private void draw(int i)
-    {
-        bottomNavigationView.mFirstCurveStartPoint.set((bottomNavigationView.mNavigationBarWidth/i)
-        -(bottomNavigationView.CURVE_CIRCLE_RADIUS*2)-(bottomNavigationView.CURVE_CIRCLE_RADIUS/3),0);
-
-
-        bottomNavigationView.mFirstCurveEndPoint.set((bottomNavigationView.mNavigationBarWidth/i),(bottomNavigationView.CURVE_CIRCLE_RADIUS)
-    +(bottomNavigationView.CURVE_CIRCLE_RADIUS/4));
-
-
-        bottomNavigationView.mSecondCurveStartPoint = bottomNavigationView.mFirstCurveStartPoint;
-
-
-        bottomNavigationView.mSecondCurveEndPoint.set((bottomNavigationView.mNavigationBarWidth / i)
-                + (bottomNavigationView.CURVE_CIRCLE_RADIUS * 2) + (bottomNavigationView.CURVE_CIRCLE_RADIUS / 3),0);
-
-        bottomNavigationView.mFirstCurveControlPoint1.set(bottomNavigationView.mFirstCurveStartPoint.x + bottomNavigationView.CURVE_CIRCLE_RADIUS +
-                (bottomNavigationView.CURVE_CIRCLE_RADIUS/4),bottomNavigationView.mFirstCurveStartPoint.y);
-
-        bottomNavigationView.mFirstCurveControlPoint2.set(bottomNavigationView.mFirstCurveEndPoint.x - (bottomNavigationView.CURVE_CIRCLE_RADIUS*2)
-                        + bottomNavigationView.CURVE_CIRCLE_RADIUS,bottomNavigationView.mFirstCurveEndPoint.y);
-
-        //second
-        bottomNavigationView.mSecondCurveControlPoint1.set(bottomNavigationView.mSecondCurveStartPoint.x + (bottomNavigationView.CURVE_CIRCLE_RADIUS*2)
-        -bottomNavigationView.CURVE_CIRCLE_RADIUS,bottomNavigationView.mSecondCurveStartPoint.y);
-
-        bottomNavigationView.mSecondCurveControlPoint2.set(bottomNavigationView.mSecondCurveEndPoint.x -
-                (bottomNavigationView.CURVE_CIRCLE_RADIUS +(bottomNavigationView.CURVE_CIRCLE_RADIUS/4)) , bottomNavigationView.mSecondCurveEndPoint.y);
-
-    }
-    private void drawAnimation(final VectorMasterView fab)
-    {
-        outline = fab.getPathModelByName("outline");
-        outline.setStrokeColor(Color.WHITE);
-        outline.setTrimPathEnd(0.0f);
-
-        ValueAnimator valueAnimator = ValueAnimator.ofFloat(0.0f,1.0f);
-        valueAnimator.setDuration(1000);
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                outline.setTrimPathEnd((Float)animation.getAnimatedValue());
-                fab.update();
-
-            }
-        });
-        valueAnimator.start();
-    }*/
 
 
 }

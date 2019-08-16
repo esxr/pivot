@@ -54,7 +54,6 @@ public class EditProfileActivity extends AppCompatActivity {
         profileView = findViewById(R.id.profileView);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
-
         db = FirebaseFirestore.getInstance();
 
 
