@@ -3,55 +3,37 @@ package com.example.icasapp;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-
-import com.andremion.floatingnavigationview.FloatingNavigationView;
-import com.example.icasapp.Auth.RegisterLandingActivity;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.RelativeLayout;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
+import com.andremion.floatingnavigationview.FloatingNavigationView;
 import com.example.icasapp.Auth.LoginActivity;
-import com.example.icasapp.Feed.FeedFragment;
-import com.example.icasapp.Forums.ForumFragment;
-import com.example.icasapp.Home.HomeFragment;
+import com.example.icasapp.Auth.RegisterLandingActivity;
 import com.example.icasapp.Firebase.FirebaseHelper;
 import com.example.icasapp.Menu_EditProfile.EditProfileActivity;
-import com.example.icasapp.Notes.NotesFragment;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 
 public class MainActivity extends AppCompatActivity {
 
-  //  BottomNavigationView bottomNavigationView;
-    BottomNavigationView bottomNavigationView;
     private FloatingNavigationView mFloatingNavigationView;
+    TabLayout tabLayout;
 
-    //This is our viewPager
+
+    //declaring viewPager
     private ViewPager viewPager;
 
-    //4 Fragments
-    HomeFragment homeFragment;
-    NotesFragment notesFragment;
-    ForumFragment forumFragment;
-    FeedFragment feedFragment;
-    RelativeLayout lin_id;
 
-    MenuItem prevMenuItem;
 
-    private FirebaseAuth mAuth;
-
-    FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,69 +45,36 @@ public class MainActivity extends AppCompatActivity {
 
         //Initializing viewPager
         viewPager = findViewById(R.id.viewPager);
+        tabLayout = findViewById(R.id.tabLayout);
 
-
-        bottomNavigationView = findViewById(R.id.navigation);
-        bottomNavigationView.setOnNavigationItemSelectedListener(
-
-                new BottomNavigationView.OnNavigationItemSelectedListener() {
+        final View decorView = getWindow().getDecorView();
+        decorView.setOnSystemUiVisibilityChangeListener
+                (new View.OnSystemUiVisibilityChangeListener() {
                     @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.navigation_home:
-                                viewPager.setCurrentItem(0);
-                                break;
-
-                            case R.id.navigation_notes:
-                                viewPager.setCurrentItem(1);
-                                break;
-
-                            case R.id.navigation_forum:
-                                viewPager.setCurrentItem(2);
-                                break;
-
-                            case R.id.navigation_feed:
-                                viewPager.setCurrentItem(3);
-
-                                break;
+                    public void onSystemUiVisibilityChange(int visibility) {
+                        // Note that system bars will only be "visible" if none of the
+                        // LOW_PROFILE, HIDE_NAVIGATION, or FULLSCREEN flags are set.
+                        if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
+                            // TODO: The system bars are visible. Make any desired
+                            // adjustments to your UI, such as showing the action bar or
+                            // other navigational controls.
+                            int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+                            decorView.setSystemUiVisibility(uiOptions);
+                        } else {
+                            // TODO: The system bars are NOT visible. Make any desired
+                            // adjustments to your UI, such as hiding the action bar or
+                            // other navigational controls.
                         }
-
-                        return false;
                     }
                 });
+        getSupportActionBar().hide();
+
+        PagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(viewPagerAdapter);
+
+        tabLayout.setupWithViewPager(viewPager);
 
 
-        //Listening for right or left swipes
-
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                if (prevMenuItem != null) {
-                    prevMenuItem.setChecked(false);
-                } else {
-                    bottomNavigationView.getMenu().getItem(0).setChecked(false);
-                }
-
-                Log.d("page", "onPageSelected: " + position);
-
-                bottomNavigationView.getMenu().getItem(position).setChecked(true);
-                prevMenuItem = bottomNavigationView.getMenu().getItem(position);
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-            }
-
-        });
-
-
-        setupViewPager(viewPager);
         mFloatingNavigationView = findViewById(R.id.floating_navigation_view);
         mFloatingNavigationView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -159,9 +108,11 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.nav_sign_out:
                         signOut();
                         return true;
+                    case R.id.nav_help:
+                        startActivity(new Intent(getApplicationContext(), RegisterLandingActivity.class));
+                        return true;
                     default:
                         return false;
-
                 }
 
                 Snackbar.make((View) mFloatingNavigationView.getParent(), item.getTitle() + " Selected!", Snackbar.LENGTH_SHORT).show();
@@ -181,61 +132,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-    private void setupViewPager(ViewPager viewPager) {
-
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-
-        homeFragment = new HomeFragment();
-        notesFragment = new NotesFragment();
-        forumFragment = new ForumFragment();
-        feedFragment = new FeedFragment();
-
-        adapter.addFragment(homeFragment);
-        adapter.addFragment(notesFragment);
-        adapter.addFragment(forumFragment);
-        adapter.addFragment(feedFragment);
-
-        viewPager.setAdapter(adapter);
-    }
-
-    //Action Bar Menu Architecture.
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        //Makes the menu visible
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.action_menu, menu);
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        super.onOptionsItemSelected(item);
-
-        switch (item.getItemId()) {
-            case R.id.signOut:
-                //sign out functionality
-                signOut();
-                Log.i("Item Selected", "Sign Out");
-                return true;
-
-            case R.id.Help:
-                //Help Functionality. Reporting Bugs Functionality goes here. Vital for debugging and maintainance.
-                startActivity(new Intent(getApplicationContext(), RegisterLandingActivity.class));
-                return true;
-
-            case R.id.profile:
-                //OPEN AN ACTIVITY  OR DIALOG INTERFACE WHICH SHOWS USER PROFILE
-                startActivity(new Intent(MainActivity.this, EditProfileActivity.class));
-                return true;
-
-            default:
-                //In the case where something went wrong.
-                return false;
-        }
-    }
-
+    //SECURITY
     @Override
     public void onStart() {
         super.onStart();
@@ -245,7 +142,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void signOut() { //dialog box sign out
+    public void signOut() {
+        //dialog box sign out
         final AlertDialog.Builder signOutDialog = new AlertDialog.Builder(this);
 
         this.setTheme(R.style.AlertDialogCustom);
@@ -264,8 +162,6 @@ public class MainActivity extends AppCompatActivity {
                 .setNegativeButton("NO", null)
                 .create()
                 .show();
-
-
     }
 
 
@@ -273,7 +169,5 @@ public class MainActivity extends AppCompatActivity {
         finish();
         startActivity(new Intent(getApplicationContext(), LoginActivity.class));
     }
-
-
 
 }

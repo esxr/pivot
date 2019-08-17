@@ -214,7 +214,7 @@ public class HomeFragment extends Fragment {
     }
 
     void toggle() {
-//        profileImage.setVisibility(visibilityOf(!visible));
+//profileImage.setVisibility(visibilityOf(!visible));
 
         homeView.findViewById(R.id.search).setVisibility(visibilityOf(visible));
         profileSearch.setVisibility(visibilityOf(visible));
