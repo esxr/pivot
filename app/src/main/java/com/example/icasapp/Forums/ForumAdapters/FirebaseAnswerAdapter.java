@@ -66,8 +66,8 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
         progressBar.setProgress(0);//initially progress is 0
         progressBar.setMax(100);//sets the maximum value 100
 
-        final String currentUser=firebaseAuth.getCurrentUser().getUid();
-        final String id=model.getUser_id();
+        final String currentUser = firebaseAuth.getCurrentUser().getUid();
+        final String id = model.getUser_id();
 
         //if current user is logged
         if( model.getUser_id().equals(currentUser)){
@@ -146,8 +146,6 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
                     }
 
                 });
-
-
 
     }
 

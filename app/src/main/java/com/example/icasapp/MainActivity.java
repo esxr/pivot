@@ -4,6 +4,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+
+import com.andremion.floatingnavigationview.FloatingNavigationView;
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AlertDialog;
@@ -12,7 +17,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.example.icasapp.Auth.LoginActivity;
 import com.example.icasapp.Feed.FeedFragment;
@@ -21,14 +29,23 @@ import com.example.icasapp.Home.HomeFragment;
 import com.example.icasapp.Firebase.FirebaseHelper;
 import com.example.icasapp.Menu_EditProfile.EditProfileActivity;
 import com.example.icasapp.Notes.NotesFragment;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
 
 
 public class MainActivity extends AppCompatActivity {
 
   //  BottomNavigationView bottomNavigationView;
     BottomNavigationView bottomNavigationView;
+    ImageView navigationImage;
+    TextView navigationText;
+    FirebaseFirestore firebaseFirestore;
+    private FloatingNavigationView mFloatingNavigationView;
 
     //This is our viewPager
     private ViewPager viewPager;
@@ -52,7 +69,8 @@ public class MainActivity extends AppCompatActivity {
         //NOTE: ENTRY POINT OF THE APPLICATION CHANGED TO LOGIN ACTIVITY.
         setContentView(R.layout.activity_main);
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        firebaseFirestore = FirebaseFirestore.getInstance();
+        final String user = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         //Initializing viewPager
         viewPager = (ViewPager) findViewById(R.id.viewPager);
@@ -66,9 +84,11 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        //Initializing the bottomNavigationView. It changes depending on the button clicked.z
 
-        bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
+                //Initializing the bottomNavigationView. It changes depending on the button clicked.z
+
+
+                bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(
 
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -99,7 +119,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         //Listening for right or left swipes
-
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
             @Override
@@ -129,8 +148,68 @@ public class MainActivity extends AppCompatActivity {
 
 
         setupViewPager(viewPager);
+        mFloatingNavigationView = (FloatingNavigationView) findViewById(R.id.floating_navigation_view);
+        mFloatingNavigationView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mFloatingNavigationView.open();
+                navigationImage = mFloatingNavigationView.getHeaderView(0).findViewById(R.id.navigation_photo);
+                navigationText = mFloatingNavigationView.getHeaderView(0).findViewById(R.id.name);
+
+                // put photo and text in view
+                firebaseFirestore.collection("USER").document(user).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        try {
+                            DocumentSnapshot documentSnapshot = task.getResult();
+
+                            String url = documentSnapshot.get("downloadURL").toString();
+                            String name = documentSnapshot.get("name").toString();
+
+                            navigationText.setText(name);
+                            Glide.with(getApplicationContext()).load(url).into(navigationImage);
+                        }
+                        catch (Exception c)
+                        {
+
+                        }
+                    }
+                });
+
+
+            }
+        });
+
+        mFloatingNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem item) {
+                Snackbar.make((View) mFloatingNavigationView.getParent(), item.getTitle() + " Selected!", Snackbar.LENGTH_SHORT).show();
+                switch (item.getItemId()){
+                    case R.id.edit_profile:
+                        startActivity(new Intent(MainActivity.this, EditProfileActivity.class));
+                        break;
+                    case R.id.signout:
+                        signOut();
+                        break;
+                }
+                mFloatingNavigationView.close();
+                return true;
+            }
+        });
+
+
+
 
     }
+    @Override
+    public void onBackPressed() {
+        if (mFloatingNavigationView.isOpened()) {
+            mFloatingNavigationView.close();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
 
     private void setupViewPager(ViewPager viewPager) {
 
@@ -149,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
     }
 
-    //Action Bar Menu Architecture.
+  /*  //Action Bar Menu Architecture.
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         //Makes the menu visible
@@ -183,7 +262,7 @@ public class MainActivity extends AppCompatActivity {
                 //In the case where something went wrong.
                 return false;
         }
-    }
+    } */
 
     @Override
     public void onStart() {
@@ -222,95 +301,5 @@ public class MainActivity extends AppCompatActivity {
         finish();
         startActivity(new Intent(getApplicationContext(), LoginActivity.class));
     }
-   /* @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        switch (menuItem.getItemId())
-        {
-            case R.id.navigation_home:
-
-                //Animation
-                draw(6);
-                //findin the correct path
-                lin_id.setX(bottomNavigationView.mFirstCurveControlPoint1.x);
-                fab.setVisibility(View.VISIBLE);
-                fab1.setVisibility(View.GONE);
-                fab2.setVisibility(View.GONE);
-                drawAnimation(fab);
-                break;
-
-            case R.id.navigation_notes:
-
-                draw(2);
-                //findin the correct path
-                lin_id.setX(bottomNavigationView.mFirstCurveControlPoint1.x);
-                fab.setVisibility(View.GONE);
-                fab1.setVisibility(View.VISIBLE);
-                fab2.setVisibility(View.GONE);
-                drawAnimation(fab1);
-
-                break;
-
-            case R.id.navigation_forum:
-
-                draw(6);
-                //findin the correct path
-                lin_id.setX(bottomNavigationView.mFirstCurveControlPoint1.x);
-                fab.setVisibility(View.GONE);
-                fab1.setVisibility(View.GONE);
-                fab2.setVisibility(View.VISIBLE);
-                drawAnimation(fab2);
-                break;
-        }
-        return true;
-    }
-    private void draw(int i)
-    {
-        bottomNavigationView.mFirstCurveStartPoint.set((bottomNavigationView.mNavigationBarWidth/i)
-        -(bottomNavigationView.CURVE_CIRCLE_RADIUS*2)-(bottomNavigationView.CURVE_CIRCLE_RADIUS/3),0);
-
-
-        bottomNavigationView.mFirstCurveEndPoint.set((bottomNavigationView.mNavigationBarWidth/i),(bottomNavigationView.CURVE_CIRCLE_RADIUS)
-    +(bottomNavigationView.CURVE_CIRCLE_RADIUS/4));
-
-
-        bottomNavigationView.mSecondCurveStartPoint = bottomNavigationView.mFirstCurveStartPoint;
-
-
-        bottomNavigationView.mSecondCurveEndPoint.set((bottomNavigationView.mNavigationBarWidth / i)
-                + (bottomNavigationView.CURVE_CIRCLE_RADIUS * 2) + (bottomNavigationView.CURVE_CIRCLE_RADIUS / 3),0);
-
-        bottomNavigationView.mFirstCurveControlPoint1.set(bottomNavigationView.mFirstCurveStartPoint.x + bottomNavigationView.CURVE_CIRCLE_RADIUS +
-                (bottomNavigationView.CURVE_CIRCLE_RADIUS/4),bottomNavigationView.mFirstCurveStartPoint.y);
-
-        bottomNavigationView.mFirstCurveControlPoint2.set(bottomNavigationView.mFirstCurveEndPoint.x - (bottomNavigationView.CURVE_CIRCLE_RADIUS*2)
-                        + bottomNavigationView.CURVE_CIRCLE_RADIUS,bottomNavigationView.mFirstCurveEndPoint.y);
-
-        //second
-        bottomNavigationView.mSecondCurveControlPoint1.set(bottomNavigationView.mSecondCurveStartPoint.x + (bottomNavigationView.CURVE_CIRCLE_RADIUS*2)
-        -bottomNavigationView.CURVE_CIRCLE_RADIUS,bottomNavigationView.mSecondCurveStartPoint.y);
-
-        bottomNavigationView.mSecondCurveControlPoint2.set(bottomNavigationView.mSecondCurveEndPoint.x -
-                (bottomNavigationView.CURVE_CIRCLE_RADIUS +(bottomNavigationView.CURVE_CIRCLE_RADIUS/4)) , bottomNavigationView.mSecondCurveEndPoint.y);
-
-    }
-    private void drawAnimation(final VectorMasterView fab)
-    {
-        outline = fab.getPathModelByName("outline");
-        outline.setStrokeColor(Color.WHITE);
-        outline.setTrimPathEnd(0.0f);
-
-        ValueAnimator valueAnimator = ValueAnimator.ofFloat(0.0f,1.0f);
-        valueAnimator.setDuration(1000);
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                outline.setTrimPathEnd((Float)animation.getAnimatedValue());
-                fab.update();
-
-            }
-        });
-        valueAnimator.start();
-    }*/
-
 
 }

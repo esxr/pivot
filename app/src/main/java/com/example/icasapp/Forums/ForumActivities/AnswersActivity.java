@@ -101,10 +101,8 @@ public class AnswersActivity extends AppCompatActivity {
 
         //selecting the appropriate Category
         if (Category.equals("General") || Category.equals("Alumni")) {
-            Log.i("LOL","SUCC");
             collectionReference = firebaseFirestore.collection("General").document(Category).collection("Posts");
         } else {
-            Log.i("LOL","SUC");
             collectionReference = firebaseFirestore.collection("Specific").document(i_d).collection("Subjects").document(Category).collection("Posts");
         }
 
