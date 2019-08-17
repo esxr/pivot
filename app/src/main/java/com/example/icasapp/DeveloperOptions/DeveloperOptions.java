@@ -1,4 +1,4 @@
-package com.example.icasapp;
+package com.example.icasapp.DeveloperOptions;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+
+import com.example.icasapp.R;
 
 public class DeveloperOptions extends AppCompatActivity {
     Button setSubjects;
@@ -35,7 +37,7 @@ public class DeveloperOptions extends AppCompatActivity {
 
     void setFields(int option)
     {
-        Intent intent = new Intent(DeveloperOptions.this,setOptions.class);
+        Intent intent = new Intent(DeveloperOptions.this, setOptions.class);
         intent.putExtra("option",option);
         startActivity(intent);
         }

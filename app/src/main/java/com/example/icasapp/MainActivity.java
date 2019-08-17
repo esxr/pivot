@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 
 import com.andremion.floatingnavigationview.FloatingNavigationView;
 import com.bumptech.glide.Glide;
+import com.example.icasapp.DeveloperOptions.DeveloperOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -14,8 +15,6 @@ import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -29,13 +28,13 @@ import com.example.icasapp.Home.HomeFragment;
 import com.example.icasapp.Firebase.FirebaseHelper;
 import com.example.icasapp.Menu_EditProfile.EditProfileActivity;
 import com.example.icasapp.Notes.NotesFragment;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -45,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
     ImageView navigationImage;
     TextView navigationText;
     FirebaseFirestore firebaseFirestore;
+    FloatingActionButton developerOptions;
+
     private FloatingNavigationView mFloatingNavigationView;
 
     //This is our viewPager
@@ -74,15 +75,18 @@ public class MainActivity extends AppCompatActivity {
 
         //Initializing viewPager
         viewPager = (ViewPager) findViewById(R.id.viewPager);
-        //fab = (VectorMasterView) findViewById(R.id.fab);
-        //fab1 = (VectorMasterView) findViewById(R.id.fab1);
-        //fab2 = (VectorMasterView) findViewById(R.id.fab2);
 
+        developerOptions = findViewById(R.id.developerOptions);
+        developerOptions.setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                    Intent intent = new Intent(MainActivity.this, DeveloperOptions.class);
+                                                    startActivity(intent);
+                                                    finish();
+                                                }
+                                            });
 
-        //lin_id = (RelativeLayout)findViewById(R.id.lin_id);
-        //bottomNavigationView.setOnNavigationItemSelectedListener(MainActivity.this);
-
-
+                //bottomNavigationView.setOnNavigationItemSelectedListener(MainActivity.this);
 
 
                 //Initializing the bottomNavigationView. It changes depending on the button clicked.z

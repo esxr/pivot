@@ -160,6 +160,7 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
     }
 
     public void deleteItem(final int position){
+
         new AlertDialog.Builder(context)
                 .setTitle("Deleting the answer")
                 .setMessage("Are you sure you want to delete this entry?")
