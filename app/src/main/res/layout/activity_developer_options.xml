@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DeveloperOptions.DeveloperOptions">
+
+    <Button
+        android:id="@+id/setTimeTable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="95dp"
+        android:layout_marginTop="151dp"
+        android:layout_marginEnd="137dp"
+        android:text="Change Time Tables"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/setSubjects"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="109dp"
+        android:layout_marginTop="65dp"
+        android:layout_marginEnd="144dp"
+        android:text="Change Subjects"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/setTimeTable" />
+
+    <Button
+        android:id="@+id/setSyllabus"
+        android:layout_width="wrap_content"
+        android:layout_height="34dp"
+        android:layout_marginStart="109dp"
+        android:layout_marginTop="85dp"
+        android:layout_marginEnd="144dp"
+        android:text="Change syllabus"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/setSubjects" />
+
+    <Button
+        android:id="@+id/announcements"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="144dp"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="179dp"
+        android:layout_marginBottom="188dp"
+        android:text="Send Announcements"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/setSyllabus" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

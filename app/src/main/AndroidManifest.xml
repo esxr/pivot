@@ -7,9 +7,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
 
-
-
-
     <application xmlns:tools="http://schemas.android.com/tools"
         tools:overrideLibrary="com.andremion.floatingnavigationview"
         android:screenOrientation="portrait"
@@ -19,6 +16,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".DeveloperOptions.setOptions"></activity>
+        <activity android:name=".DeveloperOptions.DeveloperOptions" />
         <activity android:name=".Auth.RegisterProgressActivity"></activity>
         <activity android:name=".Auth.RegisterLandingActivity" />
         <activity android:name=".Notes.NotesForm" />

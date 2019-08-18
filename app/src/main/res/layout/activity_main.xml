@@ -21,6 +21,16 @@
         app:headerLayout="@layout/navigation_view_header"
         app:layout_anchorGravity="bottom|end"
         app:menu="@menu/navigation_view"  />
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/developerOptions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="300dp"
+        android:clickable="true"
+        app:backgroundTint="@color/white"
+        app:srcCompat="@drawable/ic_menu_manage" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">

@@ -5,28 +5,45 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.andremion.floatingnavigationview.FloatingNavigationView;
+import com.bumptech.glide.Glide;
 import com.example.icasapp.Auth.LoginActivity;
 import com.example.icasapp.Auth.RegisterLandingActivity;
+import com.example.icasapp.DeveloperOptions.DeveloperOptions;
 import com.example.icasapp.Firebase.FirebaseHelper;
 import com.example.icasapp.Menu_EditProfile.EditProfileActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private FloatingNavigationView mFloatingNavigationView;
     TabLayout tabLayout;
+
+    ImageView navigationImage;
+    TextView navigationText;
+    FirebaseFirestore firebaseFirestore;
+    FloatingActionButton developerOptions;
+
+
 
 
     //declaring viewPager
@@ -41,8 +58,19 @@ public class MainActivity extends AppCompatActivity {
         //NOTE: ENTRY POINT OF THE APPLICATION CHANGED TO LOGIN ACTIVITY.
         setContentView(R.layout.activity_main);
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
+        firebaseFirestore = FirebaseFirestore.getInstance();
+        final String user = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        developerOptions = findViewById(R.id.developerOptions);
+        developerOptions.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, DeveloperOptions.class);
+                startActivity(intent);
+                finish();
+            }
+        });
         //Initializing viewPager
         viewPager = findViewById(R.id.viewPager);
         tabLayout = findViewById(R.id.tabLayout);
@@ -67,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
-        getSupportActionBar().hide();
+
 
         PagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(viewPagerAdapter);
@@ -80,6 +108,29 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mFloatingNavigationView.open();
+                navigationImage = mFloatingNavigationView.getHeaderView(0).findViewById(R.id.navigation_photo);
+                navigationText = mFloatingNavigationView.getHeaderView(0).findViewById(R.id.name);
+
+                // put photo and text in view
+                firebaseFirestore.collection("USER").document(user).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        try {
+                            DocumentSnapshot documentSnapshot = task.getResult();
+
+                            String url = documentSnapshot.get("downloadURL").toString();
+                            String name = documentSnapshot.get("name").toString();
+
+                            navigationText.setText(name);
+                            Glide.with(getApplicationContext()).load(url).into(navigationImage);
+                        }
+                        catch (Exception c)
+                        {
+
+                        }
+                    }
+                });
+
 
             }
         });

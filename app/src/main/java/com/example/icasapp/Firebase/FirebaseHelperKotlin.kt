@@ -1,6 +1,7 @@
 package com.example.icasapp.Firebase
 
 import android.content.Context
+
 import androidx.multidex.MultiDexApplication
 import android.util.Log
 import android.widget.Toast

@@ -60,7 +60,7 @@ public class newQuestionActivity extends AppCompatActivity {
         checkBox     = findViewById(R.id.anonymous);
 
         firebaseAuth = FirebaseAuth.getInstance();
-        firebaseFirestore=firebaseFirestore.getInstance();
+        firebaseFirestore = firebaseFirestore.getInstance();
 
 
         progressBar = new ProgressDialog(this);
@@ -77,7 +77,7 @@ public class newQuestionActivity extends AppCompatActivity {
                                                                                                        @Override
                                                                                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                                                                                            DocumentSnapshot doc=task.getResult();
-                                                                                                         name= doc.get("name").toString();
+                                                                                                         name = doc.get("name").toString();
                                                                                                        }
                                                                                                    });
         option = "";
@@ -99,14 +99,15 @@ public class newQuestionActivity extends AppCompatActivity {
 
                 Intent intent = getIntent();
         final String docId = intent.getStringExtra("post_id");
-        Category=intent.getStringExtra("Category");
-        i_d=intent.getStringExtra("ID");
+        Category = intent.getStringExtra("Category");
+        i_d = intent.getStringExtra("ID");
+
         addQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String title=Title.getText().toString();
                 String content=Content.getText().toString();
-                if (!TextUtils.isEmpty(content) &&!TextUtils.isEmpty(title)) {
+                if ((title.trim().length() > 0) && (title.length() < 200) &&(content.trim().length() > 0) && (content.length() < 200)){
 
                     progressBar.setProgress(0);
                     progressBar.show();
@@ -116,13 +117,13 @@ public class newQuestionActivity extends AppCompatActivity {
                     // postMap.put("image_thumb",ls);
                     postMap.put("content", content);
                     postMap.put("timestamp", FieldValue.serverTimestamp());
+                    postMap.put("user_id", current_user_id);
+                    postMap.put("answers","0");
                     if(!option.equals("anonymous")){
                         postMap.put("name",name);
-                        postMap.put("user_id", current_user_id);
                     }
                     else{
-                        postMap.put("name","");
-                        postMap.put("user_id", "empty");
+                        postMap.put("name","empty");
                     }
                     postMap.put("best_answer","");
                     ForumFragment.setFirestoreReference(firebaseFirestore, ForumFragment.i_d, "c");
@@ -154,6 +155,14 @@ public class newQuestionActivity extends AppCompatActivity {
                     });
 
                 }
+                if((title.trim().length() == 0) || (content.trim().length() == 0)){
+                    Toast.makeText(getApplicationContext(), "Please fill all the fields.", Toast.LENGTH_LONG).show();
+                }
+                if((title.length() > 200) || (content.length() > 200))
+                {
+                    Toast.makeText(getApplicationContext(), "No field can be more than 200 characters.", Toast.LENGTH_LONG).show();
+                }
+
             }
         });
     }
