@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.example.icasapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -36,6 +37,7 @@ public class setOptions extends AppCompatActivity {
     FirebaseFirestore firebaseFirestore;
     EditText count;
     Boolean firstTime = true;
+    DocumentReference documentReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +87,7 @@ public class setOptions extends AppCompatActivity {
         applyChanges.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                subs.add(count.getText());
                 firebaseFirestore.collection("Specific").whereEqualTo("stream", stream).whereEqualTo("semester",semester).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -97,10 +100,29 @@ public class setOptions extends AppCompatActivity {
                            Toast.makeText(getApplicationContext(),"Document didnt exist. Enter fields again",Toast.LENGTH_LONG).show();
                        }
                        else {
-                           int i = 0 ;
                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                         //          documentSnapshot.
+                                  documentReference = documentSnapshot.getReference();
                            }
+                           documentReference.collection("Subjects").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                               @Override
+                               public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                   for(DocumentSnapshot documentSnapshot : task.getResult())
+                                   {
+                                       documentSnapshot.getReference().delete();
+                                   }
+                                   Log.i("LOLLL",subs.toString());
+                                   for(Object s : subs){
+                                       Map<String, Object> postMap = new HashMap<>();
+                                       postMap.put("active", "yes");
+                                       documentReference.collection("Subjects").document(s.toString()).set(postMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                           @Override
+                                           public void onComplete(@NonNull Task<Void> task) {
+                                               Toast.makeText(getApplicationContext(),"Success",Toast.LENGTH_LONG).show();
+                                           }
+                                       });
+                                   }
+                               }
+                           });
                        }
                     }
                 });

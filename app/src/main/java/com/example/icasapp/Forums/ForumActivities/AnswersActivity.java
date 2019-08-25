@@ -238,7 +238,6 @@ public class AnswersActivity extends AppCompatActivity {
         intent.putExtra("post_id",docId);
         startActivity(intent);
 
-
     }
 
     public void sortUpvotes()

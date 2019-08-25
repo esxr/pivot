@@ -132,14 +132,14 @@ public class ForumFragment extends Fragment implements AdapterView.OnItemClickLi
     public void onStart() {
         super.onStart();
         if(isFirstPageFirstLoad)
-        adapter.startListening();
+            adapter.startListening();
     }
 
     @Override
     public void onStop() {
         super.onStop();
         if(isFirstPageFirstLoad)
-        adapter.stopListening();
+            adapter.stopListening();
     }
 
     @Override
