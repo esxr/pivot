@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.provider.DocumentsContract;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +33,8 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 
 import javax.annotation.Nullable;
@@ -69,6 +72,23 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
         final String currentUser = firebaseAuth.getCurrentUser().getUid();
         final String id = model.getUser_id();
 
+        // set time
+        long currentTime = Calendar.getInstance().getTime().getTime();
+        long uploadtime = model.getTimestamp().getTime();
+        long diff = currentTime-uploadtime;
+        int value= (int) (diff/(3.6*(Math.pow(10,6))));
+
+        if(value>24)
+        {
+            String dateString = DateFormat.format("MM/dd/yyyy", new Date(uploadtime)).toString();
+            holder.setTime(dateString);
+        }
+        else
+        {
+            String dateString = DateFormat.format("hh:mm", new Date(uploadtime)).toString();
+            holder.setTime(dateString);
+        }
+
         //if current user is logged
         if( model.getUser_id().equals(currentUser)){
             holder.delete.setVisibility(View.VISIBLE);
@@ -96,6 +116,8 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
                                                                                                        public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
                                                                                                            String url = documentSnapshot.get("downloadURL").toString();
                                                                                                            holder.setProfilePic(url);
+                                                                                                           String name = documentSnapshot.get("name").toString();
+                                                                                                           holder.setName(name);
                                                                                                        }
                                                                                                    });
 
@@ -199,22 +221,30 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
         ImageView upvotes;
         TextView moreanswers;
         TextView upVotes;
+        TextView name;
+        TextView time;
         ImageView delete;
         ImageView profilePic;
 
         public FirebaseAnswerHolder(@NonNull View itemView) {
             super(itemView);
             mView = itemView;
+            name = mView.findViewById(R.id.name);
             upvotes = mView.findViewById(R.id.upvote_btn);
             upVotes = mView.findViewById(R.id.upvote_text);
             moreanswers = mView.findViewById(R.id.Answer);
             delete = mView.findViewById(R.id.delete);
+            time = mView.findViewById(R.id.time);
             profilePic = mView.findViewById(R.id.profilePic);
         }
 
         public void setAnswer(String answer){
             moreanswers.setText(answer);
         }
+
+        public void setName(String name1) { name.setText(name1); }
+
+        public void setTime(String time1) { time.setText(time1);}
 
         public String getupvote(){
             return  upVotes.getText().toString();

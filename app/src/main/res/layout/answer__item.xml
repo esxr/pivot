@@ -29,7 +29,15 @@
             android:scrollbarAlwaysDrawVerticalTrack="true"
             android:layout_marginTop="40dp"
             android:text="TextView"
-            android:layout_alignParentTop="true"/>
+            android:layout_alignParentTop="true"
+            />
+
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="Time" />
 
         <TextView
             android:id="@+id/upvote_text"
@@ -59,6 +67,12 @@
             android:layout_height="28dp"
             android:layout_alignParentBottom="true"
             app:srcCompat="@drawable/common_google_signin_btn_icon_dark" />
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
 
 
     </RelativeLayout>
