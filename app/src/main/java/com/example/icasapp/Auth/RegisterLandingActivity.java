@@ -23,16 +23,19 @@ public class RegisterLandingActivity extends AppCompatActivity {
     public void onStudent(View view){
         i.putExtra("userType", "STUDENT");
         startActivity(i);
+        finish();
 
     }
 
     public void onFaculty(View view){
         i.putExtra("userType", "FACULTY");
         startActivity(i);
+        finish();
     }
 
     public void onAlumni(View view){
         i.putExtra("userType", "ALUMNI");
         startActivity(i);
+        finish();
     }
 }

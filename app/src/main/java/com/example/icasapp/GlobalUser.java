@@ -10,6 +10,7 @@ public class GlobalUser {
     private  String regNo;
     private  String userType;
     private  String buffer;
+    private  String password;
 
     public GlobalUser() {
     }
@@ -76,5 +77,13 @@ public class GlobalUser {
 
     public void setBuffer(String buffer) {
         this.buffer = buffer;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

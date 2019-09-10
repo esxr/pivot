@@ -16,6 +16,8 @@ import androidx.fragment.app.Fragment;
 
 import com.example.icasapp.Auth.FormHelper;
 import com.example.icasapp.Auth.RegisterLandingActivity;
+import com.example.icasapp.Auth.RegisterProgressActivity;
+import com.example.icasapp.GlobalUser;
 import com.example.icasapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -68,47 +70,30 @@ public class UserRegCredentialFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 password = inputPassword.getText().toString();
-                if(formHelper.validatePassword(password))
-                    createNewUser();
+                if(formHelper.validatePassword(password)) {
+                    store();
+                    updateUI();
+                }
             }
         });
 
         return userRegCredentialView;
     }
 
-    public void createNewUser(){
+    public void store(){
 
          email = inputEmail.getText().toString().trim();
          password = inputPassword.getText().toString().trim();
 
-        mAuth
-                .createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.i("msg", "createUserWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            Toast.makeText(getContext(), "Account creation successfull.", Toast.LENGTH_LONG).show();
-
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.i("msg", "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(getContext(), "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(userRegCredentialView.getContext(), RegisterLandingActivity.class));
-                        }
-
-                    }
-                });
-
-
-
-
-
+        GlobalUser.globalUser.setPassword(password);
 
     }
 
+    public void updateUI(){
+        RegisterProgressActivity.pager.setCurrentItem(2);
+    }
+
+
 
 }
+

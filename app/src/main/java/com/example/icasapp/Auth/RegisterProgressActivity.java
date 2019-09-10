@@ -37,10 +37,11 @@ public class RegisterProgressActivity extends AppCompatActivity {
 
         final Bundle bundle = getIntent().getExtras();
         final String userType = bundle.getString("userType");
-
+        GlobalUser.globalUser.setUserType(userType);
         switch (userType) {
             case "STUDENT":
                 pagerAdapter = new StudentRegisterPagerAdapter(getSupportFragmentManager());
+
                 break;
             case "FACULTY":
                 pagerAdapter = new FacultyRegisterPagerAdapter(getSupportFragmentManager());
@@ -57,11 +58,19 @@ public class RegisterProgressActivity extends AppCompatActivity {
 
         pager.setAdapter(pagerAdapter);
 
-
-
     }
 
+    @Override
+    public void onBackPressed() {
+        int currentPosition = pager.getCurrentItem();
+        if(currentPosition == 0){
+            startActivity(new Intent(getApplicationContext(), RegisterLandingActivity.class));
+            finish();
+        }else{
+            pager.setCurrentItem(--currentPosition);
+        }
 
+    }
 }
 
 

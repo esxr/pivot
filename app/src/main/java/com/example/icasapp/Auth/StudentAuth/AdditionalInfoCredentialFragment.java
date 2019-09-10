@@ -15,12 +15,12 @@ import com.example.icasapp.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SubjectSemesterCredentialFragment extends Fragment {
+public class AdditionalInfoCredentialFragment extends Fragment {
 
-    private View subSemView;
+    private View view;
 
 
-    public SubjectSemesterCredentialFragment() {
+    public AdditionalInfoCredentialFragment() {
         // Required empty public constructor
     }
 
@@ -29,9 +29,9 @@ public class SubjectSemesterCredentialFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        subSemView = inflater.inflate(R.layout.fragment_subject_semester_credential, container, false);
+        view = inflater.inflate(R.layout.fragment_subject_semester_credential, container, false);
 
-        return subSemView;
+        return view;
     }
 
 }
