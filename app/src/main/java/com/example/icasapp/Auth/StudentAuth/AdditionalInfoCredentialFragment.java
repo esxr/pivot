@@ -31,6 +31,7 @@ public class AdditionalInfoCredentialFragment extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_subject_semester_credential, container, false);
 
+
         return view;
     }
 
