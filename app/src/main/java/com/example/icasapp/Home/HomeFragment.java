@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -56,6 +57,8 @@ public class HomeFragment extends Fragment {
     private Group group;
     private View selfProfile;
     private boolean visible = true;
+    private LinearLayout homeV;
+    int n = 0;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -86,19 +89,31 @@ public class HomeFragment extends Fragment {
             }
         }).start();
 
-        new Thread(new Runnable() {
+     /*   new Thread(new Runnable() {
             public void run() {
                 setViewSelfProfile();
             }
-        }).start();
+        }).start(); */
 
+        return homeView;
+    }
+
+    public View getHomeView() {
         return homeView;
     }
 
     //toggle functionality
     private void toggle() {
         group.setVisibility(visibilityOf(visible));
+        homeV = homeView.findViewById(R.id.linearLayout2);
+        if(n%2==0){
+        homeV.setVisibility(View.GONE);}
+        else
+            homeV.setVisibility(View.VISIBLE);
+
 //        selfProfile.setVisibility(visibilityOf(!visible));
+        n++;
+        Log.i("MSGGDS",String.valueOf(n));
         visible = !visible;
     }
     private int visibilityOf(boolean visible) {
