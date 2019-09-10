@@ -17,8 +17,6 @@ public class RegisterLandingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_landing);
 
-        getSupportActionBar().hide();
-
         i = new Intent(getApplicationContext(), RegisterProgressActivity.class);
     }
 

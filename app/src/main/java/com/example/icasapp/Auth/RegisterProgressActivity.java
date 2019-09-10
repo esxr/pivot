@@ -16,14 +16,16 @@ import android.view.View;
 import com.example.icasapp.Auth.AlumniAuth.AlumniRegisterPagerAdapter;
 import com.example.icasapp.Auth.FacultyAuth.FacultyRegisterPagerAdapter;
 import com.example.icasapp.Auth.StudentAuth.StudentRegisterPagerAdapter;
+import com.example.icasapp.GlobalUser;
 import com.example.icasapp.MainActivity;
+import com.example.icasapp.NonSwipeableViewpager;
 import com.example.icasapp.R;
 
 public class RegisterProgressActivity extends AppCompatActivity {
 
-    ViewPager pager;
+    public static NonSwipeableViewpager pager;
     PagerAdapter pagerAdapter;
-    AppCompatButton nextButton;
+
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -32,12 +34,11 @@ public class RegisterProgressActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register_progress);
 
         pager = findViewById(R.id.pager);
-        nextButton = findViewById(R.id.nextButton);
 
-        Bundle bundle = getIntent().getExtras();
+        final Bundle bundle = getIntent().getExtras();
         final String userType = bundle.getString("userType");
 
-        switch(userType){
+        switch (userType) {
             case "STUDENT":
                 pagerAdapter = new StudentRegisterPagerAdapter(getSupportFragmentManager());
                 break;
@@ -57,28 +58,11 @@ public class RegisterProgressActivity extends AppCompatActivity {
         pager.setAdapter(pagerAdapter);
 
 
-        //DISABLE SWIPES
-        pager.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                return true;
-            }
-        });
-
-        nextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int position = pager.getCurrentItem();
-                Log.i("msg", userType + "---->" + pager.getAdapter().getCount());
-
-                if (position != 2) {
-                    position += 1;
-                    pager.setCurrentItem(position);
-                } else
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
-            }
-        });
-
 
     }
+
+
 }
+
+
+

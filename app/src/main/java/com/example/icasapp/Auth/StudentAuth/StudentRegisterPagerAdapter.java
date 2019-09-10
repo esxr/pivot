@@ -23,7 +23,7 @@ public class StudentRegisterPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position){
             case 0:
-                return new RegisterCredentialFragment();
+                return new StudentRegisterCredentialFragment();
             case 1:
                 return new UserRegCredentialFragment();
             case 2:
