@@ -1,5 +1,9 @@
 package com.example.icasapp;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+
 public class Alumni {
     public static Alumni alumni = new Alumni();
     private String email;
@@ -13,6 +17,17 @@ public class Alumni {
     private String downloadURL;
 
     public Alumni(){}
+
+    public List<List<String>> getList() {
+        List<List<String>> list = new ArrayList<>();
+
+        for (Field f : getClass().getDeclaredFields()) {
+            List<String> l = new ArrayList<>();
+            l.add(f.getName());
+            try { l.add((String) f.get(this)); } catch(Exception e) { l.add("undef"); }
+        }
+        return list;
+    }
 
     public static Alumni getAlumni() {
         return alumni;

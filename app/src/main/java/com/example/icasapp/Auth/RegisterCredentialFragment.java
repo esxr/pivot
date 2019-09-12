@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.icasapp.Faculty;
 import com.example.icasapp.R;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -25,12 +26,9 @@ public class RegisterCredentialFragment extends Fragment {
     FormHelper formHelper;
     EditText inputEmail;
     EditText inputPassword;
-    String email, password;
+    public static String  email, password;
 
     private FirebaseAuth mAuth;
-
-
-
 
 
     public RegisterCredentialFragment() {
@@ -57,18 +55,19 @@ public class RegisterCredentialFragment extends Fragment {
                 password = inputPassword.getText().toString();
 
                 if(formHelper.validateEmail(email) && formHelper.validatePassword(password)){
-                    signIn();
+                    RegisterProgressActivity.pager.setCurrentItem(1);
                 }
                 else {
                     Toast.makeText(registerCredentialFragment.getContext(), "INVALID OR INCOMPLETE CREDENTIALS.", Toast.LENGTH_LONG).show();
+                    if(!formHelper.validateEmail(email))
+                        inputEmail.requestFocus();
+                    else
+                        inputPassword.requestFocus();
                 }
             }
         });
 
         return registerCredentialFragment;
-    }
-
-    private void signIn(){
     }
 
 }

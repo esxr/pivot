@@ -1,5 +1,9 @@
 package com.example.icasapp;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+
 public class Student {
     public static Student student = new Student();
     private String email;
@@ -12,6 +16,17 @@ public class Student {
     private String downloadURL;
 
     public Student() {
+    }
+
+    public List<List<String>> getList() {
+        List<List<String>> list = new ArrayList<>();
+
+        for (Field f : getClass().getDeclaredFields()) {
+            List<String> l = new ArrayList<>();
+            l.add(f.getName());
+            try { l.add((String) f.get(this)); } catch(Exception e) { l.add("undef"); }
+        }
+        return list;
     }
 
     public String getEmail() {
@@ -69,7 +84,6 @@ public class Student {
     public void setBuffer(String buffer) {
         this.buffer = buffer;
     }
-
 
     public String getDownloadURL() {
         return downloadURL;
