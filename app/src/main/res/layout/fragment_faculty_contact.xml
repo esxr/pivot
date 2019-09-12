@@ -8,38 +8,12 @@
     tools:context=".Auth.FacultyAuth.FacultyContactFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <androidx.appcompat.widget.AppCompatTextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="SELECT YOUR DESIGNATION"/>
 
     <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:orientation="horizontal">
-        <androidx.appcompat.widget.AppCompatRadioButton android:id="@+id/dr"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Dr"
-            />
-        <androidx.appcompat.widget.AppCompatRadioButton android:id="@+id/mr"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Mr"
-            />
-        <androidx.appcompat.widget.AppCompatRadioButton android:id="@+id/mrs"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Mrs"
-            />
-
-        <androidx.appcompat.widget.AppCompatRadioButton android:id="@+id/ms"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Ms"
-            />
-    </RadioGroup>
+        android:orientation="horizontal"/>
 
     <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="wrap_content"
@@ -74,7 +48,7 @@
         android:text="MIT CAMPUS LOCATION"/>
 
     <androidx.appcompat.widget.AppCompatEditText
-        android:id="@+id/inputCampusLocation"
+        android:id="@+id/inputCabinLocation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Eg. \n CABIN NO:5 \n BUILDING:ACADEMIC BLOCK-5 \nFLOOR:2 \nFACULTY CHAMBER:"
@@ -91,5 +65,13 @@
         android:layout_height="wrap_content"
         android:hint="Eg. \nOFFICE HOURS : \nWORKING DAYS: \nFREE SLOT TIMINGS:"
         android:inputType="textMultiLine" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/nextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:text="NEXT" />
+
 
 </LinearLayout>

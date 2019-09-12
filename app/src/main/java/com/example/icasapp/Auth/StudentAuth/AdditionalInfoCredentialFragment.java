@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -71,7 +70,7 @@ public class AdditionalInfoCredentialFragment extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_subject_semester_credential, container, false);
 
-        imageView = view.findViewById(R.id.imageView);
+        imageView = view.findViewById(R.id.profileView);
         uploadButton = view.findViewById(R.id.uploadButton);
         uploadButton.setVisibility(View.INVISIBLE);
         storageRef = FirebaseStorage.getInstance().getReference();
@@ -153,10 +152,6 @@ public class AdditionalInfoCredentialFragment extends Fragment {
 
     public void setCompressedImageData(byte[] data) {
         compressedImageData = data;
-    }
-
-    public Uri getDownloadUrl() {
-        return downloadUrl;
     }
 
     public void setDownloadUrl(Uri uri) {

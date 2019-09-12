@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -160,8 +161,7 @@ public class MainActivity extends AppCompatActivity {
                         signOut();
                         return true;
                     case R.id.nav_help:
-                        startActivity(new Intent(getApplicationContext(), RegisterLandingActivity.class));
-                        return true;
+                        break;
                     default:
                         return false;
                 }

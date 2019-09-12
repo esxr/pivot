@@ -9,26 +9,15 @@ public class Faculty {
     private String email;
     private String subjectsOfConcern;
     private String interests;
-    private String designation;
     private String name;
     private String workNumber;
-    private String freeHours;
+    private String freeTimings;
     private String cabinLocation;
     private String userType;
     private String buffer;
     private String downloadURL;
 
-    public Faculty(){}
-
-    public List<List<String>> fetchList() {
-        List<List<String>> list = new ArrayList<>();
-
-        for (Field f : getClass().getDeclaredFields()) {
-            List<String> l = new ArrayList<>();
-            l.add(f.getName());
-            try { l.add((String) f.get(this)); } catch(Exception e) { l.add("undef"); }
-        }
-        return list;
+    public Faculty() {
     }
 
     public static Faculty getFaculty() {
@@ -37,6 +26,21 @@ public class Faculty {
 
     public static void setFaculty(Faculty faculty) {
         Faculty.faculty = faculty;
+    }
+
+    public List<List<String>> fetchList() {
+        List<List<String>> list = new ArrayList<>();
+
+        for (Field f : getClass().getDeclaredFields()) {
+            List<String> l = new ArrayList<>();
+            l.add(f.getName());
+            try {
+                l.add((String) f.get(this));
+            } catch (Exception e) {
+                l.add("undef");
+            }
+        }
+        return list;
     }
 
     public String getEmail() {
@@ -63,14 +67,6 @@ public class Faculty {
         this.interests = interests;
     }
 
-    public String getDesignation() {
-        return designation;
-    }
-
-    public void setDesignation(String designation) {
-        this.designation = designation;
-    }
-
     public String getName() {
         return name;
     }
@@ -85,14 +81,6 @@ public class Faculty {
 
     public void setWorkNumber(String workNumber) {
         this.workNumber = workNumber;
-    }
-
-    public String getFreeHours() {
-        return freeHours;
-    }
-
-    public void setFreeHours(String freeHours) {
-        this.freeHours = freeHours;
     }
 
     public String getCabinLocation() {
@@ -125,5 +113,13 @@ public class Faculty {
 
     public void setDownloadURL(String downloadURL) {
         this.downloadURL = downloadURL;
+    }
+
+    public String getFreeTimings() {
+        return freeTimings;
+    }
+
+    public void setFreeTimings(String freeTimings) {
+        this.freeTimings = freeTimings;
     }
 }

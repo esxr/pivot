@@ -2,9 +2,7 @@ package com.example.icasapp.Auth;
 
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +10,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.fragment.app.Fragment;
+
 import com.example.icasapp.Faculty;
 import com.example.icasapp.R;
-import com.google.firebase.auth.FirebaseAuth;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -22,13 +22,12 @@ import com.google.firebase.auth.FirebaseAuth;
 public class RegisterCredentialFragment extends Fragment {
 
     View registerCredentialFragment;
-    Button nextButton;
+    AppCompatButton nextButton;
     FormHelper formHelper;
     EditText inputEmail;
     EditText inputPassword;
     public static String  email, password;
 
-    private FirebaseAuth mAuth;
 
 
     public RegisterCredentialFragment() {
@@ -51,11 +50,12 @@ public class RegisterCredentialFragment extends Fragment {
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                email = inputEmail.getText().toString();
-                password = inputPassword.getText().toString();
+                email = inputEmail.getText().toString().trim();
+                password = inputPassword.getText().toString().trim();
 
                 if(formHelper.validateEmail(email) && formHelper.validatePassword(password)){
                     RegisterProgressActivity.pager.setCurrentItem(1);
+
                 }
                 else {
                     Toast.makeText(registerCredentialFragment.getContext(), "INVALID OR INCOMPLETE CREDENTIALS.", Toast.LENGTH_LONG).show();
