@@ -80,6 +80,8 @@ public class FacultyDescribeFragment extends Fragment {
         nextButton = view.findViewById(R.id.nextButton);
         uploadButton = view.findViewById(R.id.uploadButton);
 
+        uploadButton.setVisibility(View.INVISIBLE);
+
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         storageRef = FirebaseStorage.getInstance().getReference();

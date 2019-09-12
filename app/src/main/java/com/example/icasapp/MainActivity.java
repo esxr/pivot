@@ -1,5 +1,6 @@
 package com.example.icasapp;
 
+import android.app.LauncherActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -174,6 +175,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
     @Override
     public void onBackPressed() {
         if (mFloatingNavigationView.isOpened()) {
@@ -224,3 +226,4 @@ public class MainActivity extends AppCompatActivity {
     }
 
 }
+

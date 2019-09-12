@@ -17,7 +17,7 @@ public class AlumniRegisterPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return new RegisterCredentialFragment();
+                return new RegisterCredentialFragment("ALUMNI");
             case 1:
                 return new AlumniContactFragment(); //WORK PH, WHERE CAN WE FIND YOU ON CAMPUS?, FREE TIMINGS AND CONTACT HRS?
             case 2:

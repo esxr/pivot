@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 
+import com.example.icasapp.Alumni;
 import com.example.icasapp.Faculty;
 import com.example.icasapp.R;
 
@@ -26,12 +27,18 @@ public class RegisterCredentialFragment extends Fragment {
     FormHelper formHelper;
     EditText inputEmail;
     EditText inputPassword;
-    public static String  email, password;
+    public static String  email, password, userType;
 
 
 
     public RegisterCredentialFragment() {
         // Required empty public constructor
+    }
+
+    public RegisterCredentialFragment(String userType) {
+        // Required empty public constructor
+        Log.i("msg", userType);
+        RegisterCredentialFragment.userType = userType;
     }
 
 
@@ -55,7 +62,11 @@ public class RegisterCredentialFragment extends Fragment {
 
                 if(formHelper.validateEmail(email) && formHelper.validatePassword(password)){
                     RegisterProgressActivity.pager.setCurrentItem(1);
-
+                    Log.i("msg", email);
+                    if(userType.equalsIgnoreCase("FACULTY"))
+                        Faculty.faculty.setEmail(email);
+                    else
+                        Alumni.alumni.setEmail(email);
                 }
                 else {
                     Toast.makeText(registerCredentialFragment.getContext(), "INVALID OR INCOMPLETE CREDENTIALS.", Toast.LENGTH_LONG).show();

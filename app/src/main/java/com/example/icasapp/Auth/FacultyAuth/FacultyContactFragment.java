@@ -2,6 +2,7 @@ package com.example.icasapp.Auth.FacultyAuth;
 
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +42,7 @@ public class FacultyContactFragment extends Fragment {
 
         String email = RegisterCredentialFragment.email;
         Faculty.faculty.setEmail(email);
+        Log.i("msg", "EMAIL FACUL:" + email + "=" + Faculty.faculty.getEmail());
 
         inputFullName = view.findViewById(R.id.inputFullName);
         inputWorkPhoneNumber = view.findViewById(R.id.inputWorkNumber);
