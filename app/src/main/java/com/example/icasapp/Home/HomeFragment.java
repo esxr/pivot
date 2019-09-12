@@ -14,9 +14,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.icasapp.Annonations.Hardcoded;
@@ -71,11 +73,11 @@ public class HomeFragment extends Fragment {
         // Inflate the layout for this fragment
         homeView = inflater.inflate(R.layout.fragment_home, container, false);
 
-        new Thread(new Runnable() {
-            public void run() {
-                setSearchToggle();
-            }
-        }).start();
+//        new Thread(new Runnable() {
+//            public void run() {
+//                setSearchToggle();
+//            }
+//        }).start();
 
         new Thread(new Runnable() {
             public void run() {
@@ -89,11 +91,17 @@ public class HomeFragment extends Fragment {
             }
         }).start();
 
-     /*   new Thread(new Runnable() {
+        new Thread(new Runnable() {
             public void run() {
-                setViewSelfProfile();
+                populateView(populateList());
             }
-        }).start(); */
+        }).start();
+
+//        new Thread(new Runnable() {
+//            public void run() {
+//                setViewSelfProfile();
+//            }
+//        }).start();
 
         return homeView;
     }
@@ -105,7 +113,7 @@ public class HomeFragment extends Fragment {
     //toggle functionality
     private void toggle() {
         group.setVisibility(visibilityOf(visible));
-        homeV = homeView.findViewById(R.id.linearLayout2);
+        homeV = homeView.findViewById(R.id.test);
         if(n%2==0){
         homeV.setVisibility(View.GONE);}
         else
@@ -150,6 +158,7 @@ public class HomeFragment extends Fragment {
         });
     }
 
+    @Deprecated
     private void setViewSelfProfile() {
         Button profileToggle = homeView.findViewById(R.id.selfProfileView);
         profileToggle.setOnClickListener(new View.OnClickListener() {
@@ -158,6 +167,53 @@ public class HomeFragment extends Fragment {
                 sendIntent();
             }
         });
+    }
+
+    private void setSelfProfile() {
+        // get user uid
+
+        // get userdetails based on uid
+
+        // populate view
+    }
+
+    @Hardcoded
+    private List<List<String>> populateList() {
+        List<List<String>> list = new ArrayList<>();
+        for(int i=0; i < 5; i++) {
+            List<String> l = new ArrayList<>();
+            l.add("Key"+1);
+            l.add("Value"+i);
+            Log.e("lists",l.toString());
+            list.add(l);
+        }
+        Log.e("lists",list.toString());
+        return list;
+    }
+
+    private void populateView(List<List<String>> list) {
+        // Parent layout
+        LinearLayout parentLayout = (LinearLayout) homeView.findViewById(R.id.test);
+
+        // Layout inflater
+
+        LayoutInflater layoutInflater = LayoutInflater.from(getContext());
+        View view;
+
+        for (List<String> element : list){
+            // Add the text layout to the parent layout
+            view = layoutInflater.inflate(R.layout.lol, null);
+
+            // In order to get the view we have to use the new view with text_layout in it
+            TextView t1 = (TextView) view.findViewById(R.id.t1);
+            t1.setText(element.get(0));
+
+            TextView t2 = (TextView) view.findViewById(R.id.t2);
+            t2.setText(element.get(1));
+
+            // Add the text view to the parent layout
+            parentLayout.addView(view);
+        }
     }
 
     private void setListView() {
