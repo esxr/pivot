@@ -8,6 +8,7 @@ import com.example.icasapp.Annonations.Hardcoded;
 
 import java.io.Serializable;
 import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -50,19 +51,14 @@ public class TestUser implements Serializable {
         this.description = (String) object.get("description");
     }
 
-    public static List<List<String>> listOf(TestUser user) {
+    public List<List<String>> getList() {
         List<List<String>> list = new ArrayList<>();
 
-        // 0..2 will not be included in the adapter
-//        list.add(Arrays.asList("UID", user.getUID()));
-//        list.add(Arrays.asList("profile_photo", user.getProfilePhoto()));
-//        list.add(Arrays.asList("description", user.getDescription()));
-
-        // included in the adapter from now on
-        list.add(Arrays.asList("name", user.getName()));
-        list.add(Arrays.asList("Registration. No.", user.getRegNo()));
-        list.add(Arrays.asList("Stream", user.getStream()));
-        list.add(Arrays.asList("Semester", user.getSemester()));
+        for (Field f : getClass().getDeclaredFields()) {
+            List<String> l = new ArrayList<>();
+            l.add(f.getName());
+            try { l.add((String) f.get(this)); } catch(Exception e) { l.add("undef"); }
+        }
         return list;
     }
 

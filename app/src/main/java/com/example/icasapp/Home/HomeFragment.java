@@ -221,10 +221,7 @@ public class HomeFragment extends Fragment {
         FirebaseHelper.getUserDetails(uid, new FirebaseHelper.CallbackObject<Map<String, Object>>() {
             @Override
             public void callbackCall(Map<String, Object> object) {
-                Log.e("populate", "Working 1");
-                TestUser user = new TestUser(object); Log.e("populate", object.toString());
-                List<List<String>> list = TestUser.listOf(user); Log.e("populate", list.toString());
-                populateTest(TestUser.listOf(new TestUser(object)));
+                populateTest(new TestUser(object).getList());
             }
         });
     }
