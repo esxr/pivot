@@ -2,14 +2,14 @@ package com.example.icasapp;
 
 public class Student {
     public static Student student = new Student();
-    private  String email;
-    private  String name;
-    private  String stream;
-    private  String semester;
-    private  String regNo;
-    private  String userType;
-    private  String buffer;
-    private  String downloadURL;
+    private String email;
+    private String name;
+    private String stream;
+    private String semester;
+    private String regNo;
+    private String userType;
+    private String buffer;
+    private String downloadURL;
 
     public Student() {
     }
