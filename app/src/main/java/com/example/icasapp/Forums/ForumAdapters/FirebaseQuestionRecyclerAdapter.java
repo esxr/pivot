@@ -21,6 +21,7 @@ import com.bumptech.glide.Glide;
 import com.example.icasapp.Forums.ForumActivities.AnswersActivity;
 import com.example.icasapp.Forums.ForumFragment;
 import com.example.icasapp.ObjectClasses.Questions;
+import com.example.icasapp.Profile.ProfileDisplayActivity;
 import com.example.icasapp.R;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -55,6 +56,7 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
     private ListenerRegistration listener1;
     private ListenerRegistration listener3;
     private String bestAnswer;
+    String priviledge;
 
     /**
      * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
@@ -131,7 +133,9 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
             }
         });
 
-        // set time
+
+
+                // set time
         long currentTime = Calendar.getInstance().getTime().getTime();
         long uploadtime = questions.getTimestamp().getTime();
         long diff = currentTime-uploadtime;
@@ -148,7 +152,15 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
             questionHolder.setTime(dateString);
         }
 
-        if(currentUser.equals(questions.getUser_id()))
+        firebaseFirestore.collection("USER_P").document(currentUser).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@androidx.annotation.NonNull Task<DocumentSnapshot> task) {
+                priviledge = (String) task.getResult().get("priviledge");
+            }
+        });
+
+
+        if(currentUser.equals(questions.getUser_id())||priviledge=="4")
         {
             questionHolder.delete.setVisibility(View.VISIBLE);
         }
@@ -165,9 +177,17 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
             }
         });
 
+       questionHolder.userName.setOnClickListener(new View.OnClickListener() {
+                                                       @Override
+                                                       public void onClick(View v) {
+                                                           Intent intent = new Intent(context , ProfileDisplayActivity.class);
+                                                           intent.putExtra("USER_ID",uid);
+                                                           context.startActivity(intent);
+                                                       }
+                                                   });
 
-        //sets best answer
-       bestAnswer(i,questionHolder);
+                //sets best answer
+                bestAnswer(i, questionHolder);
 
     }
 
@@ -208,6 +228,7 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
             super(itemView);
             mView = itemView;
             addAnswer = mView.findViewById(R.id.Answers);
+            userName = mView.findViewById(R.id.user_name);
             delete = mView.findViewById(R.id.delete);
             displayAnswers = mView.findViewById(R.id.answers);
         }
@@ -227,7 +248,6 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
 
         public void setUsername(String username)
         {
-            userName = mView.findViewById(R.id.user_name);
             userName.setText(username);
         }
 

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.provider.DocumentsContract;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.icasapp.Forums.ForumFragment;
 import com.example.icasapp.ObjectClasses.Answers;
+import com.example.icasapp.Profile.ProfileDisplayActivity;
 import com.example.icasapp.R;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -31,6 +33,7 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Calendar;
@@ -43,6 +46,7 @@ import io.reactivex.annotations.NonNull;
 
 import static com.example.icasapp.Forums.ForumFragment.collectionReference;
 import static com.example.icasapp.Forums.ForumFragment.i_d;
+import static com.example.icasapp.Forums.ForumFragment.query;
 
 
 public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, FirebaseAnswerAdapter.FirebaseAnswerHolder> {
@@ -50,6 +54,7 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
     FirebaseFirestore firebaseFirestore;
     private ListenerRegistration listener2;
     private ListenerRegistration listener3;
+    String priviledge;
 
 
     public FirebaseAnswerAdapter(@NonNull FirestoreRecyclerOptions<Answers> options) {
@@ -88,13 +93,20 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
             String dateString = DateFormat.format("hh:mm", new Date(uploadtime)).toString();
             holder.setTime(dateString);
         }
-
-        //if current user is logged
-        if( model.getUser_id().equals(currentUser)){
+        firebaseFirestore.collection("USER_P").document(currentUser).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                                                                     @Override
+                                                                                                     public void onComplete(@androidx.annotation.NonNull Task<DocumentSnapshot> task) {
+                                                                                                         priviledge = (String) task.getResult().get("priviledge");
+                                                                                                     }
+                                                                                                 });
+                //if current user is logged
+        if( model.getUser_id().equals(currentUser) || priviledge == "4"){
             holder.delete.setVisibility(View.VISIBLE);
         }
         else
             holder.delete.setVisibility(View.GONE);
+
+
 
         holder.setAnswer(model.getAnswer());
 
@@ -152,7 +164,7 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
                                     getSnapshots().getSnapshot(position).getReference().collection("Upvotes").document(currentUser).set(postMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
-                                            Log.i("FLOW", "upvoted" + String.valueOf(position));
+                                            Log.i("FLOW", "upvoted" + position);
                                             getSnapshots().getSnapshot(position).getReference().update("upvotes", FieldValue.increment(1)).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
@@ -167,6 +179,15 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
                         });
                     }
 
+                });
+
+                holder.name.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(context , ProfileDisplayActivity.class);
+                        intent.putExtra("USER_ID",id);
+                        context.startActivity(intent);
+                    }
                 });
 
     }

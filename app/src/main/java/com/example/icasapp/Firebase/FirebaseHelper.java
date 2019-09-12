@@ -236,20 +236,24 @@ public class FirebaseHelper {
         }
     }
 
-    public static void findDocumentWithUID(String uid, final CallbackObject<String> callback) {
+    public static void findDocumentWithUID(String uid, final CallbackObject<Map<String, Object>> callback) {
         try {
             final CollectionReference userRef = getFirestore().collection("USER");
             Log.e("Current user UID", getUser().getUid());
-            userRef.whereEqualTo("UID", getUser().getUid())
+            userRef.document(uid)
                     .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            try {
-                                String docId = task.getResult().getDocuments().get(0).getId();
-                                callback.callbackCall(docId);
-                            } catch (Exception e) {
-                                Log.e("Firebase UID", e.getLocalizedMessage());
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot document = task.getResult();
+                                if (document.exists()) {
+                                    callback.callbackCall(document.getData());
+                                } else {
+                                    Log.d(TAG, "No such document");
+                                }
+                            } else {
+                                Log.d(TAG, "get failed with ", task.getException());
                             }
                         }
                     });

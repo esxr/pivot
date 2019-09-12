@@ -49,7 +49,7 @@ import static android.content.Context.MODE_PRIVATE;
 
  */
 
-public class ForumFragment extends Fragment implements AdapterView.OnItemClickListener {
+public class  ForumFragment extends Fragment implements AdapterView.OnItemClickListener {
 
    private String stream;
    private String semester;
@@ -57,6 +57,7 @@ public class ForumFragment extends Fragment implements AdapterView.OnItemClickLi
    public static String i_d;
    public static String Category;
    private  ArrayList<String> subject;
+   private String priviledge;
 
    private FloatingActionButton addPost;
    private Spinner spinner;
@@ -75,6 +76,7 @@ public class ForumFragment extends Fragment implements AdapterView.OnItemClickLi
     }
 
 
+    @SuppressLint("RestrictedApi")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -85,6 +87,8 @@ public class ForumFragment extends Fragment implements AdapterView.OnItemClickLi
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
+
+        String currentUser = firebaseAuth.getCurrentUser().getUid();
 
         //gets the stream and semester of the user and passes into findDocumentId
         firebaseFirestore.collection("USER").document(firebaseAuth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -101,6 +105,28 @@ public class ForumFragment extends Fragment implements AdapterView.OnItemClickLi
                 }
             }
         });
+
+        firebaseFirestore.collection("USER_P").document(currentUser).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@androidx.annotation.NonNull Task<DocumentSnapshot> task) {
+                priviledge = (String) task.getResult().get("priviledge");
+            }
+        });
+
+
+        if(Category == "Alumni") {
+            if (!(priviledge == "2" || priviledge == "4"))
+                addPost.setVisibility(View.GONE);
+        }
+        else if(Category == "General"){
+
+        }
+        else{
+            if(!(priviledge == "1.1" || priviledge == "4" || priviledge == "1.2"|| priviledge == "3"))
+            {
+                addPost.setVisibility(View.GONE);
+            }
+        }
 
         addPost.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("RestrictedApi")

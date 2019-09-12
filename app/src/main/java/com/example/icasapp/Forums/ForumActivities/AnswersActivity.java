@@ -27,6 +27,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -64,6 +65,8 @@ public class AnswersActivity extends AppCompatActivity {
 
     private TextView topic;
     private TextView content;
+
+    String priviledge;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,9 +109,18 @@ public class AnswersActivity extends AppCompatActivity {
         topic.setText(Topic);
         content.setText(Content);
 
+
+
         isFirstPageLoad=true;
         sort="timestamp";
         setQuery(sort);
+
+         firebaseFirestore.collection("USER_P").document(currentUserId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@androidx.annotation.NonNull Task<DocumentSnapshot> task) {
+                priviledge = (String) task.getResult().get("priviledge");
+            }
+        });
 
         //menu items to select what to sort and how to sort
         recent.setOnClickListener(new View.OnClickListener() {
