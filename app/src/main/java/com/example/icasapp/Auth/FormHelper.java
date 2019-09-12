@@ -40,4 +40,13 @@ public class FormHelper {
             return true;
         return true;
     }
+
+    public boolean validateField(String field){
+        return !field.isEmpty();
+    }
+
+    //TODO : SENTIMENTAL ANALYSIS, MODERATION
+    public boolean validateImage(){return true;}
+
+    public void compressImage(){}
 }

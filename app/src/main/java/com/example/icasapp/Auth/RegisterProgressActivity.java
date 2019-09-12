@@ -1,23 +1,16 @@
 package com.example.icasapp.Auth;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatButton;
 import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.DragEvent;
-import android.view.MotionEvent;
-import android.view.View;
 
 import com.example.icasapp.Auth.AlumniAuth.AlumniRegisterPagerAdapter;
 import com.example.icasapp.Auth.FacultyAuth.FacultyRegisterPagerAdapter;
 import com.example.icasapp.Auth.StudentAuth.StudentRegisterPagerAdapter;
-import com.example.icasapp.GlobalUser;
-import com.example.icasapp.MainActivity;
+import com.example.icasapp.Student;
 import com.example.icasapp.NonSwipeableViewpager;
 import com.example.icasapp.R;
 
@@ -37,7 +30,7 @@ public class RegisterProgressActivity extends AppCompatActivity {
 
         final Bundle bundle = getIntent().getExtras();
         final String userType = bundle.getString("userType");
-        GlobalUser.globalUser.setUserType(userType);
+        Student.student.setUserType(userType);
         switch (userType) {
             case "STUDENT":
                 pagerAdapter = new StudentRegisterPagerAdapter(getSupportFragmentManager());

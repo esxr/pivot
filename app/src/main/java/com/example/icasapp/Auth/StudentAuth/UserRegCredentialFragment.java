@@ -1,29 +1,20 @@
 package com.example.icasapp.Auth.StudentAuth;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.fragment.app.Fragment;
 
 import com.example.icasapp.Auth.FormHelper;
-import com.example.icasapp.Auth.RegisterLandingActivity;
 import com.example.icasapp.Auth.RegisterProgressActivity;
-import com.example.icasapp.GlobalUser;
+import com.example.icasapp.Student;
 import com.example.icasapp.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 
 public class UserRegCredentialFragment extends Fragment {
@@ -33,7 +24,8 @@ public class UserRegCredentialFragment extends Fragment {
     static AppCompatEditText inputEmail;
     static AppCompatEditText inputPassword;
     AppCompatButton nextButton;
-    private String email, password;
+    private String email;
+    static String password;
     FormHelper formHelper;
     private FirebaseAuth mAuth;
 
@@ -84,8 +76,6 @@ public class UserRegCredentialFragment extends Fragment {
 
          email = inputEmail.getText().toString().trim();
          password = inputPassword.getText().toString().trim();
-
-        GlobalUser.globalUser.setPassword(password);
 
     }
 

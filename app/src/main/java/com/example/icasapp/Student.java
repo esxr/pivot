@@ -1,18 +1,17 @@
 package com.example.icasapp;
 
-public class GlobalUser {
-    public static GlobalUser globalUser = new GlobalUser();
+public class Student {
+    public static Student student = new Student();
     private  String email;
     private  String name;
-    private  String displayName;
     private  String stream;
     private  String semester;
     private  String regNo;
     private  String userType;
     private  String buffer;
-    private  String password;
+    private  String downloadURL;
 
-    public GlobalUser() {
+    public Student() {
     }
 
     public String getEmail() {
@@ -29,14 +28,6 @@ public class GlobalUser {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
     }
 
     public String getStream() {
@@ -79,11 +70,12 @@ public class GlobalUser {
         this.buffer = buffer;
     }
 
-    public String getPassword() {
-        return password;
+
+    public String getDownloadURL() {
+        return downloadURL;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setDownloadURL(String downloadURL) {
+        this.downloadURL = downloadURL;
     }
 }

@@ -18,7 +18,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.icasapp.Auth.FormHelper;
 import com.example.icasapp.Auth.RegisterProgressActivity;
-import com.example.icasapp.GlobalUser;
+import com.example.icasapp.Student;
 import com.example.icasapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -27,10 +27,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.example.icasapp.GlobalUser.globalUser;
+import static com.example.icasapp.Student.student;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -96,7 +93,7 @@ public class StudentRegisterCredentialFragment extends Fragment {
 
         readData(new FireStoreCallback() {
             @Override
-            public void onCallback(GlobalUser user) {
+            public void onCallback(Student user) {
                 progressDialog.hide(); //HIDE PROGRESS BAR
 
                 name = user.getName();
@@ -139,9 +136,10 @@ public class StudentRegisterCredentialFragment extends Fragment {
     }
 
     public void store(){
-        globalUser.setEmail(email);
-        globalUser.setName(name);
-        globalUser.setUserType("STUDENT");
+        student.setEmail(email);
+        student.setName(name);
+        student.setUserType("STUDENT");
+        student.setRegNo(regNo);
     }
 
     public void updateUI(){
@@ -151,11 +149,10 @@ public class StudentRegisterCredentialFragment extends Fragment {
     }
 
     private interface FireStoreCallback {
-        void onCallback(GlobalUser user);
+        void onCallback(Student user);
     }
 
     private void readData(final FireStoreCallback fireStoreCallback) {
-
         query
                 .whereEqualTo("regNo", regNo)
                 .get()
@@ -164,10 +161,10 @@ public class StudentRegisterCredentialFragment extends Fragment {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                                globalUser = documentSnapshot.toObject(GlobalUser.class);
+                                student = documentSnapshot.toObject(Student.class);
                             }
                             //CALLBACK
-                            fireStoreCallback.onCallback(globalUser);
+                            fireStoreCallback.onCallback(student);
                         }
                     }
                 });
