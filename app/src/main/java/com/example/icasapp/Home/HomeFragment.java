@@ -93,7 +93,7 @@ public class HomeFragment extends Fragment {
 
         new Thread(new Runnable() {
             public void run() {
-                populateView(populateList());
+                populateView(FirebaseHelper.getUser().getUid());
             }
         }).start();
 
@@ -191,7 +191,7 @@ public class HomeFragment extends Fragment {
         return list;
     }
 
-    private void populateView(List<List<String>> list) {
+    private void populateTest(List<List<String>> list) {
         // Parent layout
         LinearLayout parentLayout = (LinearLayout) homeView.findViewById(R.id.test);
 
@@ -214,6 +214,19 @@ public class HomeFragment extends Fragment {
             // Add the text view to the parent layout
             parentLayout.addView(view);
         }
+    }
+
+    private void populateView(String uid) {
+        Log.e("populate", "Working 0");
+        FirebaseHelper.getUserDetails(uid, new FirebaseHelper.CallbackObject<Map<String, Object>>() {
+            @Override
+            public void callbackCall(Map<String, Object> object) {
+                Log.e("populate", "Working 1");
+                TestUser user = new TestUser(object); Log.e("populate", object.toString());
+                List<List<String>> list = TestUser.listOf(user); Log.e("populate", list.toString());
+                populateTest(TestUser.listOf(new TestUser(object)));
+            }
+        });
     }
 
     private void setListView() {

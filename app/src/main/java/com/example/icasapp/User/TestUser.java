@@ -7,7 +7,11 @@ import androidx.annotation.Nullable;
 import com.example.icasapp.Annonations.Hardcoded;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -44,6 +48,22 @@ public class TestUser implements Serializable {
         this.profilePhoto = (String) object.get("downloadURL");
         this.UID = (String) object.get("UID");
         this.description = (String) object.get("description");
+    }
+
+    public static List<List<String>> listOf(TestUser user) {
+        List<List<String>> list = new ArrayList<>();
+
+        // 0..2 will not be included in the adapter
+//        list.add(Arrays.asList("UID", user.getUID()));
+//        list.add(Arrays.asList("profile_photo", user.getProfilePhoto()));
+//        list.add(Arrays.asList("description", user.getDescription()));
+
+        // included in the adapter from now on
+        list.add(Arrays.asList("name", user.getName()));
+        list.add(Arrays.asList("Registration. No.", user.getRegNo()));
+        list.add(Arrays.asList("Stream", user.getStream()));
+        list.add(Arrays.asList("Semester", user.getSemester()));
+        return list;
     }
 
     public String getDescription() {
