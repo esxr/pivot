@@ -6,8 +6,12 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
@@ -25,8 +29,9 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
 
-    private FloatingNavigationView mFloatingNavigationView;
+    private NavigationView mFloatingNavigationView;
     TabLayout tabLayout;
+    DrawerLayout drawerLayout;
 
 
     //declaring viewPager
@@ -46,6 +51,16 @@ public class MainActivity extends AppCompatActivity {
         //Initializing viewPager
         viewPager = findViewById(R.id.viewPager);
         tabLayout = findViewById(R.id.tabLayout);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        //setSupportActionBar(toolbar);
+        drawerLayout = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.common_open_on_phone,R.string.vector_path_close);
+        drawerLayout.addDrawerListener(toggle);
+        toolbar.setNavigationIcon(R.drawable.pivot_white);
+        toggle.syncState();
+
+
+
 
         final View decorView = getWindow().getDecorView();
         decorView.setOnSystemUiVisibilityChangeListener
@@ -67,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
-        getSupportActionBar().hide();
 
         PagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(viewPagerAdapter);
@@ -75,14 +89,8 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
 
 
-        mFloatingNavigationView = findViewById(R.id.floating_navigation_view);
-        mFloatingNavigationView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mFloatingNavigationView.open();
+        mFloatingNavigationView = findViewById(R.id.nav_view);
 
-            }
-        });
         mFloatingNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
@@ -116,7 +124,6 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 Snackbar.make((View) mFloatingNavigationView.getParent(), item.getTitle() + " Selected!", Snackbar.LENGTH_SHORT).show();
-                mFloatingNavigationView.close();
                 return true;
             }
         });
@@ -125,11 +132,11 @@ public class MainActivity extends AppCompatActivity {
     }
     @Override
     public void onBackPressed() {
-        if (mFloatingNavigationView.isOpened()) {
-            mFloatingNavigationView.close();
-        } else {
-            super.onBackPressed();
+      if(drawerLayout.isDrawerOpen(GravityCompat.START)){
+          drawerLayout.closeDrawer(GravityCompat.START);
         }
+      else
+      super.onBackPressed();
     }
 
     //SECURITY
