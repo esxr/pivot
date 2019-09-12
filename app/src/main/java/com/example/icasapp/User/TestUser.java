@@ -12,10 +12,11 @@ import java.util.Map;
 import java.util.Random;
 
 public class TestUser implements Serializable {
-    String name, semester, stream, regNo;
+    private String name, semester, stream, regNo;
     private String profilePhoto;
     private String UID;
     private String description;
+    private String userType;
 
     public TestUser(String name, String semester, String stream, String regNo, @Nullable String profilePhoto, String UID) {
         this.name = name;
@@ -26,16 +27,7 @@ public class TestUser implements Serializable {
         this.UID = UID;
     }
 
-    public TestUser(String name, String semester, String stream, String regNo, String profilePhoto, String UID, String description) {
-        this.name = name;
-        this.semester = semester;
-        this.stream = stream;
-        this.regNo = regNo;
-        this.profilePhoto = profilePhoto;
-        this.UID = UID;
-        this.description = description;
-    }
-
+    // Change this to include new properties
     public TestUser(Map<String, Object> object) {
         this.name = (String) object.get("name");
         this.semester = (String) object.get("semester");
@@ -44,6 +36,15 @@ public class TestUser implements Serializable {
         this.profilePhoto = (String) object.get("downloadURL");
         this.UID = (String) object.get("UID");
         this.description = (String) object.get("description");
+        this.userType = (String) object.get("userType");
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
     }
 
     public String getDescription() {

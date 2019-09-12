@@ -118,9 +118,6 @@ public class FirebaseHelper {
                                 }
                             } else {
                                 Log.d(TAG, "Error getting documents: ", task.getException());
-//                            Map<String, Object> nullMap = new HashMap<String, Object>();
-//                            nullMap.put("null", "null");
-//                            matches.add(nullMap);
                             }
                             callback.callbackCall(matches);
                         }
