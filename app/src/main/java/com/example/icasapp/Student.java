@@ -17,7 +17,7 @@ public class Student {
 
     public Student() {
     }
-
+    //OBJECT AND ENTRIES ABSTRACTION
     public List<List<String>> getList() {
         List<List<String>> list = new ArrayList<>();
 
