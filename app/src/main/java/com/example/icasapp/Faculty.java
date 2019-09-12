@@ -20,7 +20,7 @@ public class Faculty {
 
     public Faculty(){}
 
-    public List<List<String>> getList() {
+    public List<List<String>> fetchList() {
         List<List<String>> list = new ArrayList<>();
 
         for (Field f : getClass().getDeclaredFields()) {

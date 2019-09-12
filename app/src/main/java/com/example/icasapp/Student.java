@@ -18,7 +18,7 @@ public class Student {
     public Student() {
     }
     //OBJECT AND ENTRIES ABSTRACTION
-    public List<List<String>> getList() {
+    public List<List<String>> fetchList() {
         List<List<String>> list = new ArrayList<>();
 
         for (Field f : getClass().getDeclaredFields()) {
