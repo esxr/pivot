@@ -17,7 +17,7 @@ public class ProfileDisplayActivity extends AppCompatActivity {
 
     // all the views
     TextView profileName, profileRegNo, profileStream, profileSemester;
-    TextView profileDescription, profileUserType;
+    TextView profileDescription;
     CircleImageView profilePhoto;
 
     @Override
@@ -32,7 +32,6 @@ public class ProfileDisplayActivity extends AppCompatActivity {
         profileStream = (TextView) findViewById(R.id.profileStream);
         profileSemester = (TextView) findViewById(R.id.profileSemester);
         profileDescription = (TextView) findViewById(R.id.profileDescription);
-        profileUserType = (TextView) findViewById(R.id.profileUserType);
 
         // get data for user object
         TestUser user = (TestUser) getIntent().getExtras().getSerializable("user");
@@ -41,7 +40,6 @@ public class ProfileDisplayActivity extends AppCompatActivity {
         profileStream.setText(user.getStream());
         profileSemester.setText(user.getSemester());
         profileDescription.setText(user.getDescription());
-        profileUserType.setText(user.getUserType());
         Glide.with(this).load(user.getProfilePhoto()).into(profilePhoto);
 
     }
