@@ -22,6 +22,7 @@ import com.example.icasapp.Auth.RegisterCredentialFragment;
 import com.example.icasapp.Faculty;
 import com.example.icasapp.MainActivity;
 import com.example.icasapp.R;
+import com.example.icasapp.Student;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -30,6 +31,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -248,6 +250,20 @@ public class FacultyDescribeFragment extends Fragment {
                             Log.d("msg", "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             createFirestore(user.getUid());
+                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                    .setDisplayName(Faculty.faculty.getName())
+                                    .setPhotoUri(Uri.parse(Faculty.faculty.getDownloadURL()))
+                                    .build();
+
+                            user.updateProfile(profileUpdates)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                Log.d("msg", "User profile updated.");
+                                            }
+                                        }
+                                    });
                             Toast.makeText(getContext(), "Authentication SUCCESS.",
                                     Toast.LENGTH_SHORT).show();
                             //updateUI(user);
