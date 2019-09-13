@@ -45,6 +45,7 @@ public class RegisterProgressActivity extends AppCompatActivity {
                 break;
             default:
                 startActivity(new Intent(getApplicationContext(), RegisterLandingActivity.class));
+                finish();
                 break;
         }
 

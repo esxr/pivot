@@ -9,7 +9,6 @@ public class Alumni {
     private String email;
     private String educationParagraph;
     private String interests;
-    private String designation;
     private String name;
     private String workNumber;
     private String userType;
@@ -61,13 +60,7 @@ public class Alumni {
         this.interests = interests;
     }
 
-    public String getDesignation() {
-        return designation;
-    }
 
-    public void setDesignation(String designation) {
-        this.designation = designation;
-    }
 
     public String getName() {
         return name;

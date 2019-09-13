@@ -144,16 +144,20 @@ public class FacultyDescribeFragment extends Fragment {
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             //SETTING CROPPED IMAGE INTO IMAGEVIEW
-            Uri selectedImage = result.getUri();
 
-            Glide
-                    .with(getContext())
-                    .load(new File(selectedImage.getPath())) // Uri of the picture
-                    .into(imageView);
+            if(result != null) {
+                Uri selectedImage = result.getUri();
 
-            setLocalImageUri(selectedImage);
+                Glide
+                        .with(getContext())
+                        .load(new File(selectedImage.getPath())) // Uri of the picture
+                        .into(imageView);
 
-            uploadButton.setVisibility(View.VISIBLE);
+                setLocalImageUri(selectedImage);
+
+                uploadButton.setVisibility(View.VISIBLE);
+            }else
+                Toast.makeText(getContext(), "TRY AGAIN", Toast.LENGTH_LONG).show();
         }
     }
 

@@ -125,16 +125,19 @@ public class AdditionalInfoCredentialFragment extends Fragment {
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             //SETTING CROPPED IMAGE INTO IMAGEVIEW
-            Uri selectedImage = result.getUri();
+            if(result != null) {
+                Uri selectedImage = result.getUri();
 
-            Glide
-                    .with(getContext())
-                    .load(new File(selectedImage.getPath())) // Uri of the picture
-                    .into(imageView);
+                Glide
+                        .with(getContext())
+                        .load(new File(selectedImage.getPath())) // Uri of the picture
+                        .into(imageView);
 
-            setLocalImageUri(selectedImage);
+                setLocalImageUri(selectedImage);
 
-            uploadButton.setVisibility(View.VISIBLE);
+                uploadButton.setVisibility(View.VISIBLE);
+            }else
+                Toast.makeText(getContext(), "TRY AGAIN!" , Toast.LENGTH_LONG).show();
         }
     }
 
