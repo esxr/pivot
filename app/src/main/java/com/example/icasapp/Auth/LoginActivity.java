@@ -8,6 +8,8 @@ import android.os.Build;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -34,6 +36,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private Button onReg;
     private Button Login;
+
 
     private String email;
     private String password;

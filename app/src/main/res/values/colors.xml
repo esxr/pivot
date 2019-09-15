@@ -23,5 +23,7 @@
     <color name="card_bg_color">#F6F6F6</color>
     <color name="darkCyan">#258BD6</color>
     <color name="background_new">#1D252D</color>
+    <color name="background_contrast">#252F3A</color>
+    <color name="card_color_2">#F8F8F8</color>
 
 </resources>

@@ -1,32 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Forums.ForumActivities.NewDiscussionActivity">
-
-    <ImageView
-        android:id="@+id/new_post_image"
-        android:layout_width="410dp"
-        android:layout_height="198dp"
-        android:scaleType="centerCrop"
+    tools:context=".Forums.ForumActivities.NewDiscussionActivity"
+    android:orientation="vertical"
+    android:gravity="center_horizontal">
+    <ProgressBar
+        android:id="@+id/new_post_progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/add_image" />
+        app:layout_constraintTop_toTopOf="@+id/new_post_image" />
 
-
+    <TextView
+        android:id="@+id/discuss_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:text="Start your Discussion here...."
+        android:textSize="30dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/new_post_image" />
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/animation_view"
         android:layout_width="350dp"
         android:layout_height="200dp"
         android:layout_gravity="center"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginEnd="160dp"
-        android:layout_marginRight="44dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,18 +42,31 @@
         app:lottie_fileName="discuss.json"
         app:lottie_loop="false" />
 
+    <ImageView
+        android:id="@+id/new_post_image"
+        android:layout_width="410dp"
+        android:layout_height="198dp"
+        android:layout_marginTop="4dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/add_image" />
+
+
     <EditText
         android:id="@+id/topic"
-        android:layout_width="0dp"
+        android:layout_width="286dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:background="@drawable/black_textfield"
         android:elevation="2dp"
         android:ems="10"
-        android:hint="Discussion topic"
+        android:hint="Add an interesting Topic"
         android:inputType="textMultiLine"
         android:maxLength="125"
         android:padding="16dp"
@@ -61,19 +81,20 @@
 
     <Button
         android:id="@+id/post_btn"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="50dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="64dp"
-        android:background="@drawable/solid_button_black"
+        android:background="@drawable/solid_button_background"
+        android:clickable="true"
         android:elevation="2dp"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
         android:padding="16dp"
         android:text="Add topic"
         android:textAllCaps="false"
-        android:foreground="?attr/selectableItemBackground"
-        android:focusable="true"
-        android:clickable="true"
         android:textColor="@color/white"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -81,26 +102,7 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <ProgressBar
-        android:id="@+id/new_post_progress"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:indeterminate="true"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/new_post_image" />
 
-    <TextView
-        android:id="@+id/discuss_text"
-        android:layout_width="220dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Start your Discussion here...."
-        android:textSize="40dp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/new_post_image" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>
