@@ -41,7 +41,7 @@ public class HomeFragment extends Fragment {
     private View homeView;
 
     // listview and adapter
-    private ArrayList<TestUser> items;
+    private ArrayList<User> items;
     private ProfileAdapter itemsAdapter;
     private ListView listView;
 
@@ -154,19 +154,16 @@ public class HomeFragment extends Fragment {
         parentLayout.addView(profilePhoto);
 
         // LinearLayout
-        for (List<String> element : list){
-//        for (int i=0; i<5; i++){
+        for (List<String> element : list) {
             // Add the text layout to the parent layout
             view = layoutInflater.inflate(R.layout.profilefieldelement, null);
 
             // In order to get the view we have to use the new view with text_layout in it
             TextView t1 = (TextView) view.findViewById(R.id.t1);
             t1.setText(element.get(0));
-//            t1.setText("profilefieldelement");
 
             TextView t2 = (TextView) view.findViewById(R.id.t2);
             t2.setText(element.get(1));
-//            t1.setText("ok");
 
             // Add the text view to the parent layout
             parentLayout.addView(view);
@@ -194,9 +191,10 @@ public class HomeFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                try {
                 Intent intent = new Intent(getActivity(), ProfileDisplayActivity.class);
-                intent.putExtra("user", (TestUser) listView.getItemAtPosition(position));
-                startActivity(intent);
+                intent.putExtra("user", (User) listView.getItemAtPosition(position));
+                startActivity(intent); } catch(Exception e) { Log.e("mfc", e.getMessage()+""); }
             }
         });
     }
@@ -219,7 +217,7 @@ public class HomeFragment extends Fragment {
                                 items.clear();
                                 Log.d("Callback", "" + object);
                                 for (Map<String, Object> obj : object) {
-                                    items.add(new TestUser(obj));
+                                    items.add(new User(obj));
                                     Log.i("Downloaded List Item", obj.toString());
                                 }
                                 itemsAdapter.notifyDataSetChanged();
