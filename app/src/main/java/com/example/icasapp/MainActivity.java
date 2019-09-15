@@ -1,16 +1,16 @@
 package com.example.icasapp;
 
-import android.app.LauncherActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.PagerAdapter;
@@ -19,7 +19,6 @@ import androidx.viewpager.widget.ViewPager;
 import com.andremion.floatingnavigationview.FloatingNavigationView;
 import com.bumptech.glide.Glide;
 import com.example.icasapp.Auth.LoginActivity;
-import com.example.icasapp.Auth.RegisterLandingActivity;
 import com.example.icasapp.DeveloperOptions.DeveloperOptions;
 import com.example.icasapp.Firebase.FirebaseHelper;
 import com.example.icasapp.Menu_EditProfile.EditProfileActivity;
@@ -31,27 +30,30 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.treebo.internetavailabilitychecker.InternetAvailabilityChecker;
+import com.treebo.internetavailabilitychecker.InternetConnectivityListener;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements InternetConnectivityListener {
 
-    private FloatingNavigationView mFloatingNavigationView;
     TabLayout tabLayout;
-
     ImageView navigationImage;
     TextView navigationText;
     FirebaseFirestore firebaseFirestore;
     FloatingActionButton developerOptions;
-
-
-
-
+    FirebaseFirestore db;
+    FirebaseAuth mAuth;
+    FirebaseUser user;
+    String TAG = "msg";
+    private FloatingNavigationView mFloatingNavigationView;
     //declaring viewPager
     private ViewPager viewPager;
-
-
+    private InternetAvailabilityChecker mInternetAvailabilityChecker;
 
 
     @Override
@@ -61,8 +63,57 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
+        db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
+
+        InternetAvailabilityChecker.init(this);
+
+        mInternetAvailabilityChecker = InternetAvailabilityChecker.getInstance();
+        mInternetAvailabilityChecker.addInternetConnectivityListener(this);
+
+
+
         firebaseFirestore = FirebaseFirestore.getInstance();
         final String user = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            GlobalState.isSignedIn = true;
+            final DocumentReference docRef = db.collection("USER").document(user);
+            docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                @Override
+                public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                    @Nullable FirebaseFirestoreException e) {
+                    if (e != null) {
+                        Log.w(TAG, "Listen failed.", e);
+                        return;
+                    }
+
+                    if (snapshot != null && snapshot.exists()) {
+                        Log.d(TAG, "Current data: " + snapshot.getData());
+                        String userType = snapshot.get("userType").toString();
+                        Log.i("msg", userType + " ENTERED THE APP");
+                        switch (userType) {
+                            case "STUDENT":
+                                Student.student = snapshot.toObject(Student.class);
+                                GlobalState.userType = "STUDENT";
+                                break;
+                            case "FACULTY":
+                                Faculty.faculty = snapshot.toObject(Faculty.class);
+                                GlobalState.userType = "FACULTY";
+                                break;
+                            case "ALUMNI":
+                                Alumni.alumni = snapshot.toObject(Alumni.class);
+                                GlobalState.userType = "ALUMNI";
+                                break;
+                        }
+                    } else {
+                        Log.d(TAG, "Current data: null");
+                    }
+                }
+            });
+        }else
+            GlobalState.isSignedIn = false;
 
         developerOptions = findViewById(R.id.developerOptions);
         developerOptions.setOnClickListener(new View.OnClickListener() {
@@ -125,9 +176,7 @@ public class MainActivity extends AppCompatActivity {
 
                             navigationText.setText(name);
                             Glide.with(getApplicationContext()).load(url).into(navigationImage);
-                        }
-                        catch (Exception c)
-                        {
+                        } catch (Exception c) {
 
                         }
                     }
@@ -140,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
 
-                switch (item.getItemId()){
+                switch (item.getItemId()) {
                     case R.id.nav_home:
                         viewPager.setCurrentItem(0);
                         break;
@@ -218,6 +267,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
     public void setLoginActivity() {
 
         startActivity(new Intent(getApplicationContext(), LoginActivity.class));
@@ -225,5 +275,18 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onInternetConnectivityChanged(boolean isConnected) {
+        Log.i("msg", "CONNECTION:" + isConnected);
+        GlobalState.internetConnection = isConnected;
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mInternetAvailabilityChecker
+                .removeInternetConnectivityChangeListener(this);
+    }
 }
 
