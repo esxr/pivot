@@ -3,37 +3,30 @@ package com.example.icasapp.Home;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.Group;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.icasapp.Annonations.Hardcoded;
+import com.bumptech.glide.Glide;
 import com.example.icasapp.Firebase.FirebaseHelper;
 import com.example.icasapp.Profile.ProfileAdapter;
 import com.example.icasapp.Profile.ProfileDisplayActivity;
 import com.example.icasapp.R;
 import com.example.icasapp.User.TestUser;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
+import com.example.icasapp.User.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,10 +50,8 @@ public class HomeFragment extends Fragment {
 
     //toggle
     private Group group;
-    private View selfProfile;
+    LinearLayout homeV;
     private boolean visible = true;
-    private LinearLayout homeV;
-    int n = 0;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -73,11 +64,11 @@ public class HomeFragment extends Fragment {
         // Inflate the layout for this fragment
         homeView = inflater.inflate(R.layout.fragment_home, container, false);
 
-//        new Thread(new Runnable() {
-//            public void run() {
-//                setSearchToggle();
-//            }
-//        }).start();
+        new Thread(new Runnable() {
+            public void run() {
+                setSearchToggle();
+            }
+        }).start();
 
         new Thread(new Runnable() {
             public void run() {
@@ -97,12 +88,6 @@ public class HomeFragment extends Fragment {
             }
         }).start();
 
-//        new Thread(new Runnable() {
-//            public void run() {
-//                setViewSelfProfile();
-//            }
-//        }).start();
-
         return homeView;
     }
 
@@ -112,43 +97,18 @@ public class HomeFragment extends Fragment {
 
     //toggle functionality
     private void toggle() {
+        homeV = homeView.findViewById(R.id.homeV);
         group.setVisibility(visibilityOf(visible));
-        homeV = homeView.findViewById(R.id.test);
-        if(n%2==0){
-        homeV.setVisibility(View.GONE);}
-        else
-            homeV.setVisibility(View.VISIBLE);
-
-//        selfProfile.setVisibility(visibilityOf(!visible));
-        n++;
-        Log.i("MSGGDS",String.valueOf(n));
+        homeV.setVisibility(visibilityOf(!visible));
         visible = !visible;
     }
     private int visibilityOf(boolean visible) {
         return visible ? View.VISIBLE : View.GONE;
     }
 
-    // sending intent to view self profile
-    private void sendIntent() {
-        Log.d(TAG, "sendIntent() Triggered");
-        FirebaseHelper.getUserDetails(
-                FirebaseHelper.getUser().getUid(),
-                new FirebaseHelper.CallbackObject<Map<String, Object>>() {
-                    @Override
-                    public void callbackCall(Map<String, Object> object) {
-                        Intent intent = new Intent(getActivity(), ProfileDisplayActivity.class);
-                        intent.putExtra("user", new TestUser((Map) object));
-                        startActivity(intent);
-                    }
-                }
-        );
-
-    }
-
     //set all functionality
     private void setSearchToggle() {
         group = (Group) homeView.findViewById(R.id.group);
-//        selfProfile = homeView.findViewById(R.id.selfProfile);
         ImageButton searchInitButton = homeView.findViewById(R.id.initSearch);
         searchInitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -158,58 +118,55 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    @Deprecated
-    private void setViewSelfProfile() {
-        Button profileToggle = homeView.findViewById(R.id.selfProfileView);
-        profileToggle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendIntent();
-            }
-        });
-    }
+    private void populateTest(User user) {
+        // List<List<String>>
+        List<List<String>> list = user.fetchList();
 
-    private void setSelfProfile() {
-        // get user uid
-
-        // get userdetails based on uid
-
-        // populate view
-    }
-
-    @Hardcoded
-    private List<List<String>> populateList() {
-        List<List<String>> list = new ArrayList<>();
-        for(int i=0; i < 5; i++) {
-            List<String> l = new ArrayList<>();
-            l.add("Key"+1);
-            l.add("Value"+i);
-            Log.e("lists",l.toString());
-            list.add(l);
-        }
-        Log.e("lists",list.toString());
-        return list;
-    }
-
-    private void populateTest(List<List<String>> list) {
         // Parent layout
-        LinearLayout parentLayout = (LinearLayout) homeView.findViewById(R.id.test);
+        LinearLayout parentLayout = (LinearLayout) homeView.findViewById(R.id.homeV);
 
         // Layout inflater
 
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
         View view;
 
+        // Profile Photo
+        ImageView profilePhoto = new ImageView(getContext());
+        float dpCalculation = getResources().getDisplayMetrics().density;
+
+        // Customize image params
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        params.gravity = Gravity.CENTER_HORIZONTAL;
+        profilePhoto.setLayoutParams(params);
+
+        profilePhoto.setScaleType(ImageView.ScaleType.CENTER);
+        try {
+            profilePhoto.getLayoutParams().height = (int) (150 * dpCalculation);
+            profilePhoto.getLayoutParams().width = (int) (150 * dpCalculation);
+        } catch(Exception e) {
+            Log.e("mfc", e+"");
+        }
+
+        Glide.with(this).load(user.getProfilePhoto()).into(profilePhoto);
+        parentLayout.addView(profilePhoto);
+
+        // LinearLayout
         for (List<String> element : list){
+//        for (int i=0; i<5; i++){
             // Add the text layout to the parent layout
-            view = layoutInflater.inflate(R.layout.lol, null);
+            view = layoutInflater.inflate(R.layout.profilefieldelement, null);
 
             // In order to get the view we have to use the new view with text_layout in it
             TextView t1 = (TextView) view.findViewById(R.id.t1);
             t1.setText(element.get(0));
+//            t1.setText("profilefieldelement");
 
             TextView t2 = (TextView) view.findViewById(R.id.t2);
             t2.setText(element.get(1));
+//            t1.setText("ok");
 
             // Add the text view to the parent layout
             parentLayout.addView(view);
@@ -221,7 +178,8 @@ public class HomeFragment extends Fragment {
         FirebaseHelper.getUserDetails(uid, new FirebaseHelper.CallbackObject<Map<String, Object>>() {
             @Override
             public void callbackCall(Map<String, Object> object) {
-                populateTest(new TestUser(object).getList());
+                populateTest(new User(object));
+
             }
         });
     }

@@ -1,6 +1,7 @@
 package com.example.icasapp.User;
 
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -17,10 +18,10 @@ import java.util.Map;
 import java.util.Random;
 
 public class TestUser implements Serializable {
-    String name, semester, stream, regNo;
+    public String name, semester, stream, regNo, description;
     private String profilePhoto;
     private String UID;
-    private String description;
+    static String TAG = "mfc";
 
     public TestUser(String name, String semester, String stream, String regNo, @Nullable String profilePhoto, String UID) {
         this.name = name;
@@ -41,24 +42,50 @@ public class TestUser implements Serializable {
         this.description = description;
     }
 
+//    public TestUser(Map<String, Object> object) {
+//        Log.e(TAG, "TestUser object: "+object.toString());
+//        this.name = (String) object.get("name");
+//        this.semester = (String) object.get("semester");
+//        this.stream = (String) object.get("stream");
+//        this.regNo = (String) object.get("regNo");
+//        this.profilePhoto = (String) object.get("downloadURL");
+//        this.UID = (String) object.get("UID");
+//        this.description = (String) object.get("description");
+//    }
+
     public TestUser(Map<String, Object> object) {
-        this.name = (String) object.get("name");
-        this.semester = (String) object.get("semester");
-        this.stream = (String) object.get("stream");
-        this.regNo = (String) object.get("regNo");
-        this.profilePhoto = (String) object.get("downloadURL");
-        this.UID = (String) object.get("UID");
-        this.description = (String) object.get("description");
+        for (Field f : getClass().getDeclaredFields()) {
+            f.setAccessible(true);
+            try {
+                Log.e("mfc", f.getName()+":"+(String) object.get(f.getName()));
+                f.set(this, object.get(f.getName()));
+
+            } catch (IllegalAccessException e) { Log.e("mfc", e.getMessage()+""); }
+        }
+        Log.e("mfc", this.fetchList().toString());
     }
 
-    public List<List<String>> getList() {
+    public static String typeOfUser(Map<String, Object> object) {
+        return (String) object.get("userType");
+    }
+
+    public List<List<String>> fetchList() {
         List<List<String>> list = new ArrayList<>();
 
-        for (Field f : getClass().getDeclaredFields()) {
+        for (Field f : getClass().getFields()) {
             List<String> l = new ArrayList<>();
             l.add(f.getName());
-            try { l.add((String) f.get(this)); } catch(Exception e) { l.add("undef"); }
+            try {
+                if(f.get(this) != null ) l.add((String) f.get(this));
+                else continue;
+            }
+            catch(Exception e) {
+                continue;
+            }
+            list.add(l);
         }
+        Log.e(TAG, "property: "+this.getName()+this.getStream()+this.getSemester());
+        Log.e(TAG, "getList(): "+list);
         return list;
     }
 

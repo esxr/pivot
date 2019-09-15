@@ -94,6 +94,8 @@ public class FirebaseHelper {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if(task.isSuccessful()) {
+                    Log.e(TAG, "My UID: "+FirebaseHelper.getUser().getUid());
+                    try { Log.e(TAG, "result: "+task.getResult().getData().toString()); } catch(Exception e) { e.printStackTrace(); }
                     callback.callbackCall(task.getResult().getData());
                 }
             }
