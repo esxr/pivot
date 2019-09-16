@@ -124,6 +124,10 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
                                     findDocumentIdFaculty(name);
                                     Log.i("name",name);
                                 }
+                                if(buffer.equals("3.0")){
+                                    subject.add("General");
+                                    subject.add("Alumni");
+                                }
                             }
                         });
                 }}
@@ -256,11 +260,13 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
                         {
                             Category = "General";
                         }
-                        bufferOption();
+
                 }
             }
         });
     }
+
+
 
     public void setSubjectArray(final String ID, final View view) {
         firebaseFirestore.collection("Specific").document(ID).collection("Subjects").addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -306,7 +312,7 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
                 {
                     Category = "General";
                 }
-                bufferOption();
+
                 //after category is initialised
             }
         });
@@ -336,22 +342,7 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
         isFirstPageFirstLoad=true;
     }
 
-    @SuppressLint("RestrictedApi")
-    protected void bufferOption()
-    {
-        Log.i("Categori",Category);
-        if(Category.equals("Alumni")){
-            if (!(buffer == "2" || buffer == "4"))
-                addPost.setVisibility(View.GONE);
-        }
-        else if(Category.equals( "General")){
-            addPost.setVisibility(View.VISIBLE);
-        }
-        else{
-            if(!(buffer == "1.1" || buffer == "4" || buffer == "1.2"|| buffer == "3"))
-                addPost.setVisibility(View.GONE);
-        }
-    }
+
 
     public static void setFirestoreReference(FirebaseFirestore firebaseFirestore,String ID,String type)
     {

@@ -17,10 +17,12 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.icasapp.Firebase.FirebaseHelper;
 import com.example.icasapp.Forums.ForumFragment;
 import com.example.icasapp.ObjectClasses.Answers;
 import com.example.icasapp.Profile.ProfileDisplayActivity;
 import com.example.icasapp.R;
+import com.example.icasapp.User.User;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -39,6 +41,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.annotation.Nullable;
 
@@ -86,21 +89,23 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
                         Log.d("NAME", documentSnapshot.get("name").toString());
                         String user_name = documentSnapshot.get("name").toString();
                         holder.setName(user_name);
+                        holder.name.setOnClickListener(new View.OnClickListener() {
+                                                           @Override
+                                                           public void onClick(View v) {
 
-
+                                                           }
+                                                       });
                         listener3 = firebaseFirestore.collection("USER").document(id).addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                            @Override
-                            public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
-                                try {
-                                    String url = documentSnapshot.get("downloadURL").toString();
-                                   holder.setProfilePic(url);
-                                }
-                                catch (Exception d)
-                                {
-                                    Log.d("msg","Question Adapter. No photo of user");
-                                }
-                            }
-                        });
+                                    @Override
+                                    public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
+                                        try {
+                                            String url = documentSnapshot.get("downloadURL").toString();
+                                            holder.setProfilePic(url);
+                                        } catch (Exception d) {
+                                            Log.d("msg", "Question Adapter. No photo of user");
+                                        }
+                                    }
+                                });
                     }
                 }
             });
@@ -201,15 +206,6 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
                         });
                     }
 
-                });
-
-                holder.name.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(context , ProfileDisplayActivity.class);
-                        intent.putExtra("USER_ID",id);
-                        context.startActivity(intent);
-                    }
                 });
 
     }
