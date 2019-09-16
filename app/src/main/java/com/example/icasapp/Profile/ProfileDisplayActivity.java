@@ -44,6 +44,7 @@ public class ProfileDisplayActivity extends AppCompatActivity {
         try {
             User user = (User) getIntent().getExtras().getSerializable("user");
             populateTest(user);
+
         } catch(Exception e) { Log.e(TAG, e.getMessage()+""); }
 
     }

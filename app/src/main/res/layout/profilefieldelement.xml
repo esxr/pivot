@@ -3,20 +3,25 @@
     android:orientation="horizontal" 
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/test1">
+    android:id="@+id/test1"
+    android:padding="10dp">
     
     <TextView
         android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/t1"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:textSize="22sp"
+        android:textStyle="bold"/>
 
     <TextView
         android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/t2"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:textSize="22sp"
+        android:textStyle="bold"/>
     
 </LinearLayout>
