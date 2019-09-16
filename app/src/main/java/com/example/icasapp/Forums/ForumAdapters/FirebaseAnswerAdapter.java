@@ -54,7 +54,7 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
     FirebaseFirestore firebaseFirestore;
     private ListenerRegistration listener2;
     private ListenerRegistration listener3;
-    String priviledge;
+    String buffer;
 
 
     public FirebaseAnswerAdapter(@NonNull FirestoreRecyclerOptions<Answers> options) {
@@ -124,14 +124,14 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
             String dateString = DateFormat.format("hh:mm", new Date(uploadtime)).toString();
             holder.setTime(dateString);
         }
-        firebaseFirestore.collection("USER_P").document(currentUser).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        firebaseFirestore.collection("USER").document(currentUser).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                                                                                      @Override
                                                                                                      public void onComplete(@androidx.annotation.NonNull Task<DocumentSnapshot> task) {
-                                                                                                         priviledge = (String) task.getResult().get("priviledge");
+                                                                                                         buffer = (String) task.getResult().get("buffer");
                                                                                                      }
                                                                                                  });
                 //if current user is logged
-        if( model.getUser_id().equals(currentUser) || priviledge == "4"){
+        if( model.getUser_id().equals(currentUser) || buffer == "4"){
             holder.delete.setVisibility(View.VISIBLE);
         }
         else

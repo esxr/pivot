@@ -18,18 +18,42 @@
             android:id="@+id/nav_manage"
             android:icon="@drawable/ic_menu_manage"
             android:title="Schedule"/>
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Home"/>
+        <item
+            android:id="@+id/nav_notes"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="Notes"/>
+        <item
+            android:id="@+id/nav_forums"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Forums"/>
+        <item
+            android:id="@+id/nav_feed"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Feed"/>
     </group>
 
-    <item android:title="Settings">
+    <item android:title="Profile Settings">
         <menu>
             <item
-                android:id="@+id/edit_profile"
+                android:id="@+id/nav_edit_profile"
                 android:icon="@drawable/ic_menu_share"
                 android:title="Edit Profile"/>
             <item
-                android:id="@+id/signout"
+                android:id="@+id/nav_display_profile"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Display Profile"/>
+            <item
+                android:id="@+id/nav_sign_out"
                 android:icon="@drawable/ic_menu_send"
-                android:title="Signout"/>
+                android:title="Sign Out"/>
+            <item
+                android:id="@+id/nav_help"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Help"/>
         </menu>
     </item>
 

@@ -66,7 +66,7 @@ public class AnswersActivity extends AppCompatActivity {
     private TextView topic;
     private TextView content;
 
-    String priviledge;
+    String buffer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,7 +131,7 @@ public class AnswersActivity extends AppCompatActivity {
          firebaseFirestore.collection("USER").document(currentUserId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@androidx.annotation.NonNull Task<DocumentSnapshot> task) {
-                priviledge = (String) task.getResult().get("priviledge");
+                buffer = (String) task.getResult().get("buffer");
             }
         });
 

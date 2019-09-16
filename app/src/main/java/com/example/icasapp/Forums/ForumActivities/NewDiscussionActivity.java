@@ -7,9 +7,11 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
+
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -170,13 +172,10 @@ public class NewDiscussionActivity extends AppCompatActivity {
                     FilePath.putBytes(imageData).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
 
 
-
-
                         @Override
                         public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                            if(!task.isSuccessful())
-                            {
-                                Toast.makeText(NewDiscussionActivity.this,"Cant Upload",Toast.LENGTH_SHORT).show();
+                            if (!task.isSuccessful()) {
+                                Toast.makeText(NewDiscussionActivity.this, "Cant Upload", Toast.LENGTH_SHORT).show();
                             }
 
                             return FilePath.getDownloadUrl();
@@ -192,18 +191,17 @@ public class NewDiscussionActivity extends AppCompatActivity {
                                     postMap.put("content", content);
                                     postMap.put("user_id", current_user_id);
                                     postMap.put("timestamp", FieldValue.serverTimestamp());
-                                    postMap.put("question",0);
+                                    postMap.put("question", 0);
 
 
+                                    if (Category.equals("General") || Category.equals("Alumni")) {
+                                        Log.i("LOL", "SUCC");
+                                        collectionReference = firebaseFirestore.collection("General").document(Category).collection("Posts");
+                                    } else {
+                                        Log.i("LOL", "SUC");
+                                        collectionReference = firebaseFirestore.collection("Specific").document(i_d).collection("Subjects").document(Category).collection("Posts");
 
-                                        if (Category.equals("General") || Category.equals("Alumni")) {
-                                            Log.i("LOL","SUCC");
-                                            collectionReference = firebaseFirestore.collection("General").document(Category).collection("Posts");
-                                        } else {
-                                            Log.i("LOL","SUC");
-                                            collectionReference = firebaseFirestore.collection("Specific").document(i_d).collection("Subjects").document(Category).collection("Posts");
-
-                                        }
+                                    }
 
 
                                     collectionReference.add(postMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
@@ -213,10 +211,10 @@ public class NewDiscussionActivity extends AppCompatActivity {
                                             if (task.isSuccessful()) {
                                                 finish();
                                                 Toast.makeText(NewDiscussionActivity.this, "Post was added", Toast.LENGTH_LONG).show();
-                                           //     Intent mainIntent = new Intent(getApplicationContext(), ForumFragment.class);
+                                                //     Intent mainIntent = new Intent(getApplicationContext(), ForumFragment.class);
                                                 progressBar.setProgress(100);
                                                 progressBar.hide();
-                                           //     startActivity(mainIntent);
+                                                //     startActivity(mainIntent);
                                                 //    finish();
 
                                             } else {
@@ -231,7 +229,7 @@ public class NewDiscussionActivity extends AppCompatActivity {
                             .addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(NewDiscussionActivity.this,"Something went wrong.",Toast.LENGTH_LONG).show();
+                                    Toast.makeText(NewDiscussionActivity.this, "Something went wrong.", Toast.LENGTH_LONG).show();
 
                                     progressBar.hide();
                                 }
@@ -240,7 +238,6 @@ public class NewDiscussionActivity extends AppCompatActivity {
             }
         });
     }
-
 
 
     private void BringImagePicker() {
@@ -259,10 +256,10 @@ public class NewDiscussionActivity extends AppCompatActivity {
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
-            //ones the image is returned the URI is stored in the memory.
+                //ones the image is returned the URI is stored in the memory.
                 postImageUri = result.getUri();
                 setUpImage.setImageURI(postImageUri);
-               //setting the uri to our image
+                //setting the uri to our image
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
 
                 Exception error = result.getError();

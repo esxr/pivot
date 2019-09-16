@@ -40,7 +40,7 @@ public class QuestionsActivity extends AppCompatActivity {
     private CollectionReference collectionReference;
     private TextView parentTopic;
     private String topic;
-    private String priviledge;
+    private String buffer;
     private FirebaseQuestionRecyclerAdapter adapter;
 
 

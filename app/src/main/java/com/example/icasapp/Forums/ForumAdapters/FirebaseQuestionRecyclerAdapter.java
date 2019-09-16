@@ -58,7 +58,7 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
     private ListenerRegistration listener1;
     private ListenerRegistration listener3;
     private String bestAnswer;
-    String priviledge;
+    String buffer;
 
     /**
      * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
@@ -83,6 +83,7 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
         //setting user names
         String currentUser= FirebaseAuth.getInstance().getCurrentUser().getUid();
         final String uid = questions.getUser_id();
+        Log.i("USER_ID",uid);
 
         if(!name.equals("empty"))
         firebaseFirestore.collection("USER").document(uid).addSnapshotListener(new EventListener<DocumentSnapshot>() {
@@ -161,12 +162,12 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
         firebaseFirestore.collection("USER").document(currentUser).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@androidx.annotation.NonNull Task<DocumentSnapshot> task) {
-                priviledge = (String) task.getResult().get("priviledge");
+                buffer = (String) task.getResult().get("buffer");
             }
         });
 
 
-        if(currentUser.equals(questions.getUser_id())||priviledge=="4")
+        if(currentUser.equals(questions.getUser_id())||buffer=="4")
         {
             questionHolder.delete.setVisibility(View.VISIBLE);
         }

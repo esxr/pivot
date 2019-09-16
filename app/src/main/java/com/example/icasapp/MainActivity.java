@@ -3,66 +3,58 @@ package com.example.icasapp;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-
-import com.andremion.floatingnavigationview.FloatingNavigationView;
-import com.bumptech.glide.Glide;
-import com.example.icasapp.DeveloperOptions.DeveloperOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
+import com.andremion.floatingnavigationview.FloatingNavigationView;
+import com.bumptech.glide.Glide;
 import com.example.icasapp.Auth.LoginActivity;
-import com.example.icasapp.Feed.FeedFragment;
-import com.example.icasapp.Forums.ForumFragment;
-import com.example.icasapp.Home.HomeFragment;
+import com.example.icasapp.DeveloperOptions.DeveloperOptions;
 import com.example.icasapp.Firebase.FirebaseHelper;
 import com.example.icasapp.Menu_EditProfile.EditProfileActivity;
-import com.example.icasapp.Notes.NotesFragment;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.treebo.internetavailabilitychecker.InternetAvailabilityChecker;
+import com.treebo.internetavailabilitychecker.InternetConnectivityListener;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements InternetConnectivityListener {
 
-  //  BottomNavigationView bottomNavigationView;
-    BottomNavigationView bottomNavigationView;
+    TabLayout tabLayout;
     ImageView navigationImage;
     TextView navigationText;
     FirebaseFirestore firebaseFirestore;
     FloatingActionButton developerOptions;
-
-    private FloatingNavigationView mFloatingNavigationView;
-
-    //This is our viewPager
-    private ViewPager viewPager;
-
-    //4 Fragments
-    HomeFragment homeFragment;
-    NotesFragment notesFragment;
-    ForumFragment forumFragment;
-    FeedFragment feedFragment;
-    RelativeLayout lin_id;
-
-    MenuItem prevMenuItem;
-
-    private FirebaseAuth mAuth;
-
+    FirebaseFirestore db;
+    FirebaseAuth mAuth;
     FirebaseUser user;
+    String TAG = "msg";
+    private FloatingNavigationView mFloatingNavigationView;
+    //declaring viewPager
+    private ViewPager viewPager;
+    private InternetAvailabilityChecker mInternetAvailabilityChecker;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,89 +62,104 @@ public class MainActivity extends AppCompatActivity {
         //NOTE: ENTRY POINT OF THE APPLICATION CHANGED TO LOGIN ACTIVITY.
         setContentView(R.layout.activity_main);
 
+
+        db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
+
+        InternetAvailabilityChecker.init(this);
+
+        mInternetAvailabilityChecker = InternetAvailabilityChecker.getInstance();
+        mInternetAvailabilityChecker.addInternetConnectivityListener(this);
+
+
+
         firebaseFirestore = FirebaseFirestore.getInstance();
         final String user = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        Log.i("msg",user);
 
-        //Initializing viewPager
-        viewPager = (ViewPager) findViewById(R.id.viewPager);
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            GlobalState.isSignedIn = true;
+            final DocumentReference docRef = db.collection("USER").document(user);
+            docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                @Override
+                public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                    @Nullable FirebaseFirestoreException e) {
+                    if (e != null) {
+                        Log.w(TAG, "Listen failed.", e);
+                        return;
+                    }
+
+                    if (snapshot != null && snapshot.exists()) {
+                        Log.d(TAG, "Current data: " + snapshot.getData());
+                        String userType = snapshot.get("userType").toString();
+                        String buffer = snapshot.get("buffer").toString();
+                        GlobalState.buffer = buffer;
+                        GlobalState.userType = userType;
+                        Log.i("msg", GlobalState.userType + " ENTERED THE APP");
+                        switch (userType) {
+                            case "STUDENT":
+                                Student.student = snapshot.toObject(Student.class);
+                                break;
+                            case "FACULTY":
+                                Faculty.faculty = snapshot.toObject(Faculty.class);
+                                break;
+                            case "ALUMNI":
+                                Alumni.alumni = snapshot.toObject(Alumni.class);
+                                break;
+                            default:
+                                break;
+                        }
+                    } else {
+                        Log.d(TAG, "Current data: null");
+                    }
+                }
+            });
+        }else
+            GlobalState.isSignedIn = false;
 
         developerOptions = findViewById(R.id.developerOptions);
         developerOptions.setOnClickListener(new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View v) {
-                                                    Intent intent = new Intent(MainActivity.this, DeveloperOptions.class);
-                                                    startActivity(intent);
-                                                    finish();
-                                                }
-                                            });
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, DeveloperOptions.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+        //Initializing viewPager
+        viewPager = findViewById(R.id.viewPager);
+        tabLayout = findViewById(R.id.tabLayout);
 
-                //bottomNavigationView.setOnNavigationItemSelectedListener(MainActivity.this);
-
-
-                //Initializing the bottomNavigationView. It changes depending on the button clicked.z
-
-
-                bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
-        bottomNavigationView.setOnNavigationItemSelectedListener(
-
-                new BottomNavigationView.OnNavigationItemSelectedListener() {
+        final View decorView = getWindow().getDecorView();
+        decorView.setOnSystemUiVisibilityChangeListener
+                (new View.OnSystemUiVisibilityChangeListener() {
                     @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.navigation_home:
-                                viewPager.setCurrentItem(0);
-                                break;
-
-                            case R.id.navigation_notes:
-                                viewPager.setCurrentItem(1);
-                                break;
-
-                            case R.id.navigation_forum:
-                                viewPager.setCurrentItem(2);
-                                break;
-
-                            case R.id.navigation_feed:
-                                viewPager.setCurrentItem(3);
-
-                                break;
+                    public void onSystemUiVisibilityChange(int visibility) {
+                        // Note that system bars will only be "visible" if none of the
+                        // LOW_PROFILE, HIDE_NAVIGATION, or FULLSCREEN flags are set.
+                        if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
+                            // TODO: The system bars are visible. Make any desired
+                            // adjustments to your UI, such as showing the action bar or
+                            // other navigational controls.
+                            int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+                            decorView.setSystemUiVisibility(uiOptions);
+                        } else {
+                            // TODO: The system bars are NOT visible. Make any desired
+                            // adjustments to your UI, such as hiding the action bar or
+                            // other navigational controls.
                         }
-
-                        return false;
                     }
                 });
 
 
-        //Listening for right or left swipes
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        PagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(viewPagerAdapter);
 
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                if (prevMenuItem != null) {
-                    prevMenuItem.setChecked(false);
-                } else {
-                    bottomNavigationView.getMenu().getItem(0).setChecked(false);
-                }
-
-                Log.d("page", "onPageSelected: " + position);
-
-                bottomNavigationView.getMenu().getItem(position).setChecked(true);
-                prevMenuItem = bottomNavigationView.getMenu().getItem(position);
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-            }
-
-        });
+        tabLayout.setupWithViewPager(viewPager);
 
 
-        setupViewPager(viewPager);
-        mFloatingNavigationView = (FloatingNavigationView) findViewById(R.id.floating_navigation_view);
+        mFloatingNavigationView = findViewById(R.id.floating_navigation_view);
         mFloatingNavigationView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -172,9 +179,7 @@ public class MainActivity extends AppCompatActivity {
 
                             navigationText.setText(name);
                             Glide.with(getApplicationContext()).load(url).into(navigationImage);
-                        }
-                        catch (Exception c)
-                        {
+                        } catch (Exception c) {
 
                         }
                     }
@@ -183,28 +188,46 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
         mFloatingNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
-                Snackbar.make((View) mFloatingNavigationView.getParent(), item.getTitle() + " Selected!", Snackbar.LENGTH_SHORT).show();
-                switch (item.getItemId()){
-                    case R.id.edit_profile:
-                        startActivity(new Intent(MainActivity.this, EditProfileActivity.class));
+
+                switch (item.getItemId()) {
+                    case R.id.nav_home:
+                        viewPager.setCurrentItem(0);
                         break;
-                    case R.id.signout:
+                    case R.id.nav_notes:
+                        viewPager.setCurrentItem(1);
+                        break;
+                    case R.id.nav_forums:
+                        viewPager.setCurrentItem(2);
+                        break;
+                    case R.id.nav_feed:
+                        viewPager.setCurrentItem(3);
+                        break;
+                    case R.id.nav_edit_profile:
+                        startActivity(new Intent(getApplicationContext(), EditProfileActivity.class));
+                        break;
+                    case R.id.nav_display_profile:
+                        return false;
+                    case R.id.nav_sign_out:
                         signOut();
+                        return true;
+                    case R.id.nav_help:
                         break;
+                    default:
+                        return false;
                 }
+
+                Snackbar.make((View) mFloatingNavigationView.getParent(), item.getTitle() + " Selected!", Snackbar.LENGTH_SHORT).show();
                 mFloatingNavigationView.close();
                 return true;
             }
         });
 
 
-
-
     }
+
     @Override
     public void onBackPressed() {
         if (mFloatingNavigationView.isOpened()) {
@@ -214,70 +237,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-    private void setupViewPager(ViewPager viewPager) {
-
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-
-        homeFragment = new HomeFragment();
-        notesFragment = new NotesFragment();
-        forumFragment = new ForumFragment();
-        feedFragment = new FeedFragment();
-
-        adapter.addFragment(homeFragment);
-        adapter.addFragment(notesFragment);
-        adapter.addFragment(forumFragment);
-        adapter.addFragment(feedFragment);
-
-        viewPager.setAdapter(adapter);
-    }
-
-  /*  //Action Bar Menu Architecture.
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        //Makes the menu visible
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.action_menu, menu);
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        super.onOptionsItemSelected(item);
-
-        switch (item.getItemId()) {
-            case R.id.signOut:
-                //sign out functionality
-                signOut();
-                Log.i("Item Selected", "Sign Out");
-                return true;
-
-            case R.id.Help:
-                //Help Functionality. Reporting Bugs Functionality goes here. Vital for debugging and maintainance.
-                return true;
-
-            case R.id.profile:
-                //OPEN AN ACTIVITY  OR DIALOG INTERFACE WHICH SHOWS USER PROFILE
-                startActivity(new Intent(MainActivity.this, EditProfileActivity.class));
-                return true;
-
-            default:
-                //In the case where something went wrong.
-                return false;
-        }
-    } */
-
+    //SECURITY
     @Override
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        if (FirebaseHelper.checkLoginStatus() == false) {
+        if (!FirebaseHelper.checkLoginStatus()) {
             setLoginActivity();
         }
     }
 
-    public void signOut() { //dialog box sign out
+    public void signOut() {
+        //dialog box sign out
         final AlertDialog.Builder signOutDialog = new AlertDialog.Builder(this);
 
         this.setTheme(R.style.AlertDialogCustom);
@@ -296,14 +267,29 @@ public class MainActivity extends AppCompatActivity {
                 .setNegativeButton("NO", null)
                 .create()
                 .show();
-
-
     }
+
 
 
     public void setLoginActivity() {
-        finish();
+
         startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+        finish();
+
     }
 
+    @Override
+    public void onInternetConnectivityChanged(boolean isConnected) {
+        Log.i("msg", "CONNECTION:" + isConnected);
+        GlobalState.internetConnection = isConnected;
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mInternetAvailabilityChecker
+                .removeInternetConnectivityChangeListener(this);
+    }
 }
+

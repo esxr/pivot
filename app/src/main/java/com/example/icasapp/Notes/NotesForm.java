@@ -85,6 +85,7 @@ public class NotesForm extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 
 
+
         progressBar = new ProgressDialog(this);
         progressBar.setCancelable(false);//you can cancel it by pressing back button
         progressBar.setMessage("File UPLOADING ...");
@@ -394,6 +395,7 @@ public class NotesForm extends AppCompatActivity {
     public void uploadMetaToFirebase(String SEMESTER, String SESSIONAL, String SUBJECT, String SUBJECT_ABR, String FILE_NAME_BY_USER, Uri DOWNLOAD_URL) {
         // Update one field, creating the document if it does not already exist.
         Map<String, String> data = new HashMap<>();
+        data.put("fileName", FILE_NAME_BY_USER);
         data.put("semester", SEMESTER);
         data.put("sessional", SESSIONAL);
         data.put("subject", SUBJECT);

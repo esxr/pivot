@@ -60,7 +60,7 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
    public static String i_d;
    public static String Category;
    private  ArrayList<String> subject;
-   private static String priviledge;
+   private static String buffer;
    private String name;
    public static DocumentReference documentReference;
 
@@ -108,10 +108,10 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
                         firebaseFirestore.collection("USER").document(currentUser).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                             @Override
                             public void onComplete(@androidx.annotation.NonNull Task<DocumentSnapshot> task) {
-                                priviledge = task.getResult().get("priviledge").toString();
-                                Log.i("priviledge",priviledge);
+                                buffer = task.getResult().get("buffer").toString();
+                                Log.i("buffer",buffer);
                                 //if the user is not teacher or alumni
-                                if(!(priviledge.equals("2.0")||priviledge.equals("3.0"))) {
+                                if(!(buffer.equals("2.0")||buffer.equals("3.0"))) {
                                     semester = document.get("semester").toString();
                                     stream = document.get("stream").toString();
                                     Log.i("semester", semester);
@@ -119,7 +119,7 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
                                     findDocumentIdStudent(semester, stream, view);
                                 }
                                 //sets the document id that contains the subjects of the particular stream and semester
-                                if(priviledge.equals("2.0")){
+                                if(buffer.equals("2.0")){
                                     name = document.get("name").toString();
                                     findDocumentIdFaculty(name);
                                     Log.i("name",name);
@@ -256,7 +256,7 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
                         {
                             Category = "General";
                         }
-                        priviledgeOption();
+                        bufferOption();
                 }
             }
         });
@@ -306,7 +306,7 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
                 {
                     Category = "General";
                 }
-                priviledgeOption();
+                bufferOption();
                 //after category is initialised
             }
         });
@@ -337,18 +337,18 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
     }
 
     @SuppressLint("RestrictedApi")
-    protected void priviledgeOption()
+    protected void bufferOption()
     {
         Log.i("Categori",Category);
         if(Category.equals("Alumni")){
-            if (!(priviledge == "2" || priviledge == "4"))
+            if (!(buffer == "2" || buffer == "4"))
                 addPost.setVisibility(View.GONE);
         }
         else if(Category.equals( "General")){
             addPost.setVisibility(View.VISIBLE);
         }
         else{
-            if(!(priviledge == "1.1" || priviledge == "4" || priviledge == "1.2"|| priviledge == "3"))
+            if(!(buffer == "1.1" || buffer == "4" || buffer == "1.2"|| buffer == "3"))
                 addPost.setVisibility(View.GONE);
         }
     }

@@ -3,37 +3,47 @@ package com.example.icasapp.Notes;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.icasapp.R;
-
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
+import com.google.firebase.firestore.Query;
 
 import static android.app.Activity.RESULT_OK;
 
 public class NotesFragment extends Fragment {
 
-    Button uploadButton;
-    Button viewButton;
     View notesView;
-    StorageReference storageRef;
-    FirebaseFirestore db;
+
     Uri DATA;
+
+    Query query;
+
+    private FirebaseFirestore db;
+    private CollectionReference notesRef;
+    private NotesAdapter adapter;
 
     FloatingActionButton floatingActionButton;
 
-
+    RecyclerView recyclerView;
+    EditText editText;
+    RecyclerView.LayoutManager layoutManager;
+    boolean isFilterActive;
+    //NotesAdapter notesAdapter;
 
 
     public NotesFragment() {
@@ -46,13 +56,11 @@ public class NotesFragment extends Fragment {
 
         // Inflate the layout for this fragment
         notesView = inflater.inflate(R.layout.fragment_notes, container, false);
-
-        uploadButton = notesView.findViewById(R.id.uploadButton);
-        viewButton = notesView.findViewById(R.id.viewButton);
-
-        storageRef = FirebaseStorage.getInstance().getReference();
-
         db = FirebaseFirestore.getInstance();
+
+        isFilterActive = false;
+
+        notesRef = db.collection("NOTES");
 
         floatingActionButton = notesView.findViewById(R.id.addNotes);
 
@@ -63,25 +71,46 @@ public class NotesFragment extends Fragment {
             }
         });
 
+        setUpRecyclerView();
 
+        editText = notesView.findViewById(R.id.editText);
 
-        //FUNCTIONALITY WHEN UPLOAD BUTTON CLICKED.
-        uploadButton.setOnClickListener(new View.OnClickListener() {
+        editText.addTextChangedListener(new TextWatcher() {
+
             @Override
-            public void onClick(View v) {
-                showFileChooser();
+            public void afterTextChanged(Editable s) {
+
             }
-        });
-        viewButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                startActivity(new Intent(getContext(), NotesViewActivity.class));
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+                isFilterActive = true;
+                setFilter(s.toString().trim());
 
             }
         });
         return notesView;
     }
+
+    private void setFilter(String s) {
+        query = notesRef.orderBy("fileName").startAt(s).endAt(s + "\uf8ff");
+
+        if (!s.trim().isEmpty()) {
+            setUpRecyclerView();
+            adapter.startListening();
+        } else {
+            isFilterActive = false;
+            setUpRecyclerView();
+            adapter.startListening();
+        }
+    }
+
 
     //ON UPLOAD BUTTON CLICK , CHOOSE FILE
     private void showFileChooser() {
@@ -111,6 +140,39 @@ public class NotesFragment extends Fragment {
             startActivity(intent);
 
         }
+    }
+
+    private void setUpRecyclerView() {
+
+        if (!isFilterActive) {
+            query = notesRef.orderBy("fileName", Query.Direction.ASCENDING);
+        }
+        Log.i("msg", "QUERY:" + query.toString());
+
+        FirestoreRecyclerOptions<Notes> options = new FirestoreRecyclerOptions.Builder<Notes>()
+                .setQuery(query, Notes.class)
+                .build();
+
+
+        adapter = new NotesAdapter(options);
+        recyclerView = notesView.findViewById(R.id.recycler_view);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(adapter);
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        adapter.startListening();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        adapter.stopListening();
     }
 
 
