@@ -20,12 +20,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatButton;
-import androidx.appcompat.widget.AppCompatEditText;
-import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
-import com.example.icasapp.MainActivity;
 import com.example.icasapp.R;
 import com.example.icasapp.Student;
 import com.google.android.gms.tasks.Continuation;
@@ -64,7 +61,6 @@ public class EditStudentFragment extends Fragment {
     Spinner streamSpinner;
     String email;
     AppCompatButton resetPasswordButton, updateButton;
-    private View view;
     FirebaseAuth auth;
     ImageView editPencil;
     Uri localImageUri, downloadUrl;
@@ -72,6 +68,7 @@ public class EditStudentFragment extends Fragment {
     StorageReference storageRef;
     byte[] compressedImageData;
     FirebaseFirestore db;
+    private View view;
 
     public EditStudentFragment() {
         // Required empty public constructor
@@ -306,9 +303,8 @@ public class EditStudentFragment extends Fragment {
     }
 
 
-
     private void upload() {
-        if(getCompressedImageData() != null) {
+        if (getCompressedImageData() != null) {
             final StorageReference ref = storageRef.child("PROFILE_PICTURES/" + Student.student.getRegNo());
             UploadTask uploadTask = ref.putBytes(getCompressedImageData());
 
@@ -339,7 +335,7 @@ public class EditStudentFragment extends Fragment {
         }
     }
 
-    public void updateFirestore(){
+    public void updateFirestore() {
 
         db
                 .collection("USER")
@@ -348,19 +344,14 @@ public class EditStudentFragment extends Fragment {
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@androidx.annotation.NonNull Task<Void> task) {
-                        if(task.isSuccessful()) {
+                        if (task.isSuccessful()) {
                             Toast.makeText(getContext(), "UPDATED.", Toast.LENGTH_LONG).show();
-                        }else {
+                        } else {
                             Toast.makeText(getContext(), "FAILED. RETRY.", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
     }
-
-
-
-
-
 
 
 }
