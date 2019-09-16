@@ -8,7 +8,7 @@
     tools:context=".Menu_EditProfile.EditAlumniFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="ALUMNI EDIT PROFILE"

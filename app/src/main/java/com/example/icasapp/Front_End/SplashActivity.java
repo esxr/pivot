@@ -34,12 +34,6 @@ public class SplashActivity extends AppCompatActivity {
         ImageView imageView;
         TextView tv;
 
-
-
-
-
-
-
         tv = (TextView) findViewById(R.id.textview);
         imageView = (ImageView) findViewById(R.id.imageview);
         Animation anim = AnimationUtils.loadAnimation(this, R.anim.transition);

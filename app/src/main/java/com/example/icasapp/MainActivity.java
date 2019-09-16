@@ -92,19 +92,21 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                     if (snapshot != null && snapshot.exists()) {
                         Log.d(TAG, "Current data: " + snapshot.getData());
                         String userType = snapshot.get("userType").toString();
-                        Log.i("msg", userType + " ENTERED THE APP");
+                        String buffer = snapshot.get("buffer").toString();
+                        GlobalState.buffer = buffer;
+                        GlobalState.userType = userType;
+                        Log.i("msg", GlobalState.userType + " ENTERED THE APP");
                         switch (userType) {
                             case "STUDENT":
                                 Student.student = snapshot.toObject(Student.class);
-                                GlobalState.userType = "STUDENT";
                                 break;
                             case "FACULTY":
                                 Faculty.faculty = snapshot.toObject(Faculty.class);
-                                GlobalState.userType = "FACULTY";
                                 break;
                             case "ALUMNI":
                                 Alumni.alumni = snapshot.toObject(Alumni.class);
-                                GlobalState.userType = "ALUMNI";
+                                break;
+                            default:
                                 break;
                         }
                     } else {

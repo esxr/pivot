@@ -5,5 +5,6 @@ public class GlobalState {
     public static boolean internetConnection;
     public static boolean isSignedIn;
     public static boolean isEmailVerified;
+    public static String buffer;
 
 }
