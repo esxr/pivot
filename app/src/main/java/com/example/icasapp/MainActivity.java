@@ -62,7 +62,6 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
         //NOTE: ENTRY POINT OF THE APPLICATION CHANGED TO LOGIN ACTIVITY.
         setContentView(R.layout.activity_main);
 
-
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
@@ -72,14 +71,10 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
         mInternetAvailabilityChecker = InternetAvailabilityChecker.getInstance();
         mInternetAvailabilityChecker.addInternetConnectivityListener(this);
 
-
-
         firebaseFirestore = FirebaseFirestore.getInstance();
         final String user = FirebaseAuth.getInstance().getCurrentUser().getUid();
         Log.i("msg",user);
 
-        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-            GlobalState.isSignedIn = true;
             final DocumentReference docRef = db.collection("USER").document(user);
             docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
                 @Override
@@ -115,8 +110,7 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                     }
                 }
             });
-        }else
-            GlobalState.isSignedIn = false;
+
 
         developerOptions = findViewById(R.id.developerOptions);
         developerOptions.setOnClickListener(new View.OnClickListener() {

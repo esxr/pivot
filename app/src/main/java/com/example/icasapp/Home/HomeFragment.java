@@ -175,6 +175,8 @@ public class HomeFragment extends Fragment {
         FirebaseHelper.getUserDetails(uid, new FirebaseHelper.CallbackObject<Map<String, Object>>() {
             @Override
             public void callbackCall(Map<String, Object> object) {
+                if(object == null)
+                    return;
                 populateTest(new User(object));
 
             }
