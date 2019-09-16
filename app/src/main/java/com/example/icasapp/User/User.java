@@ -27,9 +27,10 @@ public class User implements Serializable {
             f.setAccessible(true);
             try {
 //                Log.e("mfc", f.getName()+":"+(String) object.get(f.getName()));
-                f.set(this, object.get(f.getName()));
+                f.set(this, object.get(f.getName()).toString());
 
             } catch (IllegalAccessException e) { Log.e("mfc", e.getMessage()+""); }
+              catch (NullPointerException e) {}
         }
         Log.e("mfc", this.fetchList().toString());
     }
