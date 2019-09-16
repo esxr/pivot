@@ -72,6 +72,7 @@ dependencies {
     implementation 'info.hoang8f:android-segmented:1.0.6'
     api 'com.theartofdev.edmodo:android-image-cropper:2.8.+'
     implementation 'com.treebo:internetavailabilitychecker:1.0.4'
+    implementation 'com.shuhart.stepview:stepview:1.5.0'
 
 
 
