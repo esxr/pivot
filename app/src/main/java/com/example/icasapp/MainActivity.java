@@ -30,11 +30,13 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.treebo.internetavailabilitychecker.InternetAvailabilityChecker;
 import com.treebo.internetavailabilitychecker.InternetConnectivityListener;
 
@@ -73,43 +75,47 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
 
         firebaseFirestore = FirebaseFirestore.getInstance();
         final String user = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        Log.i("msg",user);
+        Log.i("msg", user);
 
-            final DocumentReference docRef = db.collection("USER").document(user);
-            docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                @Override
-                public void onEvent(@Nullable DocumentSnapshot snapshot,
-                                    @Nullable FirebaseFirestoreException e) {
-                    if (e != null) {
-                        Log.w(TAG, "Listen failed.", e);
-                        return;
-                    }
 
-                    if (snapshot != null && snapshot.exists()) {
-                        Log.d(TAG, "Current data: " + snapshot.getData());
-                        String userType = snapshot.get("userType").toString();
-                        String buffer = snapshot.get("buffer").toString();
-                        GlobalState.buffer = buffer;
-                        GlobalState.userType = userType;
-                        Log.i("msg", GlobalState.userType + " ENTERED THE APP");
-                        switch (userType) {
-                            case "STUDENT":
-                                Student.student = snapshot.toObject(Student.class);
-                                break;
-                            case "FACULTY":
-                                Faculty.faculty = snapshot.toObject(Faculty.class);
-                                break;
-                            case "ALUMNI":
-                                Alumni.alumni = snapshot.toObject(Alumni.class);
-                                break;
-                            default:
-                                break;
+        db
+                .collection("USER")
+                .document(user)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()){
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                                Log.d(TAG, document.get("userType").toString());
+                                String userType = document.get("userType").toString();
+                                String buffer = document.get("buffer").toString();
+                                GlobalState.buffer = buffer;
+                                GlobalState.userType = userType;
+                                switch (userType){
+                                    case "STUDENT":
+                                        Student.student = document.toObject(Student.class);
+                                        break;
+                                    case "FACULTY":
+                                        Faculty.faculty = document.toObject(Faculty.class);
+                                        break;
+                                    case "ALUMNI":
+                                        Alumni.alumni = document.toObject(Alumni.class);
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            } else {
+                                Log.d(TAG, "No such document");
+                            }
+                        }else{
+
                         }
-                    } else {
-                        Log.d(TAG, "Current data: null");
                     }
-                }
-            });
+                });
+
 
 
         developerOptions = findViewById(R.id.developerOptions);
@@ -262,7 +268,6 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                 .create()
                 .show();
     }
-
 
 
     public void setLoginActivity() {
