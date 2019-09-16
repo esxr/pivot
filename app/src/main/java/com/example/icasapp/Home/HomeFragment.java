@@ -91,6 +91,12 @@ public class HomeFragment extends Fragment {
         return homeView;
     }
 
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        populateView(FirebaseHelper.getUser().getUid());
+//    }
+
     public View getHomeView() {
         return homeView;
     }
