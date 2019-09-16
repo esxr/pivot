@@ -21,6 +21,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class setUserPriveledge extends AppCompatActivity {
     AutoCompleteTextView setText;
@@ -39,6 +40,15 @@ public class setUserPriveledge extends AppCompatActivity {
         names = new ArrayList();
         radioGroup = findViewById(R.id.radioGroup);
         setPriviledge = findViewById(R.id.setPriveledge);
+
+        final HashMap map = new HashMap();
+        map.put("Student","1.0");
+        map.put("CR","1.1");
+        map.put("Council","1.2");
+        map.put("Faculty","2.0");
+        map.put("Alumni","3.0");
+        map.put("Admin","4.0");
+
 
         try {
 
@@ -87,6 +97,7 @@ public class setUserPriveledge extends AppCompatActivity {
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                 for (DocumentSnapshot documentSnapshot : task.getResult()) {
                                         documentSnapshot.getReference().update("userType",radioButton.getText());
+                                        documentSnapshot.getReference().update("buffer",map.get(radioButton.getText()));
                                 }
                             }
                         });

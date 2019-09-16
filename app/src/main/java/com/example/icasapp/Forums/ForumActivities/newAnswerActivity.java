@@ -1,13 +1,13 @@
 package com.example.icasapp.Forums.ForumActivities;
 
-import android.Manifest;
-import android.app.ProgressDialog;
-import android.content.Intent;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import android.Manifest;
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.icasapp.Forums.ForumFragment;
+import com.example.icasapp.ObjectClasses.Answers;
 import com.example.icasapp.R;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -48,20 +49,20 @@ import java.util.UUID;
 
 import id.zelory.compressor.Compressor;
 
+import static com.example.icasapp.Forums.ForumActivities.AnswersActivity.ans_id;
 import static com.example.icasapp.Forums.ForumFragment.Category;
 import static com.example.icasapp.Forums.ForumFragment.collectionReference;
 import static com.example.icasapp.Forums.ForumFragment.i_d;
 
-public class newQuestionActivity extends AppCompatActivity {
+public class newAnswerActivity extends AppCompatActivity {
     private Button addQuestion;
     private EditText Content;
-    private EditText Title;
     private FirebaseAuth firebaseAuth;
     private String current_user_id;
     private String name;
     private FirebaseFirestore firebaseFirestore;
     private CheckBox checkBox;
-    private ImageView questionImage;
+    private ImageView answerImage;
     private Uri postImageUri = null;
     private String option;
     private Bitmap compressedImageFile;
@@ -69,17 +70,14 @@ public class newQuestionActivity extends AppCompatActivity {
 
     private ProgressDialog progressBar;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_question);
-
+        setContentView(R.layout.activity_new_answer);
         addQuestion = findViewById(R.id.Add);
         Content     = findViewById(R.id.Content);
-        Title       = findViewById(R.id.Title);
         checkBox     = findViewById(R.id.anonymous);
-        questionImage = findViewById(R.id.answerImage);
+        answerImage = findViewById(R.id.answerImage);
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseFirestore = firebaseFirestore.getInstance();
@@ -97,44 +95,44 @@ public class newQuestionActivity extends AppCompatActivity {
         current_user_id = firebaseAuth.getCurrentUser().getUid();
         //getting name of the user
         firebaseFirestore.collection("USER").document(current_user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                                                                                       @Override
-                                                                                                       public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                                                                           DocumentSnapshot doc=task.getResult();
-                                                                                                         name = doc.get("name").toString();
-                                                                                                       }
-                                                                                                   });
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                DocumentSnapshot doc=task.getResult();
+                name = doc.get("name").toString();
+            }
+        });
         option = "";
         checkBox.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            if(((CompoundButton) v).isChecked())
-                                            {
-                                                option = "anonymous";
+            @Override
+            public void onClick(View v) {
+                if(((CompoundButton) v).isChecked())
+                {
+                    option = "anonymous";
 
-                                            }
-                                            else
-                                            {
-                                                option = "";
-                                            }
-                                        }
-                                    });
+                }
+                else
+                {
+                    option = "";
+                }
+            }
+        });
 
 
-                Intent intent = getIntent();
+        Intent intent = getIntent();
         final String docId = intent.getStringExtra("post_id");
         Category = intent.getStringExtra("Category");
         i_d = intent.getStringExtra("ID");
 
-        questionImage.setOnClickListener(new View.OnClickListener() {
+        answerImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
-                    if (ContextCompat.checkSelfPermission(newQuestionActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    if (ContextCompat.checkSelfPermission(newAnswerActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                         //if permission not there permission is asked
-                        Toast.makeText(newQuestionActivity.this, "Permission Denied", Toast.LENGTH_LONG).show();
-                        ActivityCompat.requestPermissions(newQuestionActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+                        Toast.makeText(newAnswerActivity.this, "Permission Denied", Toast.LENGTH_LONG).show();
+                        ActivityCompat.requestPermissions(newAnswerActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
 
                     } else {
 
@@ -155,9 +153,8 @@ public class newQuestionActivity extends AppCompatActivity {
         addQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String title=Title.getText().toString();
                 final String content=Content.getText().toString();
-                if ((title.trim().length() > 0) && (title.length() < 200) &&(content.trim().length() > 0) && (content.length() < 200)) {
+                if ((content.trim().length() > 0) && (content.length() < 200)) {
 
                     progressBar.setProgress(0);
                     progressBar.show();
@@ -165,35 +162,35 @@ public class newQuestionActivity extends AppCompatActivity {
                     if (postImageUri == null) {
 
                         Map<String, Object> postMap = new HashMap<>();
-                        postMap.put("topic", title);
                         // postMap.put("image_thumb",ls);
-                        postMap.put("content", content);
+                        postMap.put("answer", content);
                         postMap.put("timestamp", FieldValue.serverTimestamp());
                         postMap.put("user_id", current_user_id);
-                        postMap.put("answers", "0");
                         postMap.put("image_url","");
+                        postMap.put("upvotes",0);
+                        postMap.put("dirtybit",0);
                         if (!option.equals("anonymous")) {
                             postMap.put("name", name);
                         } else {
                             postMap.put("name", "empty");
                         }
-                        postMap.put("best_answer", "");
                         ForumFragment.setFirestoreReference(firebaseFirestore, ForumFragment.i_d, "c");
-                        collectionReference.document(docId).collection("Questions").add(postMap)
+                        collectionReference.document(docId).collection("Questions").document(ans_id).collection("Answers").add(postMap)
                                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                     @Override
                                     public void onSuccess(DocumentReference documentReference) {
-                                        collectionReference.document(docId).update("question", FieldValue.increment(1)).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        collectionReference.document(docId).collection("Questions").document(ans_id).update("answers", FieldValue.increment(1)).addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 progressBar.setProgress(100);
                                                 progressBar.hide();
-                                                Intent intent = new Intent(getApplicationContext(), QuestionsActivity.class);
+                                                Intent intent = new Intent(getApplicationContext(), AnswersActivity.class);
+                                                intent.putExtra("id",ans_id);
                                                 intent.putExtra("Category", Category);
                                                 intent.putExtra("ID", i_d);
                                                 intent.putExtra("post_id", docId);
                                                 startActivity(intent);
-                                                Toast.makeText(newQuestionActivity.this, "Success", Toast.LENGTH_LONG).show();
+                                                Toast.makeText(newAnswerActivity.this, "Success", Toast.LENGTH_LONG).show();
                                             }
                                         });
                                     }
@@ -211,7 +208,7 @@ public class newQuestionActivity extends AppCompatActivity {
                         // PHOTO UPLOAD
                         File newImageFile = new File(postImageUri.getPath());
                         try {
-                            compressedImageFile = new Compressor(newQuestionActivity.this)
+                            compressedImageFile = new Compressor(newAnswerActivity.this)
                                     .setMaxHeight(720)
                                     .setMaxWidth(720)
                                     .setQuality(50)
@@ -233,7 +230,7 @@ public class newQuestionActivity extends AppCompatActivity {
                             @Override
                             public Task<Uri> then(@io.reactivex.annotations.NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
                                 if (!task.isSuccessful()) {
-                                    Toast.makeText(newQuestionActivity.this, "Cant Upload", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(newAnswerActivity.this, "Cant Upload", Toast.LENGTH_SHORT).show();
                                 }
 
                                 return FilePath.getDownloadUrl();
@@ -243,35 +240,35 @@ public class newQuestionActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<Uri> task) {
                                 String downloadUrl = task.getResult().toString();
                                 Map<String, Object> postMap = new HashMap<>();
-                                postMap.put("topic", title);
                                 // postMap.put("image_thumb",ls);
-                                postMap.put("content", content);
+                                postMap.put("answer", content);
                                 postMap.put("timestamp", FieldValue.serverTimestamp());
                                 postMap.put("user_id", current_user_id);
-                                postMap.put("answers", "0");
+                                postMap.put("upvotes",0);
+                                postMap.put("dirtybit",0);
                                 postMap.put("image_url", downloadUrl);
                                 if (!option.equals("anonymous")) {
                                     postMap.put("name", name);
                                 } else {
                                     postMap.put("name", "empty");
                                 }
-                                postMap.put("best_answer", "");
                                 ForumFragment.setFirestoreReference(firebaseFirestore, ForumFragment.i_d, "c");
-                                collectionReference.document(docId).collection("Questions").add(postMap)
+                                collectionReference.document(docId).collection("Questions").document(ans_id).collection("Answers").add(postMap)
                                         .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                             @Override
                                             public void onSuccess(DocumentReference documentReference) {
-                                                collectionReference.document(docId).update("question", FieldValue.increment(1)).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                collectionReference.document(docId).collection("Questions").document(ans_id).update("answers", FieldValue.increment(1)).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                     @Override
                                                     public void onComplete(@NonNull Task<Void> task) {
                                                         progressBar.setProgress(100);
                                                         progressBar.hide();
-                                                        Intent intent = new Intent(getApplicationContext(), QuestionsActivity.class);
+                                                        Intent intent = new Intent(getApplicationContext(), AnswersActivity.class);
                                                         intent.putExtra("Category", Category);
+                                                        intent.putExtra("id",ans_id);
                                                         intent.putExtra("ID", i_d);
                                                         intent.putExtra("post_id", docId);
                                                         startActivity(intent);
-                                                        Toast.makeText(newQuestionActivity.this, "Success", Toast.LENGTH_LONG).show();
+                                                        Toast.makeText(newAnswerActivity.this, "Success", Toast.LENGTH_LONG).show();
                                                     }
                                                 });
                                             }
@@ -289,10 +286,10 @@ public class newQuestionActivity extends AppCompatActivity {
 
                     }
                 }
-                if((title.trim().length() == 0) || (content.trim().length() == 0)){
+                if( (content.trim().length() == 0)){
                     Toast.makeText(getApplicationContext(), "Please fill all the fields.", Toast.LENGTH_LONG).show();
                 }
-                if((title.length() > 200) || (content.length() > 200))
+                if((content.length() > 200))
                 {
                     Toast.makeText(getApplicationContext(), "No field can be more than 200 characters.", Toast.LENGTH_LONG).show();
                 }
@@ -306,7 +303,7 @@ public class newQuestionActivity extends AppCompatActivity {
                 .setGuidelines(CropImageView.Guidelines.ON)
                 .setMinCropResultSize(512, 512)
                 .setAspectRatio(5, 3)
-                .start(newQuestionActivity.this);
+                .start(newAnswerActivity.this);
     }
 
     //used to get data from another app's activity
@@ -319,14 +316,11 @@ public class newQuestionActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 //ones the image is returned the URI is stored in the memory.
                 postImageUri = result.getUri();
-                questionImage.setImageURI(postImageUri);
+                answerImage.setImageURI(postImageUri);
                 //setting the uri to our image
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-
-                Exception error = result.getError();
 
             }
         }
     }
-
-}
+    }

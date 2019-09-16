@@ -15,7 +15,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:overrideLibrary="com.andremion.floatingnavigationview">
-        <activity android:name=".University_Info.uni_info"></activity>
+        <activity android:name=".Forums.ForumActivities.newAnswerActivity"></activity>
+        <activity android:name=".Forums.ForumActivities.questionView" />
+        <activity android:name=".University_Info.uni_info" />
         <activity android:name=".DeveloperOptions.setUserPriveledge" />
         <activity android:name=".DeveloperOptions.setOptions" />
         <activity android:name=".DeveloperOptions.DeveloperOptions" />

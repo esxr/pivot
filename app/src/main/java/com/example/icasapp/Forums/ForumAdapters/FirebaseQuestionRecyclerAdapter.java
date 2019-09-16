@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.icasapp.Forums.ForumActivities.AnswersActivity;
 import com.example.icasapp.Forums.ForumFragment;
+import com.example.icasapp.Forums.ForumActivities.questionView;
 import com.example.icasapp.ObjectClasses.Questions;
 import com.example.icasapp.Profile.ProfileDisplayActivity;
 import com.example.icasapp.R;
@@ -41,8 +42,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Calendar;
 import java.util.Date;
-
-import io.reactivex.annotations.Nullable;
 
 import static com.example.icasapp.Forums.ForumActivities.QuestionsActivity.docId;
 import static com.example.icasapp.Forums.ForumFragment.Category;
@@ -76,6 +75,7 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
         final String content = questions.getContent();
         String name = questions.getName();
         String best_answer = questions.getBest_answer();
+        final String url = questions.getImage_url();
 
         //setting user names
         String currentUser= FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -115,23 +115,26 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
         questionHolder.setBestAnswer(best_answer);
         questionHolder.setQuestion(question);
         questionHolder.setContent(content);
+        questionHolder.setDisplayPicture(url);
 
         String totalAnswers = getSnapshots().getSnapshot(i).get("answers").toString();
         Log.i("total answers",totalAnswers);
         questionHolder.setDisplayAnswers(totalAnswers);
 
-        questionHolder.addAnswer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(context, AnswersActivity.class);
-                intent.putExtra("id",id);
-                intent.putExtra("topic",question);
-                intent.putExtra("content",content);
-                intent.putExtra("Category",Category);
-                intent.putExtra("ID",i_d);
-                context.startActivity(intent);
-            }
-        });
+
+                questionHolder.addAnswer.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(context, AnswersActivity.class);
+                        intent.putExtra("id", id);
+                        intent.putExtra("topic", question);
+                        intent.putExtra("content", content);
+                        intent.putExtra("Category", Category);
+                        intent.putExtra("ID", i_d);
+                        intent.putExtra("post_id",docId);
+                        context.startActivity(intent);
+                    }
+                });
 
 
 
@@ -152,7 +155,7 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
             questionHolder.setTime(dateString);
         }
 
-        firebaseFirestore.collection("USER_P").document(currentUser).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        firebaseFirestore.collection("USER").document(currentUser).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@androidx.annotation.NonNull Task<DocumentSnapshot> task) {
                 priviledge = (String) task.getResult().get("priviledge");
@@ -177,6 +180,8 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
             }
         });
 
+
+
        questionHolder.userName.setOnClickListener(new View.OnClickListener() {
                                                        @Override
                                                        public void onClick(View v) {
@@ -188,6 +193,19 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
 
                 //sets best answer
                 bestAnswer(i, questionHolder);
+
+
+if(url.equals("")){
+    questionHolder.displayPicture.setVisibility(View.GONE);
+}else{
+                questionHolder.displayPicture.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(context, questionView.class);
+                        intent.putExtra("image_url",url);
+                        context.startActivity(intent);
+                    }
+                });}
 
     }
 
@@ -223,6 +241,8 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
 
         private TextView displayAnswers;
 
+        private ImageView displayPicture;
+
 
         public QuestionHolder(@NonNull View itemView) {
             super(itemView);
@@ -231,6 +251,8 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
             userName = mView.findViewById(R.id.user_name);
             delete = mView.findViewById(R.id.delete);
             displayAnswers = mView.findViewById(R.id.answers);
+            content = mView.findViewById(R.id.Content);
+            displayPicture = mView.findViewById(R.id.answerImage);
         }
 
         public void setQuestion(String message){
@@ -242,7 +264,6 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
 
         public void setContent(String message)
         {
-            content = mView.findViewById(R.id.Content);
             content.setText(message);
         }
 
@@ -268,6 +289,11 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
         {
             profileView = mView.findViewById(R.id.profilePic);
             Glide.with(context).load(url).into(profileView);
+        }
+
+        public void setDisplayPicture(String url)
+        {
+            Glide.with(context).load(url).into(displayPicture);
         }
 
         public void setDisplayAnswers(String number) { displayAnswers.setText(number+" answers");}

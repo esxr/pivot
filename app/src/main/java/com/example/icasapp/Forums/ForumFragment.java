@@ -3,7 +3,6 @@ package com.example.icasapp.Forums;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import com.example.icasapp.Forums.ForumAdapters.FirebaseDiscussionRecyclerAdapter;
@@ -27,6 +26,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -35,13 +35,16 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.annotations.NonNull;
 import io.reactivex.annotations.Nullable;
 
 import static android.content.Context.MODE_PRIVATE;
+import static android.os.Build.ID;
 
 /**
 
@@ -57,7 +60,9 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
    public static String i_d;
    public static String Category;
    private  ArrayList<String> subject;
-   private String priviledge;
+   private static String priviledge;
+   private String name;
+   public static DocumentReference documentReference;
 
    private FloatingActionButton addPost;
    private Spinner spinner;
@@ -70,6 +75,7 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
    private FirebaseDiscussionRecyclerAdapter adapter;
 
    private View view;
+   private static Map docs;
 
     public ForumFragment() {
 
@@ -88,45 +94,44 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
 
-        String currentUser = firebaseAuth.getCurrentUser().getUid();
+        final String currentUser = firebaseAuth.getCurrentUser().getUid();
+
+
 
         //gets the stream and semester of the user and passes into findDocumentId
         firebaseFirestore.collection("USER").document(firebaseAuth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
+                    final DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        semester = document.get("semester").toString();
-                        stream = document.get("stream").toString();
-                        //sets the document id that contains the subjects of the particular stream and semester
-                        findDocumentId(semester, stream,view);
-                    }
-                }
+                        firebaseFirestore.collection("USER").document(currentUser).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@androidx.annotation.NonNull Task<DocumentSnapshot> task) {
+                                priviledge = task.getResult().get("priviledge").toString();
+                                Log.i("priviledge",priviledge);
+                                //if the user is not teacher or alumni
+                                if(!(priviledge.equals("2.0")||priviledge.equals("3.0"))) {
+                                    semester = document.get("semester").toString();
+                                    stream = document.get("stream").toString();
+                                    Log.i("semester", semester);
+                                    Log.i("stream", stream);
+                                    findDocumentIdStudent(semester, stream, view);
+                                }
+                                //sets the document id that contains the subjects of the particular stream and semester
+                                if(priviledge.equals("2.0")){
+                                    name = document.get("name").toString();
+                                    findDocumentIdFaculty(name);
+                                    Log.i("name",name);
+                                }
+                            }
+                        });
+                }}
             }
         });
 
-        firebaseFirestore.collection("USER_P").document(currentUser).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@androidx.annotation.NonNull Task<DocumentSnapshot> task) {
-                priviledge = (String) task.getResult().get("priviledge");
-            }
-        });
 
 
-        if(Category == "Alumni") {
-            if (!(priviledge == "2" || priviledge == "4"))
-                addPost.setVisibility(View.GONE);
-        }
-        else if(Category == "General"){
-
-        }
-        else{
-            if(!(priviledge == "1.1" || priviledge == "4" || priviledge == "1.2"|| priviledge == "3"))
-            {
-                addPost.setVisibility(View.GONE);
-            }
-        }
 
         addPost.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("RestrictedApi")
@@ -173,21 +178,85 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
 
     }
 
-    public void findDocumentId(String semester, String stream,final View view) {
-        //the document id is retreived which contains the subjects of the stream and semester
-        Query query = firebaseFirestore.collection("Specific").whereEqualTo("semester", semester).whereEqualTo("stream", stream);
+    public void findDocumentIdStudent(String semester, String stream,final View view) {
 
-        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
+            //the document id is retreived which contains the subjects of the stream and semester
+            Query query = firebaseFirestore.collection("Specific").whereEqualTo("semester", semester).whereEqualTo("stream", stream);
 
-                        i_d=document.getId();
-                        //set array of subjects that inflates menu later
-                        setSubjectArray(i_d,view);
+            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
 
+                            i_d = document.getId();
+                            //set array of subjects that inflates menu later
+                            setSubjectArray(i_d, view);
+
+                        }
                     }
+                }
+            });
+    }
+
+    public void findDocumentIdFaculty(String name)
+    {
+        firebaseFirestore.collection("Specific").whereEqualTo("name", name).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@androidx.annotation.NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful())
+                {
+
+
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        //overwrites subject array list with this array list
+                        subject = (ArrayList) document.get("subjects");
+                        Log.i("Subjects of Faculty", String.valueOf(subject));
+                    }
+                    subject.add(0,"General");
+
+
+
+                    subject.add("Alumni");
+                    spinner = view.findViewById(R.id.subjects);
+
+                        //creates new adapter with inflated subject
+                        ArrayAdapter<String> a = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, subject);
+                        a.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+                        spinner.setAdapter(a);
+
+
+                        //when a spinner item is selected, snapshot is added to its particular category item
+                        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+
+                                Category = subject.get(position);
+                                firebaseFirestore.collection("Specific").document("parent").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@androidx.annotation.NonNull Task<DocumentSnapshot> task) {
+                                        i_d = (String) task.getResult().get(Category);
+                                        setFirestoreReference(firebaseFirestore,i_d,"q");
+                                        //add snapshot to query
+                                        addSnapshotToQuery(query);
+                                    }
+                                });
+
+                            }
+
+
+                            @Override
+                            public void onNothingSelected(AdapterView<?> parent) {
+
+                            }
+
+                        });
+                        if(Category == null)
+                        {
+                            Category = "General";
+                        }
+                        priviledgeOption();
                 }
             }
         });
@@ -225,12 +294,20 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
 
                     }
 
+
                     @Override
                     public void onNothingSelected(AdapterView<?> parent) {
 
                     }
 
                 });
+
+                if(Category== null)
+                {
+                    Category = "General";
+                }
+                priviledgeOption();
+                //after category is initialised
             }
         });
 
@@ -259,6 +336,23 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
         isFirstPageFirstLoad=true;
     }
 
+    @SuppressLint("RestrictedApi")
+    protected void priviledgeOption()
+    {
+        Log.i("Categori",Category);
+        if(Category.equals("Alumni")){
+            if (!(priviledge == "2" || priviledge == "4"))
+                addPost.setVisibility(View.GONE);
+        }
+        else if(Category.equals( "General")){
+            addPost.setVisibility(View.VISIBLE);
+        }
+        else{
+            if(!(priviledge == "1.1" || priviledge == "4" || priviledge == "1.2"|| priviledge == "3"))
+                addPost.setVisibility(View.GONE);
+        }
+    }
+
     public static void setFirestoreReference(FirebaseFirestore firebaseFirestore,String ID,String type)
     {
         if(type.equals("c")) {
@@ -266,8 +360,9 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
                 Log.i("LOL","SUCC");
                 collectionReference = firebaseFirestore.collection("General").document(Category).collection("Posts");
             } else {
-                Log.i("LOL","SUC");
-                collectionReference = firebaseFirestore.collection("Specific").document(ID).collection("Subjects").document(Category).collection("Posts");
+
+                    collectionReference = firebaseFirestore.collection("Specific").document(ID).collection("Subjects").document(Category).collection("Posts");
+
 
             }
         }
@@ -276,7 +371,9 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
             if (Category.equals("General") || Category.equals("Alumni")) {
                 query = firebaseFirestore.collection("General").document(Category).collection("Posts");
             } else {
-                query = firebaseFirestore.collection("Specific").document(ID).collection("Subjects").document(Category).collection("Posts");
+
+
+                    query = firebaseFirestore.collection("Specific").document(ID).collection("Subjects").document(Category).collection("Posts");
 
             }
         }

@@ -76,6 +76,37 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
 
         final String currentUser = firebaseAuth.getCurrentUser().getUid();
         final String id = model.getUser_id();
+        String name = model.getName();
+
+        if(!name.equals("empty"))
+            firebaseFirestore.collection("USER").document(id).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                @Override
+                public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
+                    if(documentSnapshot.exists()){
+                        Log.d("NAME", documentSnapshot.get("name").toString());
+                        String user_name = documentSnapshot.get("name").toString();
+                        holder.setName(user_name);
+
+
+                        listener3 = firebaseFirestore.collection("USER").document(id).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                            @Override
+                            public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
+                                try {
+                                    String url = documentSnapshot.get("downloadURL").toString();
+                                   holder.setProfilePic(url);
+                                }
+                                catch (Exception d)
+                                {
+                                    Log.d("msg","Question Adapter. No photo of user");
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        else{
+           holder.setName("Anonymous");
+        }
 
         // set time
         long currentTime = Calendar.getInstance().getTime().getTime();
@@ -119,19 +150,10 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
             }
         });
 
-        holder.setupvote(String.valueOf(model.upvotes));
+        holder.setupvote(String.valueOf(model.getUpvotes()));
 
 
-
-        listener3 = firebaseFirestore.collection("USER").document(id).addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                                                                                                       @Override
-                                                                                                       public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                                                                                                           String url = documentSnapshot.get("downloadURL").toString();
-                                                                                                           holder.setProfilePic(url);
-                                                                                                           String name = documentSnapshot.get("name").toString();
-                                                                                                           holder.setName(name);
-                                                                                                       }
-                                                                                                   });
+        holder.setName(name);
 
                 holder.upvotes.setOnClickListener(new View.OnClickListener() {
                     @Override

@@ -85,19 +85,30 @@ public class AnswersActivity extends AppCompatActivity {
 
         firebaseFirestore=FirebaseFirestore.getInstance();
 
-        addAnswer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Dialog();
-            }
-    });
 
         Intent intent=getIntent();
-        ans_id = intent.getStringExtra("id");
+        ans_id = intent.getStringExtra("id"); //question document id
         String Topic=intent.getStringExtra("topic");
         String Content=intent.getStringExtra("content");
         Category=intent.getStringExtra("Category");
-        i_d=intent.getStringExtra("ID");
+        i_d=intent.getStringExtra("ID"); //specific category id
+        docId=intent.getStringExtra("post_id"); //topic id
+
+        addAnswer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //values sent so that they are preserved
+                Intent intent=new Intent(AnswersActivity.this, newAnswerActivity.class);
+                intent.putExtra("post_id", docId);
+                intent.putExtra("Category",Category);
+                intent.putExtra("ID",i_d);
+                intent.putExtra("id",ans_id);
+                startActivity(intent);
+                //  Dialog();
+            }
+        });
+
 
         //selecting the appropriate Category
         if (Category.equals("General") || Category.equals("Alumni")) {
@@ -111,11 +122,13 @@ public class AnswersActivity extends AppCompatActivity {
 
 
 
+
+
         isFirstPageLoad=true;
         sort="timestamp";
         setQuery(sort);
 
-         firebaseFirestore.collection("USER_P").document(currentUserId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+         firebaseFirestore.collection("USER").document(currentUserId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@androidx.annotation.NonNull Task<DocumentSnapshot> task) {
                 priviledge = (String) task.getResult().get("priviledge");
@@ -240,6 +253,7 @@ public class AnswersActivity extends AppCompatActivity {
     @Override
     public void onBackPressed()
     {
+        //to preserve the values
         super.onBackPressed();
         Intent intent=new Intent(AnswersActivity.this, QuestionsActivity.class);
         intent.putExtra("Category",Category);

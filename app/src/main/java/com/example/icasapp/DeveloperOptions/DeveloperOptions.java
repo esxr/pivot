@@ -29,6 +29,7 @@ public class DeveloperOptions extends AppCompatActivity {
     Button setSyllabus;
     Button cleanDB;
     Button authentication;
+    Button setFacultySubjects;
     Button setPriveledge;
     FirebaseFirestore firebaseFirestore;
 
@@ -40,13 +41,14 @@ public class DeveloperOptions extends AppCompatActivity {
 
         firebaseFirestore = FirebaseFirestore.getInstance();
 
-        setTimeTable   = findViewById(R.id.setTimeTable);
-        setSubjects    = findViewById(R.id.setSubjects);
-        setSyllabus    = findViewById(R.id.setSyllabus);
-        announcements  = findViewById(R.id.announcements);
-        cleanDB        = findViewById(R.id.cleanDB);
-        authentication = findViewById(R.id.setAuth);
-        setPriveledge  = findViewById(R.id.setPriveledge);
+        setTimeTable       = findViewById(R.id.setTimeTable);
+        setSubjects        = findViewById(R.id.setSubjects);
+        setFacultySubjects = findViewById(R.id.setFacsub);
+        setSyllabus        = findViewById(R.id.setSyllabus);
+        announcements      = findViewById(R.id.announcements);
+        cleanDB            = findViewById(R.id.cleanDB);
+        authentication     = findViewById(R.id.setAuth);
+        setPriveledge      = findViewById(R.id.setPriveledge);
 
         setSubjects.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,6 +72,13 @@ public class DeveloperOptions extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(),setUserPriveledge.class));
+            }
+        });
+
+        setFacultySubjects.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                
             }
         });
 

@@ -22,10 +22,12 @@ import com.example.icasapp.MainActivity;
 import com.example.icasapp.ObjectClasses.Questions;
 import com.example.icasapp.R;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
+import static android.os.Build.ID;
 import static android.util.Log.i;
 import static com.example.icasapp.Forums.ForumFragment.Category;
 import static com.example.icasapp.Forums.ForumFragment.i_d;
@@ -38,6 +40,7 @@ public class QuestionsActivity extends AppCompatActivity {
     private CollectionReference collectionReference;
     private TextView parentTopic;
     private String topic;
+    private String priviledge;
     private FirebaseQuestionRecyclerAdapter adapter;
 
 
@@ -49,19 +52,24 @@ public class QuestionsActivity extends AppCompatActivity {
         firebaseFirestore = FirebaseFirestore.getInstance();
 
         Intent intent=getIntent();
-        docId=intent.getStringExtra("post_id");
-        Category= intent.getStringExtra("Category");
-        i_d=intent.getStringExtra("ID");
+        docId = intent.getStringExtra("post_id");
+        Category = intent.getStringExtra("Category");
+        i_d = intent.getStringExtra("ID");
 
         addQuestion=findViewById(R.id.addNotes);
 
+
+
         //selecting the appropriate Category
         if (Category.equals("General") || Category.equals("Alumni")) {
-
+            Log.i("LOL","SUCC");
             collectionReference = firebaseFirestore.collection("General").document(Category).collection("Posts");
         } else {
-            Log.i("LOL","SUC");
-            collectionReference = firebaseFirestore.collection("Specific").document(i_d).collection("Subjects").document(Category).collection("Posts");
+
+
+                collectionReference = firebaseFirestore.collection("Specific").document(ID).collection("Subjects").document(Category).collection("Posts");
+
+
         }
 
         //Text that displays the topic you are in

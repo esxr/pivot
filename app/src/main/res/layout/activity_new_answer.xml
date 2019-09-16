@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Forums.ForumActivities.newQuestionActivity">
+    tools:context=".Forums.ForumActivities.newAnswerActivity">
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/animation_view"
@@ -24,28 +24,14 @@
         app:lottie_fileName="question_mark.json"
         app:lottie_loop="false" />
 
-    <EditText
-        android:id="@+id/Title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="264dp"
-        android:ems="10"
-        android:hint="Title"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
 
     <RelativeLayout
         android:id="@+id/relativeLayout"
         android:layout_width="421dp"
         android:layout_height="240dp"
+        android:layout_marginBottom="84dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Title"
-        app:layout_constraintVertical_bias="0.623">
+        app:layout_constraintRight_toRightOf="parent">
 
         <EditText
             android:id="@+id/Content"
@@ -92,11 +78,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:text="Ask your doubts here"
+        android:text="Answer Here"
         android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -124,13 +108,14 @@
         android:layout_width="358dp"
         android:layout_height="78dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="21dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="37dp"
-        android:layout_marginBottom="17dp"
+        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/relativeLayout"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Title"
+        app:layout_constraintTop_toBottomOf="@+id/Doubts"
         app:srcCompat="@drawable/add" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
