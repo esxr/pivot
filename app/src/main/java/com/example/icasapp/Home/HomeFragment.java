@@ -1,42 +1,32 @@
 package com.example.icasapp.Home;
 
 import android.content.Intent;
-import android.net.Uri;
-import android.opengl.Visibility;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.Group;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.Spinner;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.icasapp.Firebase.FirebaseHelper;
-import com.example.icasapp.Firebase.Query;
 import com.example.icasapp.Profile.ProfileAdapter;
 import com.example.icasapp.Profile.ProfileDisplayActivity;
 import com.example.icasapp.R;
 import com.example.icasapp.User.TestUser;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
+import com.example.icasapp.User.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,37 +37,24 @@ import java.util.Map;
  */
 
 public class HomeFragment extends Fragment {
-
-    FirebaseFirestore db;
-    FirebaseUser user;
-
-    View homeView;
-    EditText query;
-    Button profileSearch, generateUsers;
+    private String TAG = "mfc";
+    private View homeView;
 
     // listview and adapter
-    ArrayList<TestUser> items;
-    ProfileAdapter itemsAdapter;
-    ListView listView;
+    private ArrayList<User> items;
+    private ProfileAdapter itemsAdapter;
+    private ListView listView;
 
-    ImageView profileImage;
+    //Search
+    private EditText query;
 
-    Spinner querySpinner;
-
-    String queryProperty;
-
-    boolean visible = true;
+    //toggle
+    private Group group;
+    LinearLayout homeV;
+    private boolean visible = true;
 
     public HomeFragment() {
         // Required empty public constructor
-    }
-
-    public String getQueryProperty() {
-        return queryProperty;
-    }
-
-    public void setQueryProperty(String queryProperty) {
-        this.queryProperty = queryProperty;
     }
 
     @Override
@@ -87,48 +64,51 @@ public class HomeFragment extends Fragment {
         // Inflate the layout for this fragment
         homeView = inflater.inflate(R.layout.fragment_home, container, false);
 
-        // reference of all views
-        query = homeView.findViewById(R.id.query);
-        profileSearch = homeView.findViewById(R.id.profileSearch);
+        new Thread(new Runnable() {
+            public void run() {
+                setSearchToggle();
+            }
+        }).start();
 
-        // intitialize the array and listview adapter
-        items = new ArrayList<>();
-        listView = (ListView) homeView.findViewById(R.id.profile_menu);
-        listView.setEmptyView(homeView.findViewById(R.id.emptyElement));
-        itemsAdapter = new ProfileAdapter(getContext(), items);
-        listView.setAdapter(itemsAdapter);
+        new Thread(new Runnable() {
+            public void run() {
+                setListView();
+            }
+        }).start();
 
-        // initialize the user profile image
-//        profileImage = homeView.findViewById(R.id.userProfileImage);
-//        FirebaseHelper.findDocumentWithUID(
-//                FirebaseHelper.getUser().getUid(),
-//                new FirebaseHelper.CallbackObject<String>() {
-//                    @Override
-//                    public void callbackCall(String docID) {
-//                        // get the image from docId
-//                        FirebaseHelper.getFirestore()
-//                                .collection("USER")
-//                                .document(docID).get()
-//                                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//                                    @Override
-//                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                                        String imagePath = (String) task.getResult().get("downloadURL");
-//
-//                                        // now display the image
-//                                        Glide.with(getContext())
-//                                                .load(Uri.parse(imagePath))
-//                                                .into(profileImage);
-//                                    }
-//                                });
-//                    }
-//                }
-//        );
+        new Thread(new Runnable() {
+            public void run() {
+                setProfileSearch();
+            }
+        }).start();
 
-//        String imageUri = "drawable://" + R.drawable.avi;
-//        Glide.with(getContext())
-//                                                .load(imageUri)
-//                                                .into(profileImage);
+        new Thread(new Runnable() {
+            public void run() {
+                populateView(FirebaseHelper.getUser().getUid());
+            }
+        }).start();
 
+        return homeView;
+    }
+
+    public View getHomeView() {
+        return homeView;
+    }
+
+    //toggle functionality
+    private void toggle() {
+        homeV = homeView.findViewById(R.id.homeV);
+        group.setVisibility(visibilityOf(visible));
+        homeV.setVisibility(visibilityOf(!visible));
+        visible = !visible;
+    }
+    private int visibilityOf(boolean visible) {
+        return visible ? View.VISIBLE : View.GONE;
+    }
+
+    //set all functionality
+    private void setSearchToggle() {
+        group = (Group) homeView.findViewById(R.id.group);
         ImageButton searchInitButton = homeView.findViewById(R.id.initSearch);
         searchInitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,55 +116,92 @@ public class HomeFragment extends Fragment {
                 toggle();
             }
         });
+    }
 
+    private void populateTest(User user) {
+        // List<List<String>>
+        List<List<String>> list = user.fetchList();
+
+        // Parent layout
+        LinearLayout parentLayout = (LinearLayout) homeView.findViewById(R.id.homeV);
+
+        // Layout inflater
+
+        LayoutInflater layoutInflater = LayoutInflater.from(getContext());
+        View view;
+
+        // Profile Photo
+        ImageView profilePhoto = new ImageView(getContext());
+        float dpCalculation = getResources().getDisplayMetrics().density;
+
+        // Customize image params
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        params.gravity = Gravity.CENTER_HORIZONTAL;
+        profilePhoto.setLayoutParams(params);
+
+        profilePhoto.setScaleType(ImageView.ScaleType.CENTER);
+        try {
+            profilePhoto.getLayoutParams().height = (int) (150 * dpCalculation);
+            profilePhoto.getLayoutParams().width = (int) (150 * dpCalculation);
+        } catch(Exception e) {
+            Log.e("mfc", e+"");
+        }
+
+        Glide.with(this).load(user.getProfilePhoto()).into(profilePhoto);
+        parentLayout.addView(profilePhoto);
+
+        // LinearLayout
+        for (List<String> element : list) {
+            // Add the text layout to the parent layout
+            view = layoutInflater.inflate(R.layout.profilefieldelement, null);
+
+            // In order to get the view we have to use the new view with text_layout in it
+            TextView t1 = (TextView) view.findViewById(R.id.t1);
+            t1.setText(element.get(0));
+
+            TextView t2 = (TextView) view.findViewById(R.id.t2);
+            t2.setText(element.get(1));
+
+            // Add the text view to the parent layout
+            parentLayout.addView(view);
+        }
+    }
+
+    private void populateView(String uid) {
+        Log.e("populate", "Working 0");
+        FirebaseHelper.getUserDetails(uid, new FirebaseHelper.CallbackObject<Map<String, Object>>() {
+            @Override
+            public void callbackCall(Map<String, Object> object) {
+                populateTest(new User(object));
+
+            }
+        });
+    }
+
+    private void setListView() {
+        // intitialize the array and listview adapter
+        items = new ArrayList<>();
+        listView = (ListView) homeView.findViewById(R.id.profile_menu);
+        listView.setEmptyView(homeView.findViewById(R.id.emptyElement));
+        itemsAdapter = new ProfileAdapter(getContext(), items);
+        listView.setAdapter(itemsAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                try {
                 Intent intent = new Intent(getActivity(), ProfileDisplayActivity.class);
-                intent.putExtra("user", (TestUser) listView.getItemAtPosition(position));
-                startActivity(intent);
+                intent.putExtra("user", (User) listView.getItemAtPosition(position));
+                startActivity(intent); } catch(Exception e) { Log.e("mfc", e.getMessage()+""); }
             }
         });
+    }
 
-        // Hardcoded
-        generateUsers = homeView.findViewById(R.id.generateUsers);
-        generateUsers.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseHelper.generateFakeFirebaseUsers(10);
-                Toast.makeText(getContext(), "Generated 10 fake users", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        //
-        ArrayAdapter<CharSequence> adapterStream = ArrayAdapter.createFromResource(getContext(),
-                R.array.query_property_array, android.R.layout.simple_spinner_item);
-        // Specify the layout to use when the list of choices appears
-        adapterStream.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
-        querySpinner = (Spinner) homeView.findViewById(R.id.querySpinner);
-        querySpinner.setAdapter(adapterStream);
-
-        querySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> arg0, View v,
-                                       int position, long id) {
-                Log.v("SpinnerSelected Item",
-                        "" + querySpinner.getSelectedItem());
-                Log.v("Clicked position", "" + position);
-                setQueryProperty(querySpinner.getSelectedItem().toString());
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
-                Log.v("NothingSelected Item",
-                        "" + querySpinner.getSelectedItem().toString());
-                setQueryProperty(querySpinner.getSelectedItem().toString());
-
-            }
-        });
-
+    private void setProfileSearch() {
+        query = (EditText) homeView.findViewById(R.id.query);
+        Button profileSearch = (Button) homeView.findViewById(R.id.profileSearch);
         profileSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -193,14 +210,14 @@ public class HomeFragment extends Fragment {
                         query.getText().toString().trim();
                 FirebaseHelper.getDocumentFromCollectionWhere(
                         "USER",
-                        new Query(getQueryProperty(), queryValue),
+                        queryValue,
                         new FirebaseHelper.CallbackObject<List<Map<String, Object>>>() {
                             @Override
                             public void callbackCall(List<Map<String, Object>> object) {
                                 items.clear();
                                 Log.d("Callback", "" + object);
                                 for (Map<String, Object> obj : object) {
-                                    items.add(new TestUser(obj));
+                                    items.add(new User(obj));
                                     Log.i("Downloaded List Item", obj.toString());
                                 }
                                 itemsAdapter.notifyDataSetChanged();
@@ -208,19 +225,7 @@ public class HomeFragment extends Fragment {
                         });
             }
         });
-        // Inflate the layout for this fragment
-        return homeView;
     }
 
-    void toggle() {
-//        profileImage.setVisibility(visibilityOf(!visible));
 
-        homeView.findViewById(R.id.search).setVisibility(visibilityOf(visible));
-        profileSearch.setVisibility(visibilityOf(visible));
-        visible = !visible;
-    }
-
-    int visibilityOf(boolean visible) {
-        return visible ? View.VISIBLE : View.GONE;
-    }
 }

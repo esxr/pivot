@@ -12,17 +12,18 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.icasapp.R;
 import com.example.icasapp.User.TestUser;
+import com.example.icasapp.User.User;
 
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ProfileAdapter extends ArrayAdapter<TestUser> {
+public class ProfileAdapter extends ArrayAdapter<User> {
 
     private TextView profileName, profileRegNo;
     private CircleImageView profilePhoto;
 
-    public ProfileAdapter(Context context, ArrayList<TestUser> TestUsers) {
+    public ProfileAdapter(Context context, ArrayList<User> TestUsers) {
         super(context, 0, TestUsers);
     }
 
@@ -30,7 +31,7 @@ public class ProfileAdapter extends ArrayAdapter<TestUser> {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         // Get the data item for this position
-        TestUser testUser = getItem(position);
+        User testUser = getItem(position);
 
         // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {

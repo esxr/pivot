@@ -18,12 +18,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.icasapp.Firebase.FirebaseHelper;
 import com.example.icasapp.Forums.ForumActivities.AnswersActivity;
 import com.example.icasapp.Forums.ForumFragment;
 import com.example.icasapp.Forums.ForumActivities.questionView;
 import com.example.icasapp.ObjectClasses.Questions;
 import com.example.icasapp.Profile.ProfileDisplayActivity;
 import com.example.icasapp.R;
+import com.example.icasapp.User.User;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -42,6 +44,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 
 import static com.example.icasapp.Forums.ForumActivities.QuestionsActivity.docId;
 import static com.example.icasapp.Forums.ForumFragment.Category;
@@ -181,15 +184,23 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
         });
 
 
+        if(!name.equals("empty")){
+            questionHolder.userName.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final Intent intent = new Intent(context , ProfileDisplayActivity.class);
+                    FirebaseHelper.getUserDetails(uid, new FirebaseHelper.CallbackObject<Map<String, Object>>() {
+                        @Override
+                        public void callbackCall(Map<String, Object> object) {
+                            Log.e("mfc", "lolwa: "+object.toString());
+                            intent.putExtra("user", (User) new User(object));
+                            context.startActivity(intent);
+                        }
+                    });
+                }
+            });
+        }
 
-       questionHolder.userName.setOnClickListener(new View.OnClickListener() {
-                                                       @Override
-                                                       public void onClick(View v) {
-                                                           Intent intent = new Intent(context , ProfileDisplayActivity.class);
-                                                           intent.putExtra("USER_ID",uid);
-                                                           context.startActivity(intent);
-                                                       }
-                                                   });
 
                 //sets best answer
                 bestAnswer(i, questionHolder);
