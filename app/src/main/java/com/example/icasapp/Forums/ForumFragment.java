@@ -131,8 +131,6 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
         });
 
 
-
-
         addPost.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("RestrictedApi")
             @Override
@@ -144,6 +142,8 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
                 startActivity(postBtnIntent);
             }
         });
+
+
 
         //Array list inflates spinner afterwards
         //first category General is added initially
