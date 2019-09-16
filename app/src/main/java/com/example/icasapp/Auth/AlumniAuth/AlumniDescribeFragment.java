@@ -66,7 +66,7 @@ public class AlumniDescribeFragment extends Fragment {
     AppCompatEditText inputInterests, inputEducationalBackground;
     AppCompatImageView imageView;
 
-    Uri localImageUri, downloadUrl;
+    Uri localImageUri, downloadUrl = null;
     Bitmap compressedImageFile;
     StorageReference storageRef;
     byte[] compressedImageData;
@@ -256,7 +256,7 @@ public class AlumniDescribeFragment extends Fragment {
                             createFirestore(user.getUid());
                             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                     .setDisplayName(Alumni.alumni.getName())
-                                    .setPhotoUri(Uri.parse(Alumni.alumni.getDownloadURL()))
+                                    .setPhotoUri(downloadUrl)
                                     .build();
 
                             user.updateProfile(profileUpdates)
