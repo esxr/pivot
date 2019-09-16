@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DeveloperOptions.DeveloperOptions">
+
+    <Button
+        android:id="@+id/setTimeTable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="95dp"
+        android:layout_marginTop="92dp"
+        android:layout_marginEnd="137dp"
+        android:text="Change Time Tables"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/setSubjects"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="109dp"
+        android:layout_marginTop="65dp"
+        android:layout_marginEnd="144dp"
+        android:text="Change Subjects"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/setTimeTable" />
+
+    <Button
+        android:id="@+id/setSyllabus"
+        android:layout_width="wrap_content"
+        android:layout_height="34dp"
+        android:layout_marginStart="109dp"
+        android:layout_marginTop="85dp"
+        android:layout_marginEnd="144dp"
+        android:text="Change syllabus"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/setSubjects" />
+
+    <Button
+        android:id="@+id/announcements"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="144dp"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="179dp"
+        android:layout_marginBottom="188dp"
+        android:text="Send Announcements"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/setSyllabus" />
+
+    <Button
+        android:id="@+id/cleanDB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="219dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="43dp"
+        android:layout_marginBottom="8dp"
+        android:text="clean database"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/announcements" />
+
+    <Button
+        android:id="@+id/setAuth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="70dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="70dp"
+        android:text="set authentication"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/cleanDB"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/announcements" />
+
+    <Button
+        android:id="@+id/setPriveledge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="146dp"
+        android:layout_marginTop="13dp"
+        android:layout_marginEnd="177dp"
+        android:layout_marginBottom="24dp"
+        android:text="Set Privelege"
+        app:layout_constraintBottom_toTopOf="@+id/setSyllabus"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/setSubjects" />
+
+    <Button
+        android:id="@+id/setFacsub"
+        android:layout_width="wrap_content"
+        android:layout_height="34dp"
+        android:layout_marginStart="140dp"
+        android:layout_marginTop="29dp"
+        android:layout_marginEnd="86dp"
+        android:layout_marginBottom="31dp"
+        android:text="set Faculty Subjects"
+        app:layout_constraintBottom_toTopOf="@+id/announcements"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/setSyllabus" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

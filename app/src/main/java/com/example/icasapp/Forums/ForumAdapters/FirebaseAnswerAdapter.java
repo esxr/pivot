@@ -4,7 +4,9 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.provider.DocumentsContract;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,10 +19,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.icasapp.Forums.ForumFragment;
 import com.example.icasapp.ObjectClasses.Answers;
+import com.example.icasapp.Profile.ProfileDisplayActivity;
 import com.example.icasapp.R;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -28,13 +33,20 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 
 import javax.annotation.Nullable;
 
 import io.reactivex.annotations.NonNull;
+
+import static com.example.icasapp.Forums.ForumFragment.collectionReference;
+import static com.example.icasapp.Forums.ForumFragment.i_d;
+import static com.example.icasapp.Forums.ForumFragment.query;
 
 
 public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, FirebaseAnswerAdapter.FirebaseAnswerHolder> {
@@ -42,6 +54,7 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
     FirebaseFirestore firebaseFirestore;
     private ListenerRegistration listener2;
     private ListenerRegistration listener3;
+    String buffer;
 
 
     public FirebaseAnswerAdapter(@NonNull FirestoreRecyclerOptions<Answers> options) {
@@ -61,15 +74,70 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
         progressBar.setProgress(0);//initially progress is 0
         progressBar.setMax(100);//sets the maximum value 100
 
-        final String currentUser=firebaseAuth.getCurrentUser().getUid();
-        final String id=model.getUser_id();
+        final String currentUser = firebaseAuth.getCurrentUser().getUid();
+        final String id = model.getUser_id();
+        String name = model.getName();
 
-        //if current user is logged
-        if( model.getUser_id().equals(currentUser)){
+        if(!name.equals("empty"))
+            firebaseFirestore.collection("USER").document(id).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                @Override
+                public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
+                    if(documentSnapshot.exists()){
+                        Log.d("NAME", documentSnapshot.get("name").toString());
+                        String user_name = documentSnapshot.get("name").toString();
+                        holder.setName(user_name);
+
+
+                        listener3 = firebaseFirestore.collection("USER").document(id).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                            @Override
+                            public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
+                                try {
+                                    String url = documentSnapshot.get("downloadURL").toString();
+                                   holder.setProfilePic(url);
+                                }
+                                catch (Exception d)
+                                {
+                                    Log.d("msg","Question Adapter. No photo of user");
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        else{
+           holder.setName("Anonymous");
+        }
+
+        // set time
+        long currentTime = Calendar.getInstance().getTime().getTime();
+        long uploadtime = model.getTimestamp().getTime();
+        long diff = currentTime-uploadtime;
+        int value= (int) (diff/(3.6*(Math.pow(10,6))));
+
+        if(value>24)
+        {
+            String dateString = DateFormat.format("MM/dd/yyyy", new Date(uploadtime)).toString();
+            holder.setTime(dateString);
+        }
+        else
+        {
+            String dateString = DateFormat.format("hh:mm", new Date(uploadtime)).toString();
+            holder.setTime(dateString);
+        }
+        firebaseFirestore.collection("USER").document(currentUser).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                                                                     @Override
+                                                                                                     public void onComplete(@androidx.annotation.NonNull Task<DocumentSnapshot> task) {
+                                                                                                         buffer = (String) task.getResult().get("buffer");
+                                                                                                     }
+                                                                                                 });
+                //if current user is logged
+        if( model.getUser_id().equals(currentUser) || buffer == "4"){
             holder.delete.setVisibility(View.VISIBLE);
         }
         else
             holder.delete.setVisibility(View.GONE);
+
+
 
         holder.setAnswer(model.getAnswer());
 
@@ -82,32 +150,10 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
             }
         });
 
-        holder.setupvote(String.valueOf(model.upvotes));
+        holder.setupvote(String.valueOf(model.getUpvotes()));
 
-        //button blue and empty is upvoted or not
-        listener2 = getSnapshots().getSnapshot(position).getReference().collection("Upvotes").document().addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                if(documentSnapshot.exists()){
-                    //if upvoted
-                    holder.upvotes.setImageDrawable(context.getDrawable(R.drawable.upvote_blue));
-                    Log.i("msg","upvote drawable upvote invoked");
-                }
-                else
-                {
-                    holder.upvotes.setImageDrawable(context.getDrawable(R.drawable.upvote));
-                    Log.i("msg","upvote drawable downvote invoked");
-                }
-            }
-        });
 
-        listener3 = firebaseFirestore.collection("USER").document(id).addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                                                                                                       @Override
-                                                                                                       public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                                                                                                           String url = documentSnapshot.get("downloadURL").toString();
-                                                                                                           holder.setProfilePic(url);
-                                                                                                       }
-                                                                                                   });
+        holder.setName(name);
 
                 holder.upvotes.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -140,7 +186,7 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
                                     getSnapshots().getSnapshot(position).getReference().collection("Upvotes").document(currentUser).set(postMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
-                                            Log.i("FLOW", "upvoted" + String.valueOf(position));
+                                            Log.i("FLOW", "upvoted" + position);
                                             getSnapshots().getSnapshot(position).getReference().update("upvotes", FieldValue.increment(1)).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
@@ -157,7 +203,14 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
 
                 });
 
-
+                holder.name.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(context , ProfileDisplayActivity.class);
+                        intent.putExtra("USER_ID",id);
+                        context.startActivity(intent);
+                    }
+                });
 
     }
 
@@ -172,6 +225,7 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
     }
 
     public void deleteItem(final int position){
+
         new AlertDialog.Builder(context)
                 .setTitle("Deleting the answer")
                 .setMessage("Are you sure you want to delete this entry?")
@@ -181,7 +235,12 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         // Continue with delete operation
-                        getSnapshots().getSnapshot(position).getReference().delete();
+                        getSnapshots().getSnapshot(position).getReference().delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@androidx.annotation.NonNull Task<Void> task) {
+                               getSnapshots().getSnapshot(position).getReference().getParent().getParent().update("answers",FieldValue.increment(-1));
+                            }
+                        });
                     }
                 })
 
@@ -203,24 +262,32 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
     class FirebaseAnswerHolder extends RecyclerView.ViewHolder{
         View mView;
         ImageView upvotes;
-        TextView answers;
+        TextView moreanswers;
         TextView upVotes;
+        TextView name;
+        TextView time;
         ImageView delete;
         ImageView profilePic;
 
         public FirebaseAnswerHolder(@NonNull View itemView) {
             super(itemView);
-            mView=itemView;
-            upvotes=mView.findViewById(R.id.upvote_btn);
-            upVotes=mView.findViewById(R.id.upvote_text);
-            answers=mView.findViewById(R.id.Answer);
-            delete=mView.findViewById(R.id.delete);
-            profilePic=mView.findViewById(R.id.profilePic);
+            mView = itemView;
+            name = mView.findViewById(R.id.name);
+            upvotes = mView.findViewById(R.id.upvote_btn);
+            upVotes = mView.findViewById(R.id.upvote_text);
+            moreanswers = mView.findViewById(R.id.Answer);
+            delete = mView.findViewById(R.id.delete);
+            time = mView.findViewById(R.id.time);
+            profilePic = mView.findViewById(R.id.profilePic);
         }
 
         public void setAnswer(String answer){
-            answers.setText(answer);
+            moreanswers.setText(answer);
         }
+
+        public void setName(String name1) { name.setText(name1); }
+
+        public void setTime(String time1) { time.setText(time1);}
 
         public String getupvote(){
             return  upVotes.getText().toString();
@@ -234,6 +301,8 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
         {
             Glide.with(context).load(url).into(profilePic);
         }
+
+
 
     }
 

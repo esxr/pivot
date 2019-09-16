@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class Questions extends com.example.icasapp.ObjectClasses.QuestionsId{
 
-    private String topic,content, user_id, best_answer, name;
+    private String topic,content, user_id, best_answer, name, image_url;
     private Date timestamp;
 
 
@@ -12,13 +12,14 @@ public class Questions extends com.example.icasapp.ObjectClasses.QuestionsId{
 
     }
 
-    public Questions(String message,String topic, String user_id, Date timestamp, String best_answer, String name) {
+    public Questions(String message, String topic, String user_id, Date timestamp, String best_answer, String name, String image_url) {
         this.topic=topic;
         this.content = message;
         this.user_id = user_id;
         this.timestamp = timestamp;
         this.best_answer = best_answer;
         this.name = name;
+        this.image_url = image_url;
     }
 
     public String getContent() {
@@ -59,5 +60,13 @@ public class Questions extends com.example.icasapp.ObjectClasses.QuestionsId{
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getImage_url() {
+        return image_url;
+    }
+
+    public void setImage_url(String image_url) {
+        this.image_url = image_url;
     }
 }

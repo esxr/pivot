@@ -45,7 +45,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Title"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintVertical_bias="0.623">
 
         <EditText
             android:id="@+id/Content"
@@ -70,16 +70,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignEnd="@+id/Content"
-            android:foreground="?attr/selectableItemBackground"
-            android:focusable="true"
-            android:clickable="true"
             android:layout_alignBottom="@+id/Content"
-            android:drawableRight="@drawable/arrow_white"
             android:layout_marginTop="57dp"
             android:layout_marginEnd="4dp"
             android:layout_marginRight="160dp"
             android:layout_marginBottom="-1dp"
             android:background="@color/black"
+            android:clickable="true"
+            android:drawableRight="@drawable/arrow_white"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
             android:text="Add"
             android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
@@ -109,16 +109,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="284dp"
-        android:layout_marginRight="284dp"
         android:text="Upload anonymously"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
-        app:layout_constraintVertical_bias="0.557" />
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ImageView
+        android:id="@+id/answerImage"
+        android:layout_width="358dp"
+        android:layout_height="78dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="21dp"
+        android:layout_marginEnd="37dp"
+        android:layout_marginBottom="17dp"
+        app:layout_constraintBottom_toTopOf="@+id/relativeLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Title"
+        app:srcCompat="@drawable/add" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

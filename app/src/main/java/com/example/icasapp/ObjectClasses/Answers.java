@@ -4,21 +4,22 @@ import java.util.Date;
 
 public class Answers extends AnswersPostId{
 
-    private String answer ,user_id, name;
-    public int upvotes;
-    public Date timestamp;
+    private String answer ,user_id, name, image_url;
+    private int upvotes;
+    private Date timestamp;
 
 
     public Answers(){
 
     }
 
-    public Answers(String answer,int upvotes, String user_id, Date timestamp, String name) {
+    public Answers(String answer, int upvotes, String user_id, Date timestamp, String name, String image_url) {
         this.answer=answer;
         this.upvotes = upvotes;
         this.user_id = user_id;
         this.timestamp = timestamp;
         this.name = name;
+        this.image_url = image_url;
     }
 
     public String getAnswer() {
@@ -56,5 +57,13 @@ public class Answers extends AnswersPostId{
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getImage_url() {
+        return image_url;
+    }
+
+    public void setImage_url(String image_url) {
+        this.image_url = image_url;
     }
 }

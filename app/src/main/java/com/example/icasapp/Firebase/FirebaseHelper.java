@@ -1,7 +1,6 @@
 package com.example.icasapp.Firebase;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import android.util.Log;
 
@@ -15,9 +14,13 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -26,9 +29,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 public class FirebaseHelper {
 
-    static String TAG = "Firebase Helper";
+    static String TAG = "mfc";
 
     private static FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private static FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -46,14 +51,6 @@ public class FirebaseHelper {
             return true;
     }
 
-    public static String userEmail() {
-        return user.getEmail();
-    }
-
-    public static FirebaseAuth getmAuth() {
-        return mAuth;
-    }
-
     public static FirebaseUser getUser() {
         return user;
     }
@@ -61,48 +58,6 @@ public class FirebaseHelper {
     /*
      * Functions related to Firestore
      */
-
-    // authentication
-    public static void FirebaseLogin(String email, String password) {
-
-        try {
-            mAuth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                // Sign in success, update UI with the signed-in user's information
-                                Log.d("msg", "signInWithEmail:success");
-                                System.out.println("Firebase Log In Success");
-                                FirebaseUser user = mAuth.getCurrentUser();
-                            } else {
-                                // If sign in fails, display a message to the user.
-                                Log.w("msg", "signInWithEmail:failure", task.getException());
-                            }
-
-                            // ...
-                            FirebaseHelper.initiate();
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            System.out.println("Firebase Login Failed");
-                        }
-                    });
-        } catch (Exception e) {
-            System.out.println("Firebase Login Failed \n" + e);
-        }
-    }
-
-
-    //initiation
-    public static void initiate() {
-        mAuth = FirebaseAuth.getInstance();
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        db = FirebaseFirestore.getInstance();
-    }
-
     public static FirebaseFirestore getFirestore() {
         return db;
     }
@@ -125,28 +80,6 @@ public class FirebaseHelper {
                 });
     }
 
-    @Hardcoded
-    public static void generateFakeFirebaseUsers(int no_of_users) {
-        for (int i = 0; i < no_of_users; i++) {
-            db.collection("USER")
-                    .add(TestUser.getFirebaseDocumentHARDCODED())
-                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                        @Override
-                        public void onSuccess(DocumentReference documentReference) {
-                            Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.w(TAG, "Error adding document", e);
-
-                        }
-                    });
-        }
-
-    }
-
     public interface CallBackList<T> {
         void callbackCall(List<T> list);
     }
@@ -155,50 +88,28 @@ public class FirebaseHelper {
         void callbackCall(T object);
     }
 
-    public static void getDocumentFromCollection(String documentName, String collectionName, final CallbackObject<TestUser> callback) {
-        DocumentReference docRef = db.collection(collectionName).document(documentName);
-        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            TestUser user;
-
+    public static void getUserDetails(final String UID, final CallbackObject<Map<String, Object>> callback) {
+        Log.d(TAG, "getUserDetails() called");
+        db.collection("USER").document(UID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                user = documentSnapshot.toObject(TestUser.class);
-
-                callback.callbackCall(user);
-            }
-        });
-    }
-
-    @Deprecated
-    public static void getDocumentFromCollectionWhere(@Nullable final Query query, String collectionName, final CallbackObject<List<HashMap<String, String>>> callback) {
-        FirebaseHelper.getCollection(collectionName, new CallBackList<Map<String, Object>>() {
-            @Override
-            public void callbackCall(List<Map<String, Object>> list) {
-                List<HashMap<String, String>> matches = new ArrayList<>();
-                for (Map<String, Object> obj : list) {
-                    Map<String, String> convertedObj = (Map) obj;
-                    HashMap<String, String> userData = new HashMap<>(convertedObj);
-
-                    try {
-                        if (userData.get(query.getProperty()).equals(query.getValue())) {
-                            matches.add(userData);
-                        }
-                    } catch (Exception e) {
-                    }
-                    callback.callbackCall(matches);
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()) {
+                    Log.e(TAG, "My UID: "+FirebaseHelper.getUser().getUid());
+                    try { Log.e(TAG, "result: "+task.getResult().getData().toString()); } catch(Exception e) { e.printStackTrace(); }
+                    callback.callbackCall(task.getResult().getData());
                 }
             }
         });
     }
 
-    public static void getDocumentFromCollectionWhere(String collection, Query query, final CallbackObject<List<Map<String, Object>>> callback) {
+    public static void getDocumentFromCollectionWhere(String collection, String value, final CallbackObject<List<Map<String, Object>>> callback) {
         CollectionReference colRef = db.collection(collection);
         final List<Map<String, Object>> matches = new ArrayList<>();
 
         String[] properties = {"name", "regNo", "stream", "semester", "UID"};
         for (String property : properties) {
             colRef
-                    .whereEqualTo(property, query.getValue())
+                    .whereEqualTo(property, value)
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
@@ -218,46 +129,6 @@ public class FirebaseHelper {
                     });
         }
     }
-
-    public static void replaceDocumentWithUID(String uid, final TestUser user) {
-        try {
-            final CollectionReference userRef = getFirestore().collection("USER");
-            Log.e("Current user UID", FirebaseHelper.getUser().getUid());
-            userRef.whereEqualTo("UID", FirebaseHelper.getUser().getUid()).get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            String docId = task.getResult().getDocuments().get(0).getId();
-                            userRef.document(docId).set((TestUser) user);
-                        }
-                    });
-        } catch (Exception e) {
-            Log.e("FirebaseHelper", e.getMessage());
-        }
-    }
-
-    public static void findDocumentWithUID(String uid, final CallbackObject<String> callback) {
-        try {
-            final CollectionReference userRef = getFirestore().collection("USER");
-            Log.e("Current user UID", getUser().getUid());
-            userRef.whereEqualTo("UID", getUser().getUid())
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            try {
-                                String docId = task.getResult().getDocuments().get(0).getId();
-                                callback.callbackCall(docId);
-                            } catch (Exception e) {
-                                Log.e("Firebase UID", e.getLocalizedMessage());
-                            }
-                        }
-                    });
-        } catch (Exception e) {
-            Log.e("FirebaseHelper", e.getMessage());
-        }
-    }
-
 
     public static void getCollection(String collection, final CallBackList<Map<String, Object>> callback) {
         db.collection(collection)

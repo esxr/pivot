@@ -70,19 +70,8 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Intent sharedIntent = new Intent(LoginActivity.this, RegisterActivity.class);
-
-
-                Pair[] pairs = new Pair[4];
-                pairs[0] = new Pair<View, String>(inputEmail, "email");
-                pairs[1] = new Pair<View, String>(inputPassword, "password");
-                pairs[2] = new Pair<View, String>(onReg, "register");
-                pairs[3] = new Pair<View, String>(onReg, "login");
-
-
-                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(LoginActivity.this, pairs);
-                startActivity(sharedIntent, options.toBundle());
-
+                Intent intent = new Intent(LoginActivity.this, RegisterLandingActivity.class);
+                startActivity(intent);
             }
         });
 

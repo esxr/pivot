@@ -33,4 +33,29 @@
         android:hint="Eg. Machine Learning, Stock Market Analysis"
         android:inputType="textMultiLine" />
 
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ADD A PROFILE PICTURE[OPTIONAL]" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/profileView"
+        android:layout_width="300dp"
+        android:layout_height="180dp"
+        android:src="@drawable/account_24dp" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/uploadButton"
+        android:layout_width="wrap_content"
+        android:text="UPLOAD BUTTON"
+        android:layout_height="wrap_content" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/nextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:text="NEXT" />
+
+
 </LinearLayout>

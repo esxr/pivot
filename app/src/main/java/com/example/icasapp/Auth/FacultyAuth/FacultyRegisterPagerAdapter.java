@@ -19,7 +19,7 @@ public class FacultyRegisterPagerAdapter extends FragmentPagerAdapter {
 
         switch (position) {
             case 0:
-                return new RegisterCredentialFragment();
+                return new RegisterCredentialFragment("FACULTY");
             case 1:
                 return new FacultyContactFragment(); //WORK PH, WHERE CAN WE FIND YOU ON CAMPUS?, FREE TIMINGS AND CONTACT HRS?
             case 2:

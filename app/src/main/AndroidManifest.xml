@@ -5,10 +5,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
-
-
-
-
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application xmlns:tools="http://schemas.android.com/tools"
         tools:overrideLibrary="com.andremion.floatingnavigationview"
@@ -18,10 +15,17 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme.NoActionBar">
+        android:theme="@style/AppTheme">
+
+        <activity android:name=".DeveloperOptions.setOptions"></activity>
+        <activity android:name=".DeveloperOptions.DeveloperOptions" />
         <activity android:name=".Auth.RegisterProgressActivity"></activity>
         <activity android:name=".Auth.RegisterLandingActivity" />
         <activity android:name=".Notes.NotesForm" />
+        <activity android:name=".Forums.ForumActivities.newAnswerActivity"></activity>
+        <activity android:name=".Forums.ForumActivities.questionView" />
+        <activity android:name=".University_Info.uni_info" />
+        <activity android:name=".DeveloperOptions.setUserPriveledge" />
         <activity android:name=".Front_End.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -38,7 +42,6 @@
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
         <activity android:name=".Forums.ForumActivities.NewDiscussionActivity" />
-        <activity android:name=".Auth.RegisterActivity" />
         <activity android:name=".MainActivity" />
         <activity
             android:name=".Auth.LoginActivity"

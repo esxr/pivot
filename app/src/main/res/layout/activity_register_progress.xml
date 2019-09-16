@@ -7,19 +7,12 @@
     tools:context=".Auth.RegisterProgressActivity"
     android:orientation="vertical">
 
-    <androidx.viewpager.widget.ViewPager
+    <com.example.icasapp.NonSwipeableViewpager
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="600dp">
 
-    </androidx.viewpager.widget.ViewPager>
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/nextButton"
-        android:layout_width="wrap_content"
-        android:layout_gravity="right"
-        android:text="NEXT"
-        android:layout_height="wrap_content" />
+    </com.example.icasapp.NonSwipeableViewpager>
 
 
 </LinearLayout>

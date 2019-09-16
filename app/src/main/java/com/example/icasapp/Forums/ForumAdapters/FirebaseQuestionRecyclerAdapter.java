@@ -12,17 +12,25 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.example.icasapp.Firebase.FirebaseHelper;
 import com.example.icasapp.Forums.ForumActivities.AnswersActivity;
 import com.example.icasapp.Forums.ForumFragment;
+import com.example.icasapp.Forums.ForumActivities.questionView;
 import com.example.icasapp.ObjectClasses.Questions;
+import com.example.icasapp.Profile.ProfileDisplayActivity;
 import com.example.icasapp.R;
+import com.example.icasapp.User.User;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -31,12 +39,12 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
-import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Calendar;
 import java.util.Date;
-
-import io.reactivex.annotations.Nullable;
+import java.util.Map;
 
 import static com.example.icasapp.Forums.ForumActivities.QuestionsActivity.docId;
 import static com.example.icasapp.Forums.ForumFragment.Category;
@@ -47,7 +55,10 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
 
     FirebaseFirestore firebaseFirestore;
     Context context;
-    private ListenerRegistration listenerRegistration;
+    private ListenerRegistration listener1;
+    private ListenerRegistration listener3;
+    private String bestAnswer;
+    String buffer;
 
     /**
      * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
@@ -65,13 +76,16 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
         final String question =  questions.getTopic();
         final String id = getSnapshots().getSnapshot(i).getId();
         final String content = questions.getContent();
+        String name = questions.getName();
         String best_answer = questions.getBest_answer();
+        final String url = questions.getImage_url();
 
         //setting user names
         String currentUser= FirebaseAuth.getInstance().getCurrentUser().getUid();
-        String uid = questions.getUser_id();
+        final String uid = questions.getUser_id();
+        Log.i("USER_ID",uid);
 
-        if(!uid.equals("empty"))
+        if(!name.equals("empty"))
         firebaseFirestore.collection("USER").document(uid).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
@@ -79,6 +93,21 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
                     Log.d("NAME", documentSnapshot.get("name").toString());
                     String user_name = documentSnapshot.get("name").toString();
                     questionHolder.setUsername(user_name);
+
+
+                    listener3 = firebaseFirestore.collection("USER").document(uid).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                        @Override
+                        public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
+                            try {
+                                String url = documentSnapshot.get("downloadURL").toString();
+                                questionHolder.setProfileView(url);
+                            }
+                            catch (Exception d)
+                            {
+                                Log.d("msg","Question Adapter. No photo of user");
+                            }
+                        }
+                    });
                 }
             }
         });
@@ -90,24 +119,33 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
         questionHolder.setBestAnswer(best_answer);
         questionHolder.setQuestion(question);
         questionHolder.setContent(content);
+        questionHolder.setDisplayPicture(url);
 
-        questionHolder.addAnswer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(context, AnswersActivity.class);
-                intent.putExtra("id",id);
-                intent.putExtra("topic",question);
-                intent.putExtra("content",content);
-                intent.putExtra("Category",Category);
-                intent.putExtra("ID",i_d);
-                context.startActivity(intent);
-            }
-        });
+        String totalAnswers = getSnapshots().getSnapshot(i).get("answers").toString();
+        Log.i("total answers",totalAnswers);
+        questionHolder.setDisplayAnswers(totalAnswers);
 
-        // set time
+
+                questionHolder.addAnswer.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(context, AnswersActivity.class);
+                        intent.putExtra("id", id);
+                        intent.putExtra("topic", question);
+                        intent.putExtra("content", content);
+                        intent.putExtra("Category", Category);
+                        intent.putExtra("ID", i_d);
+                        intent.putExtra("post_id",docId);
+                        context.startActivity(intent);
+                    }
+                });
+
+
+
+                // set time
         long currentTime = Calendar.getInstance().getTime().getTime();
         long uploadtime = questions.getTimestamp().getTime();
-        long diff=currentTime-uploadtime;
+        long diff = currentTime-uploadtime;
         int value= (int) (diff/(3.6*(Math.pow(10,6))));
 
         if(value>24)
@@ -121,7 +159,15 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
             questionHolder.setTime(dateString);
         }
 
-        if(currentUser.equals(questions.getUser_id()))
+        firebaseFirestore.collection("USER").document(currentUser).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@androidx.annotation.NonNull Task<DocumentSnapshot> task) {
+                buffer = (String) task.getResult().get("buffer");
+            }
+        });
+
+
+        if(currentUser.equals(questions.getUser_id())||buffer=="4")
         {
             questionHolder.delete.setVisibility(View.VISIBLE);
         }
@@ -138,17 +184,40 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
             }
         });
 
-        listenerRegistration = collectionReference.document(docId).collection("Questions").document(id).addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                try {
-                    String n = (documentSnapshot.get("best_answer").toString());
-                    questionHolder.setBestAnswer(n);
-                } catch (Exception c) {
 
+        if(!name.equals("empty")){
+            questionHolder.userName.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final Intent intent = new Intent(context , ProfileDisplayActivity.class);
+                    FirebaseHelper.getUserDetails(uid, new FirebaseHelper.CallbackObject<Map<String, Object>>() {
+                        @Override
+                        public void callbackCall(Map<String, Object> object) {
+                            Log.e("mfc", "lolwa: "+object.toString());
+                            intent.putExtra("user", (User) new User(object));
+                            context.startActivity(intent);
+                        }
+                    });
                 }
-            }
-        });
+            });
+        }
+
+
+                //sets best answer
+                bestAnswer(i, questionHolder);
+
+
+if(url.equals("")){
+    questionHolder.displayPicture.setVisibility(View.GONE);
+}else{
+                questionHolder.displayPicture.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(context, questionView.class);
+                        intent.putExtra("image_url",url);
+                        context.startActivity(intent);
+                    }
+                });}
 
     }
 
@@ -180,11 +249,22 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
 
         private ImageView delete;
 
+        private ImageView profileView;
+
+        private TextView displayAnswers;
+
+        private ImageView displayPicture;
+
+
         public QuestionHolder(@NonNull View itemView) {
             super(itemView);
             mView = itemView;
-            addAnswer=mView.findViewById(R.id.Answers);
-            delete=mView.findViewById(R.id.delete);
+            addAnswer = mView.findViewById(R.id.Answers);
+            userName = mView.findViewById(R.id.user_name);
+            delete = mView.findViewById(R.id.delete);
+            displayAnswers = mView.findViewById(R.id.answers);
+            content = mView.findViewById(R.id.Content);
+            displayPicture = mView.findViewById(R.id.answerImage);
         }
 
         public void setQuestion(String message){
@@ -196,28 +276,40 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
 
         public void setContent(String message)
         {
-            content=mView.findViewById(R.id.Content);
             content.setText(message);
         }
 
         public void setUsername(String username)
         {
-            userName=mView.findViewById(R.id.user_name);
             userName.setText(username);
         }
 
 
         public void setBestAnswer(String best_answer)
         {
-            bestAnswer=mView.findViewById(R.id.Answer);
+            bestAnswer = mView.findViewById(R.id.Answer);
             bestAnswer.setText(best_answer);
         }
 
         public void setTime(String t)
         {
-            time=mView.findViewById(R.id.time);
+            time = mView.findViewById(R.id.time);
             time.setText(t);
         }
+
+        public void setProfileView(String url)
+        {
+            profileView = mView.findViewById(R.id.profilePic);
+            Glide.with(context).load(url).into(profileView);
+        }
+
+        public void setDisplayPicture(String url)
+        {
+            Glide.with(context).load(url).into(displayPicture);
+        }
+
+        public void setDisplayAnswers(String number) { displayAnswers.setText(number+" answers");}
+
     }
 
     public void delete(final int position)
@@ -231,7 +323,23 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         // Continue with delete operation
-                        getSnapshots().getSnapshot(position).getReference().delete();
+                        getSnapshots().getSnapshot(position).getReference().delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                collectionReference.document(docId).update("question", FieldValue.increment(-1)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Toast.makeText(context,"Deleted",Toast.LENGTH_LONG).show();
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+
+                                        Toast.makeText(context,"Something went wrong",Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                            }
+                        });
                     }
                 })
 
@@ -254,6 +362,27 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
     @Override
     public void onViewDetachedFromWindow(@NonNull QuestionHolder holder) {
         super.onViewDetachedFromWindow(holder);
-        listenerRegistration.remove();
+    }
+
+    void bestAnswer(int position, final QuestionHolder questionHolder)
+    {
+        //if no answers best answer will be "no answers"
+        bestAnswer = "no answers";
+       getSnapshots().getSnapshot(position).getReference().collection("Answers").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+           @Override
+           public void onComplete(@NonNull Task<QuerySnapshot> task) {
+               long max = 0;
+               for(QueryDocumentSnapshot documentSnapshot : task.getResult())
+               {
+                   long n  = (long) documentSnapshot.get("upvotes");
+                   if(n>max)
+                   {
+                       bestAnswer =  documentSnapshot.get("answer").toString();
+                       max=n;
+                   }
+               }
+               questionHolder.setBestAnswer(bestAnswer);
+           }
+       });
     }
 }
