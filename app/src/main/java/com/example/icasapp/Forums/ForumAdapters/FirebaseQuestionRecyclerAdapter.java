@@ -215,6 +215,7 @@ if(url.equals("")){
                     public void onClick(View v) {
                         Intent intent = new Intent(context, questionView.class);
                         intent.putExtra("image_url",url);
+                        intent.putExtra("activity","question");
                         context.startActivity(intent);
                     }
                 });}
