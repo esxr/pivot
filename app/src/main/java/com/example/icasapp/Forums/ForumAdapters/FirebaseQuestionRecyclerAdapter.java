@@ -167,7 +167,7 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
         });
 
 
-        if(currentUser.equals(questions.getUser_id())||buffer=="4")
+        if(currentUser.equals(questions.getUser_id())||buffer=="4.0")
         {
             questionHolder.delete.setVisibility(View.VISIBLE);
         }

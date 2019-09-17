@@ -136,7 +136,7 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
                                                                                                      }
                                                                                                  });
                 //if current user is logged
-        if( model.getUser_id().equals(currentUser) || buffer == "4"){
+        if( model.getUser_id().equals(currentUser) || buffer == "4.0"){
             holder.delete.setVisibility(View.VISIBLE);
         }
         else

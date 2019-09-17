@@ -36,6 +36,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.lang.reflect.Array;
+import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -95,6 +96,7 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
         firebaseFirestore = FirebaseFirestore.getInstance();
 
         final String currentUser = firebaseAuth.getCurrentUser().getUid();
+        i_d = null;
 
 
 
@@ -111,7 +113,7 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
                                 buffer = task.getResult().get("buffer").toString();
                                 Log.i("buffer",buffer);
                                 //if the user is not teacher or alumni
-                                if(!(buffer.equals("2.0")||buffer.equals("3.0"))) {
+                                if(buffer.equals("1.0")||buffer.equals("1.1")||buffer.equals("1.2")) {
                                     semester = document.get("semester").toString();
                                     stream = document.get("stream").toString();
                                     Log.i("semester", semester);
@@ -124,13 +126,45 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
                                     findDocumentIdFaculty(name);
                                     Log.i("name",name);
                                 }
+                                if(buffer.equals("3.0")||buffer.equals("4.0")){
+                                    subject.add("Alumni");
+                                    spinner = view.findViewById(R.id.subjects);
+
+                                    //creates new adapter with inflated subject
+                                    ArrayAdapter<String> a = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, subject);
+                                    a.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+                                    spinner.setAdapter(a);
+
+
+                                    //when a spinner item is selected, snapshot is added to its particular category item
+                                    spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                        @Override
+                                        public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+
+                                            Category = subject.get(position);
+                                            firebaseFirestore.collection("Specific").document("parent").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onComplete(@androidx.annotation.NonNull Task<DocumentSnapshot> task) {
+                                                    setFirestoreReference(firebaseFirestore,i_d,"q");
+                                                    //add snapshot to query
+                                                    addSnapshotToQuery(query);
+                                                }
+                                            });
+
+                                        }
+
+
+                                        @Override
+                                        public void onNothingSelected(AdapterView<?> parent) {
+
+                                        }});
+                                }
                             }
                         });
                 }}
             }
         });
-
-
 
 
         addPost.setOnClickListener(new View.OnClickListener() {
@@ -144,6 +178,8 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
                 startActivity(postBtnIntent);
             }
         });
+
+
 
         //Array list inflates spinner afterwards
         //first category General is added initially
@@ -256,11 +292,13 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
                         {
                             Category = "General";
                         }
-                        bufferOption();
+
                 }
             }
         });
     }
+
+
 
     public void setSubjectArray(final String ID, final View view) {
         firebaseFirestore.collection("Specific").document(ID).collection("Subjects").addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -306,7 +344,7 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
                 {
                     Category = "General";
                 }
-                bufferOption();
+
                 //after category is initialised
             }
         });
@@ -332,26 +370,14 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
         recyclerView.setAdapter(adapter);
         recyclerView.setNestedScrollingEnabled(true);
 
+        addPost.show();
+        setAddPost();
+
         adapter.startListening();
         isFirstPageFirstLoad=true;
     }
 
-    @SuppressLint("RestrictedApi")
-    protected void bufferOption()
-    {
-        Log.i("Categori",Category);
-        if(Category.equals("Alumni")){
-            if (!(buffer == "2" || buffer == "4"))
-                addPost.setVisibility(View.GONE);
-        }
-        else if(Category.equals( "General")){
-            addPost.setVisibility(View.VISIBLE);
-        }
-        else{
-            if(!(buffer == "1.1" || buffer == "4" || buffer == "1.2"|| buffer == "3"))
-                addPost.setVisibility(View.GONE);
-        }
-    }
+
 
     public static void setFirestoreReference(FirebaseFirestore firebaseFirestore,String ID,String type)
     {
@@ -377,5 +403,16 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
 
             }
         }
+    }
+
+    void setAddPost(){
+//        if(Category.equals("Alumni")&&!(buffer.equals("3.0")||buffer.equals("4.0"))){
+//            addPost.hide();
+//        }
+//        else {
+//            if(!Category.equals("General")){
+//               if(!buffer.equals("1.0"))
+//            addPost.hide();
+//        }}
     }
 }
