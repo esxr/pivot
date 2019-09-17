@@ -46,6 +46,7 @@ public class FirebaseDiscussionRecyclerAdapter extends FirestoreRecyclerAdapter<
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth firebaseAuth;
     private ListenerRegistration listenerRegistration;
+    private String buffer;
 
     /**
      * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
@@ -108,7 +109,14 @@ public class FirebaseDiscussionRecyclerAdapter extends FirestoreRecyclerAdapter<
             }
         });
 
-        if(currentUser.equals(discussionTopic.getUser_id()))
+        firebaseFirestore.collection("USER").document(currentUser).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@androidx.annotation.NonNull Task<DocumentSnapshot> task) {
+                buffer = (String) task.getResult().get("buffer");
+            }
+        });
+
+        if(currentUser.equals(discussionTopic.getUser_id())|| buffer == "4.0")
         {
             discussionHolder.delete.setVisibility(View.VISIBLE);
         }

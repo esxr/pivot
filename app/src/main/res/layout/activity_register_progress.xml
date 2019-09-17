@@ -5,7 +5,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Auth.RegisterProgressActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/Register">
+    <com.shuhart.stepview.StepView
+        android:id="@+id/step_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        app:sv_selectedCircleColor="@color/card_bg_color"
+        app:sv_selectedTextColor="@color/card_color"
+        app:sv_stepLineWidth="1dp"
+        app:sv_stepPadding="4dp"
+        app:sv_nextTextColor="@color/gray"
+        app:sv_nextStepLineColor="@color/gray"
+        app:sv_doneCircleColor="@color/white"
+        app:sv_doneStepLineColor="@color/white"
+        app:sv_doneCircleRadius="12dp"
+        app:sv_selectedCircleRadius="12dp"
+        app:sv_selectedStepNumberColor="@color/card_color"
+        app:sv_stepViewStyle="@style/StepView"
+        app:sv_doneStepMarkColor="@color/white"
+        app:sv_stepNumberTextSize="12sp"
+        app:sv_animationType="Line" />
 
     <com.example.icasapp.NonSwipeableViewpager
         android:id="@+id/pager"

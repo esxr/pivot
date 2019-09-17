@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide;
 import com.example.icasapp.R;
 
 public class questionView extends AppCompatActivity {
+    String activity;
 
 
     @Override
@@ -20,9 +21,14 @@ public class questionView extends AppCompatActivity {
         Intent intent = getIntent();
         ImageView image = findViewById(R.id.image);
         String url = intent.getStringExtra("image_url");
+        activity = intent.getStringExtra("activity");
         Glide.with(getApplicationContext()).load(url).into(image);
 
 
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 }

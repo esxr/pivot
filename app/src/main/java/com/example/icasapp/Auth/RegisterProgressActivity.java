@@ -1,6 +1,8 @@
 package com.example.icasapp.Auth;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.viewpager.widget.PagerAdapter;
 
 import android.annotation.SuppressLint;
@@ -13,6 +15,9 @@ import com.example.icasapp.Auth.StudentAuth.StudentRegisterPagerAdapter;
 import com.example.icasapp.Student;
 import com.example.icasapp.NonSwipeableViewpager;
 import com.example.icasapp.R;
+import com.shuhart.stepview.StepView;
+
+import java.util.ArrayList;
 
 public class RegisterProgressActivity extends AppCompatActivity {
 
@@ -51,6 +56,7 @@ public class RegisterProgressActivity extends AppCompatActivity {
 
 
         pager.setAdapter(pagerAdapter);
+
 
     }
 

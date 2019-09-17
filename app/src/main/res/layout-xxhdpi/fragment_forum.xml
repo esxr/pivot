@@ -14,7 +14,8 @@
         android:layout_height="match_parent"
         android:layout_marginTop="10dp"
         android:fillViewport="true"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 
         <LinearLayout
@@ -51,10 +52,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_marginVertical="200dp"
+
         android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="112dp"
+        android:layout_marginBottom="44dp"
         android:clickable="true"
         app:layout_anchor="@+id/nestedScrollView"
         app:layout_anchorGravity="end|bottom"

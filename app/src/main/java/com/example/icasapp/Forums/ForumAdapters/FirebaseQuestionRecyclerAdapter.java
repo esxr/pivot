@@ -167,7 +167,7 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
         });
 
 
-        if(currentUser.equals(questions.getUser_id())||buffer=="4")
+        if(currentUser.equals(questions.getUser_id())||buffer=="4.0")
         {
             questionHolder.delete.setVisibility(View.VISIBLE);
         }
@@ -215,6 +215,7 @@ if(url.equals("")){
                     public void onClick(View v) {
                         Intent intent = new Intent(context, questionView.class);
                         intent.putExtra("image_url",url);
+                        intent.putExtra("activity","question");
                         context.startActivity(intent);
                     }
                 });}

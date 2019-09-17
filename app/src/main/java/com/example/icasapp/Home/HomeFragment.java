@@ -21,6 +21,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.icasapp.DeveloperOptions.DeveloperOptions;
 import com.example.icasapp.Firebase.FirebaseHelper;
 import com.example.icasapp.Profile.ProfileAdapter;
 import com.example.icasapp.Profile.ProfileDisplayActivity;
@@ -91,6 +92,12 @@ public class HomeFragment extends Fragment {
         return homeView;
     }
 
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        populateView(FirebaseHelper.getUser().getUid());
+//    }
+
     public View getHomeView() {
         return homeView;
     }
@@ -111,11 +118,17 @@ public class HomeFragment extends Fragment {
         group = (Group) homeView.findViewById(R.id.group);
         ImageButton searchInitButton = homeView.findViewById(R.id.initSearch);
         searchInitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggle();
-            }
-        });
+                                                @Override
+                                                public void onClick(View v) {
+                                                    startActivity(new Intent(getContext(), DeveloperOptions.class));
+                                                }
+                                            });
+//        searchInitButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                toggle();
+//            }
+//        });
     }
 
     private void populateTest(User user) {
@@ -175,6 +188,8 @@ public class HomeFragment extends Fragment {
         FirebaseHelper.getUserDetails(uid, new FirebaseHelper.CallbackObject<Map<String, Object>>() {
             @Override
             public void callbackCall(Map<String, Object> object) {
+                if(object == null)
+                    return;
                 populateTest(new User(object));
 
             }
