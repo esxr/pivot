@@ -66,6 +66,8 @@ public class UserRegCredentialFragment extends Fragment {
                     store();
                     updateUI();
                 }
+                RegisterProgressActivity.stepView.go(2,true);
+                RegisterProgressActivity.i++;
             }
         });
 

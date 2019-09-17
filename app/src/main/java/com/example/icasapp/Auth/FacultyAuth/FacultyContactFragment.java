@@ -73,6 +73,8 @@ public class FacultyContactFragment extends Fragment {
                     Faculty.faculty.setWorkNumber(workPhoneNumber);
                     Faculty.faculty.setName(name);
                     RegisterProgressActivity.pager.setCurrentItem(2);
+                    RegisterProgressActivity.stepView.go(2,true);
+                    RegisterProgressActivity.i++;
                 }else
                     Toast.makeText(getContext(), "FIELD MISSING.PLEASE ENTER.", Toast.LENGTH_LONG).show();
             }

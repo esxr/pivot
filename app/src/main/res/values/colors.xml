@@ -26,5 +26,6 @@
     <color name="background_contrast">#252F3A</color>
     <color name="Register">#2863AA</color>
     <color name="card_color_2">#F8F8F8</color>
+    <color name="light_green">#0AB40A</color>
 
 </resources>

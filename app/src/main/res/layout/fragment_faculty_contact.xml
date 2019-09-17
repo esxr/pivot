@@ -18,6 +18,9 @@
     <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/white"
+        android:textStyle="bold"
         android:text="WHAT IS YOUR FULL NAME?"/>
 
     <androidx.appcompat.widget.AppCompatEditText
@@ -25,12 +28,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Eg. John Doe"
+        android:layout_marginTop="20dp"
+        android:theme="@style/Tempstyle"
+        android:textColor="@color/white"
+        android:background="@drawable/text_black"
+        android:padding="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:inputType="textEmailAddress"
         />
 
     <!-- TODO: Update blank fragment layout -->
     <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/white"
+        android:textStyle="bold"
         android:layout_height="wrap_content"
         android:text="WORK PHONE NUMBER"/>
 
@@ -40,37 +53,74 @@
         android:layout_height="wrap_content"
         android:hint="Eg. +91 XXXXXXXXXX"
         android:inputType="phone"
+        android:layout_marginTop="20dp"
+        android:theme="@style/Tempstyle"
+        android:textColor="@color/white"
+        android:background="@drawable/text_black"
+        android:padding="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/white"
+        android:textStyle="bold"
         android:text="MIT CAMPUS LOCATION"/>
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/inputCabinLocation"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
+        android:layout_marginTop="20dp"
+        android:theme="@style/Tempstyle"
+        android:scrollbars="vertical"
+        android:overScrollMode="always"
+        android:scrollbarStyle="insideInset"
+        android:singleLine="false"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:textColor="@color/white"
+        android:background="@drawable/text_black"
+        android:padding="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:hint="Eg. \n CABIN NO:5 \n BUILDING:ACADEMIC BLOCK-5 \nFLOOR:2 \nFACULTY CHAMBER:"
         android:inputType="textMultiLine" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/white"
+        android:textStyle="bold"
         android:layout_height="wrap_content"
         android:text="WHEN ARE YOU USUALLY FREE?"/>
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/inputFreeTimings"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="70dp"
+        android:layout_marginTop="20dp"
+        android:theme="@style/Tempstyle"
+        android:scrollbars="vertical"
+        android:overScrollMode="always"
+        android:scrollbarStyle="insideInset"
+        android:textColor="@color/white"
+        android:background="@drawable/text_black"
+        android:padding="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:hint="Eg. \nOFFICE HOURS : \nWORKING DAYS: \nFREE SLOT TIMINGS:"
         android:inputType="textMultiLine" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/nextButton"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/solid_button_white"
+        android:textColor="@color/navy"
         android:text="NEXT" />
 
 

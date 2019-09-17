@@ -55,6 +55,8 @@ public class AlumniContactFragment extends Fragment {
                 if(formHelper.validateField(name) && formHelper.validateField(workNumber)){
                     Alumni.alumni.setName(name);
                     Alumni.alumni.setWorkNumber(workNumber);
+                    RegisterProgressActivity.stepView.go(2,true);
+                    RegisterProgressActivity.i++;
                     RegisterProgressActivity.pager.setCurrentItem(2);
                 }else{
                     Toast.makeText(getContext(), "FIELD(S) ARE EMPTY.PLEASE FILL.", Toast.LENGTH_LONG).show();

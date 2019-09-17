@@ -42,6 +42,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import id.zelory.compressor.Compressor;
 import io.reactivex.annotations.NonNull;
 
@@ -57,7 +58,7 @@ public class FacultyDescribeFragment extends Fragment {
     View view;
     AppCompatButton nextButton, uploadButton;
     AppCompatEditText inputSubjects, inputInterests;
-    AppCompatImageView imageView;
+    CircleImageView imageView;
 
     Uri localImageUri, downloadUrl = null;
     Bitmap compressedImageFile;

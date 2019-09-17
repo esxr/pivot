@@ -75,8 +75,11 @@ public class StudentRegisterCredentialFragment extends Fragment {
                 regNo = inputRegNo.getText().toString();
                 if (!formHelper.validateRegNo(regNo)) {
                     Toast.makeText(view.getContext(), "INVALID REGISTRATION NUMBER", Toast.LENGTH_LONG).show();
+
                 } else {
                     authenticateRegNo();
+                    RegisterProgressActivity.stepView.go(1,true);
+                    RegisterProgressActivity.i++;
                 }
             }
         });
