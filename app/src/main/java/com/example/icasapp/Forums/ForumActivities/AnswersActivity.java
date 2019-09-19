@@ -98,6 +98,9 @@ public class AnswersActivity extends AppCompatActivity {
         i_d=intent.getStringExtra("ID"); //specific category id
         docId=intent.getStringExtra("post_id"); //topic id
 
+        //in the starting sort is according to timestamp
+        sort = "timestamp";
+
         addAnswer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -135,10 +138,6 @@ public class AnswersActivity extends AppCompatActivity {
             }
         });
 
-        isFirstPageLoad=true;
-        sort="timestamp";
-        setQuery(sort);
-
          firebaseFirestore.collection("USER").document(currentUserId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@androidx.annotation.NonNull Task<DocumentSnapshot> task) {
@@ -168,55 +167,6 @@ public class AnswersActivity extends AppCompatActivity {
 
     }
 
-    public void Dialog() {
-        AlertDialog.Builder alert = new AlertDialog.Builder(AnswersActivity.this);
-
-        alert.setTitle("Add your Answer");
-        //  alert.setMessage("Message");
-
-        // Set an EditText view to get user input
-        final EditText input = new EditText(AnswersActivity.this);
-        alert.setView(input);
-
-
-        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-
-                answer = input.getText().toString();
-
-                if(answer.equals(""));
-
-                Map<String, Object> postMap = new HashMap<>();
-                postMap.put("answer", answer);
-                postMap.put("user_id", currentUserId);
-                postMap.put("timestamp", FieldValue.serverTimestamp());
-                postMap.put("upvotes",0);
-                postMap.put("dirtybit",0);
-
-                collectionReference.document(docId).collection("Questions").document(ans_id).collection("Answers").add(postMap)
-                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                            @Override
-                            public void onSuccess(DocumentReference documentReference) {
-                                collectionReference.document(docId).collection("Questions").document(ans_id).update("answers",FieldValue.increment(1)).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                                                                                                                                 @Override
-                                                                                                                                                                                 public void onComplete(@androidx.annotation.NonNull Task<Void> task) {
-                                                                                                                                                                                     Toast.makeText(AnswersActivity.this, "Uploaded", Toast.LENGTH_LONG).show();
-                                                                                                                                                                                 }
-                                                                                                                                                                             });
-                            }
-                        });
-
-            }
-        });
-
-        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                // Canceled.
-            }
-        });
-
-        alert.show();
-    }
 
     public void setQuery(final String sort)
     {
@@ -284,9 +234,8 @@ public class AnswersActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if(!isFirstPageLoad ){
-            adapter.startListening();
-        }
+        isFirstPageLoad=true;
+        setQuery(sort);
     }
 
     @Override

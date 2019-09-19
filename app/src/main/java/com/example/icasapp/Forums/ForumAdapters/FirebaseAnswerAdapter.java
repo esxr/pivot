@@ -48,6 +48,8 @@ import javax.annotation.Nullable;
 
 import io.reactivex.annotations.NonNull;
 
+import static com.example.icasapp.Forums.ForumActivities.AnswersActivity.ans_id;
+import static com.example.icasapp.Forums.ForumActivities.QuestionsActivity.docId;
 import static com.example.icasapp.Forums.ForumFragment.collectionReference;
 import static com.example.icasapp.Forums.ForumFragment.i_d;
 import static com.example.icasapp.Forums.ForumFragment.query;
@@ -66,7 +68,7 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull final FirebaseAnswerHolder holder, final int position, @NonNull Answers model) {
+    protected void onBindViewHolder(@NonNull final FirebaseAnswerHolder holder, final int position, @NonNull final Answers model) {
         FirebaseAuth firebaseAuth=FirebaseAuth.getInstance();
 
         //progress dialogue box
@@ -133,14 +135,15 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
                                                                                                      @Override
                                                                                                      public void onComplete(@androidx.annotation.NonNull Task<DocumentSnapshot> task) {
                                                                                                          buffer = (String) task.getResult().get("buffer");
+                                                                                                         //if current user is logged
+                                                                                                         if( model.getUser_id().equals(currentUser) || buffer.equals("4.0")){
+                                                                                                             holder.delete.setVisibility(View.VISIBLE);
+                                                                                                         }
+                                                                                                         else
+                                                                                                             holder.delete.setVisibility(View.GONE);
                                                                                                      }
                                                                                                  });
-                //if current user is logged
-        if( model.getUser_id().equals(currentUser) || buffer == "4"){
-            holder.delete.setVisibility(View.VISIBLE);
-        }
-        else
-            holder.delete.setVisibility(View.GONE);
+
 
 
 
@@ -275,7 +278,7 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
                         getSnapshots().getSnapshot(position).getReference().delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@androidx.annotation.NonNull Task<Void> task) {
-                               getSnapshots().getSnapshot(position).getReference().getParent().getParent().update("answers",FieldValue.increment(-1));
+                                collectionReference.document(docId).collection("Questions").document(ans_id).update("answers",FieldValue.increment(-1));
                             }
                         });
                     }
