@@ -66,7 +66,7 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull final FirebaseAnswerHolder holder, final int position, @NonNull Answers model) {
+    protected void onBindViewHolder(@NonNull final FirebaseAnswerHolder holder, final int position, @NonNull final Answers model) {
         FirebaseAuth firebaseAuth=FirebaseAuth.getInstance();
 
         //progress dialogue box
@@ -133,14 +133,18 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
                                                                                                      @Override
                                                                                                      public void onComplete(@androidx.annotation.NonNull Task<DocumentSnapshot> task) {
                                                                                                          buffer = (String) task.getResult().get("buffer");
+                                                                                                         //if current user is logged
+                                                                                                         Log.i("BUFFER",buffer);
+                                                                                                         if( model.getUser_id().equals(currentUser) || buffer.equals("4.0")){
+                                                                                                             holder.delete.setVisibility(View.VISIBLE);
+                                                                                                         }
+                                                                                                         else
+                                                                                                             holder.delete.setVisibility(View.GONE);
+
+
                                                                                                      }
                                                                                                  });
-                //if current user is logged
-        if( model.getUser_id().equals(currentUser) || buffer == "4.0"){
-            holder.delete.setVisibility(View.VISIBLE);
-        }
-        else
-            holder.delete.setVisibility(View.GONE);
+
 
 
 

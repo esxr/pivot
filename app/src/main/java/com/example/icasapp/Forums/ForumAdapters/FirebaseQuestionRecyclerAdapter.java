@@ -71,7 +71,7 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull final QuestionHolder questionHolder, final int i, @NonNull Questions questions) {
+    protected void onBindViewHolder(@NonNull final QuestionHolder questionHolder, final int i, @NonNull final Questions questions) {
 
         final String question =  questions.getTopic();
         final String id = getSnapshots().getSnapshot(i).getId();
@@ -81,7 +81,7 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
         final String url = questions.getImage_url();
 
         //setting user names
-        String currentUser= FirebaseAuth.getInstance().getCurrentUser().getUid();
+        final String currentUser= FirebaseAuth.getInstance().getCurrentUser().getUid();
         final String uid = questions.getUser_id();
         Log.i("USER_ID",uid);
 
@@ -163,18 +163,19 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
             @Override
             public void onComplete(@androidx.annotation.NonNull Task<DocumentSnapshot> task) {
                 buffer = (String) task.getResult().get("buffer");
+                if(currentUser.equals(questions.getUser_id())||buffer.equals("4.0"))
+                {
+                    questionHolder.delete.setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    questionHolder.delete.setVisibility(View.GONE);
+                }
+
             }
         });
 
 
-        if(currentUser.equals(questions.getUser_id())||buffer=="4.0")
-        {
-            questionHolder.delete.setVisibility(View.VISIBLE);
-        }
-        else
-        {
-            questionHolder.delete.setVisibility(View.GONE);
-        }
 
         questionHolder.delete.setOnClickListener(new View.OnClickListener() {
             @Override

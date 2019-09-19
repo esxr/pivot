@@ -1,6 +1,7 @@
 package com.example.icasapp.Auth.FacultyAuth;
 
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -66,6 +67,7 @@ public class FacultyDescribeFragment extends Fragment {
     byte[] compressedImageData;
     FirebaseAuth mAuth;
     FirebaseFirestore db;
+    ProgressDialog progressDialog;
 
     public FacultyDescribeFragment() {
         // Required empty public constructor
@@ -82,6 +84,12 @@ public class FacultyDescribeFragment extends Fragment {
         imageView = view.findViewById(R.id.profileView);
         nextButton = view.findViewById(R.id.nextButton);
         uploadButton = view.findViewById(R.id.uploadButton);
+
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setCancelable(false);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setProgress(0);
+        progressDialog.setMax(100);
 
         uploadButton.setVisibility(View.INVISIBLE);
 
@@ -211,6 +219,7 @@ public class FacultyDescribeFragment extends Fragment {
     }
 
     private void upload() {
+        progressDialog.show();
         final StorageReference ref = storageRef.child("PROFILE_PICTURES/" + Faculty.faculty.getEmail());
         UploadTask uploadTask = ref.putBytes(getCompressedImageData());
 
@@ -218,6 +227,8 @@ public class FacultyDescribeFragment extends Fragment {
             @Override
             public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
                 if (!task.isSuccessful()) {
+                    Log.i("msg", "FACULTY PFP UPLoad");
+
                     throw task.getException();
                 }
 
@@ -231,9 +242,16 @@ public class FacultyDescribeFragment extends Fragment {
                     Uri downloadUri = task.getResult();
                     setDownloadUrl(downloadUri);
                     Faculty.faculty.setDownloadURL(downloadUrl.toString());
+                    Log.i("msg", "FACULTY PFP UPLoad");
+
+                    progressDialog.hide();
+
                 } else {
                     // Handle failures
                     // ...
+                    Log.i("msg", "FACULTY PFP UPLoad failure");
+
+                    progressDialog.hide();
                     Toast.makeText(getContext(), "UPLOAD FAILED.PLEASE TRY AGAIN OR RESTART APP.", Toast.LENGTH_LONG).show();
                 }
             }
@@ -242,6 +260,8 @@ public class FacultyDescribeFragment extends Fragment {
     }
 
     private void createUser(String email, String password) {
+        progressDialog.show();
+
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                     @Override
@@ -273,6 +293,8 @@ public class FacultyDescribeFragment extends Fragment {
                             Log.w("msg", "createUserWithEmail:failure", task.getException());
                             Toast.makeText(getContext(), "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
+                            progressDialog.hide();
+
                             //updateUI(null);
                         }
 
@@ -298,6 +320,8 @@ public class FacultyDescribeFragment extends Fragment {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.w("msg", "Error writing document", e);
+                        progressDialog.hide();
+
                     }
                 })
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -306,8 +330,11 @@ public class FacultyDescribeFragment extends Fragment {
                         if (task.isSuccessful()) {
                             Log.i("msg", "UPLOADED THE FACULTY.");
                             startActivity(new Intent(getContext(), MainActivity.class));
+                            progressDialog.hide();
                             getActivity().finish();
-                        }
+                        }else
+                            progressDialog.hide();
+
                     }
                 });
     }

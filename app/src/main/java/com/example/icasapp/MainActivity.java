@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -80,8 +81,10 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
         drawerLayout = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.common_open_on_phone,R.string.vector_path_close);
         drawerLayout.addDrawerListener(toggle);
-        toolbar.setNavigationIcon(R.drawable.pivot_white);
+        //toolbar.setNavigationIcon(R.drawable.pivot_white);
         toggle.syncState();
+
+        mFloatingNavigationView = findViewById(R.id.nav_view);
 
 
         firebaseFirestore = FirebaseFirestore.getInstance();
@@ -104,6 +107,10 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                         String buffer = snapshot.get("buffer").toString();
                         GlobalState.buffer = buffer;
                         GlobalState.userType = userType;
+                        if(snapshot.get("downloadURL") != null)
+                        GlobalState.downloadURL = snapshot.get("downloadURL").toString();
+                        GlobalState.name = snapshot.get("name").toString();
+
                         Log.i("msg", GlobalState.userType + " ENTERED THE APP");
                         switch (userType) {
                             case "STUDENT":
@@ -166,12 +173,23 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
         tabLayout.setupWithViewPager(viewPager);
 
 
-        mFloatingNavigationView = findViewById(R.id.nav_view);
+
+        mFloatingNavigationView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+            @Override
+            public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+                Log.i("msg", "CLICKED");
+
+            }
+        });
+
+        mFloatingNavigationView.setClickable(true);
         mFloatingNavigationView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 navigationImage = mFloatingNavigationView.getHeaderView(0).findViewById(R.id.navigation_photo);
                 navigationText = mFloatingNavigationView.getHeaderView(0).findViewById(R.id.name);
+
+                Log.i("msg", "CLICKED");
 
                 // put photo and text in view
                 firebaseFirestore.collection("USER").document(user).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -220,6 +238,9 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                         signOut();
                         return true;
                     case R.id.nav_help:
+                        Intent intent = new Intent(MainActivity.this, DeveloperOptions.class);
+                startActivity(intent);
+                finish();
                         break;
                     default:
                         return false;
@@ -257,9 +278,7 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
         //dialog box sign out
         final AlertDialog.Builder signOutDialog = new AlertDialog.Builder(this);
 
-        this.setTheme(R.style.AlertDialogCustom);
         signOutDialog
-                .setIcon(R.drawable.alert)
                 .setTitle("ARE YOU SURE?")
                 .setMessage("You will be shifted to the login screen and will have to sign in in order to continue using the app.")
                 .setPositiveButton("YES", new DialogInterface.OnClickListener() {

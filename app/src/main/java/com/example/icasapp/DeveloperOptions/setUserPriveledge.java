@@ -98,7 +98,7 @@ public class setUserPriveledge extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                 for (DocumentSnapshot documentSnapshot : task.getResult()) {
-                                        documentSnapshot.getReference().update("userType",radioButton.getText());
+
                                         documentSnapshot.getReference().update("buffer",map.get(radioButton.getText())).addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {

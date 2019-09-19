@@ -117,18 +117,13 @@ public class HomeFragment extends Fragment {
     private void setSearchToggle() {
         group = (Group) homeView.findViewById(R.id.group);
         ImageButton searchInitButton = homeView.findViewById(R.id.initSearch);
+
         searchInitButton.setOnClickListener(new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View v) {
-                                                    startActivity(new Intent(getContext(), DeveloperOptions.class));
-                                                }
-                                            });
-//        searchInitButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                toggle();
-//            }
-//        });
+            @Override
+            public void onClick(View v) {
+                toggle();
+            }
+        });
     }
 
     private void populateTest(User user) {

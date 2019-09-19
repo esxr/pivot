@@ -5,47 +5,104 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
 
     <application xmlns:tools="http://schemas.android.com/tools"
-        tools:overrideLibrary="com.andremion.floatingnavigationview"
-        android:screenOrientation="portrait"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
+        android:screenOrientation="portrait"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:overrideLibrary="com.andremion.floatingnavigationview">
 
-        <activity android:name=".DeveloperOptions.setOptions"></activity>
-        <activity android:name=".DeveloperOptions.DeveloperOptions" />
-        <activity android:name=".Auth.RegisterProgressActivity"></activity>
-        <activity android:name=".Auth.RegisterLandingActivity" />
-        <activity android:name=".Notes.NotesForm" />
-        <activity android:name=".Forums.ForumActivities.newAnswerActivity"></activity>
-        <activity android:name=".Forums.ForumActivities.questionView" />
-        <activity android:name=".University_Info.uni_info" />
-        <activity android:name=".DeveloperOptions.setUserPriveledge" />
-        <activity android:name=".Front_End.SplashActivity">
+
+        <activity
+            android:name=".DeveloperOptions.setOptions"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".DeveloperOptions.DeveloperOptions"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Auth.RegisterProgressActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".Auth.RegisterLandingActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Notes.NotesForm"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Forums.ForumActivities.newAnswerActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".Forums.ForumActivities.questionView"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".University_Info.uni_info"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".DeveloperOptions.setUserPriveledge"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Front_End.SplashActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Menu_EditProfile.EditProfileActivity" />
-        <activity android:name=".Forums.ForumActivities.AnswersActivity" />
-        <activity android:name=".Forums.ForumActivities.newQuestionActivity" />
-        <activity android:name=".Forums.ForumActivities.QuestionsActivity" /> <!-- Profile display Activity -->
-        <activity android:name=".Profile.ProfileDisplayActivity" /> <!--  -->
+        <activity
+            android:name=".Menu_EditProfile.EditProfileActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Forums.ForumActivities.AnswersActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Forums.ForumActivities.newQuestionActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Forums.ForumActivities.QuestionsActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" /> <!-- Profile display Activity -->
+        <activity
+            android:name=".Profile.ProfileDisplayActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" /> <!--  -->
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
             android:theme="@style/Base.Theme.AppCompat" />
-        <activity android:name=".Forums.ForumActivities.NewDiscussionActivity" />
-        <activity android:name=".MainActivity" />
+        <activity
+            android:name=".Forums.ForumActivities.NewDiscussionActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".MainActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Auth.LoginActivity"
-            android:label="@string/app_name" />
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

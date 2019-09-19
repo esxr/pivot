@@ -1,6 +1,7 @@
 package com.example.icasapp.Auth.AlumniAuth;
 
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -72,6 +73,7 @@ public class AlumniDescribeFragment extends Fragment {
     byte[] compressedImageData;
     FirebaseAuth mAuth;
     FirebaseFirestore db;
+    ProgressDialog progressDialog;
 
 
 
@@ -80,6 +82,12 @@ public class AlumniDescribeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view =  inflater.inflate(R.layout.fragment_alumni_describe, container, false);
+
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setCancelable(false);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setProgress(0);
+        progressDialog.setMax(100);
 
         inputEducationalBackground = view.findViewById(R.id.inputEducation);
         inputInterests = view.findViewById(R.id.inputInterest);
@@ -217,6 +225,9 @@ public class AlumniDescribeFragment extends Fragment {
         final StorageReference ref = storageRef.child("PROFILE_PICTURES/" + Alumni.alumni.getEmail());
         UploadTask uploadTask = ref.putBytes(getCompressedImageData());
 
+        progressDialog.show();
+
+
         Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
             @Override
             public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
@@ -233,10 +244,12 @@ public class AlumniDescribeFragment extends Fragment {
                 if (task.isSuccessful()) {
                     Uri downloadUri = task.getResult();
                     setDownloadUrl(downloadUri);
+                    progressDialog.hide();
                     Alumni.alumni.setDownloadURL(downloadUrl.toString());
                 } else {
                     // Handle failures
                     // ...
+                    progressDialog.hide();
                     Toast.makeText(getContext(), "UPLOAD FAILED.PLEASE TRY AGAIN OR RESTART APP.", Toast.LENGTH_LONG).show();
                 }
             }
@@ -245,6 +258,8 @@ public class AlumniDescribeFragment extends Fragment {
     }
 
     private void createUser(String email, String password) {
+        progressDialog.show();
+
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                     @Override
@@ -265,6 +280,8 @@ public class AlumniDescribeFragment extends Fragment {
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
                                                 Log.d("msg", "User profile updated.");
+                                            }else{
+                                                //HANDLE FAILURES
                                             }
                                         }
                                     });
@@ -276,6 +293,7 @@ public class AlumniDescribeFragment extends Fragment {
                             Log.w("msg", "createUserWithEmail:failure", task.getException());
                             Toast.makeText(getContext(), "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
+                            progressDialog.hide();
                             //updateUI(null);
                         }
 
@@ -295,12 +313,14 @@ public class AlumniDescribeFragment extends Fragment {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Log.d("msg", "DocumentSnapshot successfully written!");
+                        progressDialog.hide();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.w("msg", "Error writing document", e);
+                        progressDialog.hide();
                     }
                 })
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -308,6 +328,7 @@ public class AlumniDescribeFragment extends Fragment {
                     public void onComplete(@androidx.annotation.NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             Log.i("msg", "UPLOADED THE FACULTY.");
+                            progressDialog.hide();
                             startActivity(new Intent(getContext(), MainActivity.class));
                             getActivity().finish();
                         }

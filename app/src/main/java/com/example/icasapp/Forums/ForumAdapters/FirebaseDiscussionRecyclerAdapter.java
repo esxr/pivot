@@ -59,7 +59,7 @@ public class FirebaseDiscussionRecyclerAdapter extends FirestoreRecyclerAdapter<
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull final DiscussionHolder discussionHolder, final int i, @NonNull DiscussionTopic discussionTopic) {
+    protected void onBindViewHolder(@NonNull final DiscussionHolder discussionHolder, final int i, @NonNull final DiscussionTopic discussionTopic) {
 
         final String blogPostId = getSnapshots().getSnapshot(i).getId();
 
@@ -67,7 +67,7 @@ public class FirebaseDiscussionRecyclerAdapter extends FirestoreRecyclerAdapter<
         final String content=discussionTopic.getContent();
         discussionHolder.setContentText(content);
 
-        String currentUser= firebaseAuth.getInstance().getUid();
+        final String currentUser= firebaseAuth.getInstance().getUid();
 
         int n = discussionTopic.getQuestion();
         discussionHolder.setCommentCount(Integer.toString(n));
@@ -113,17 +113,19 @@ public class FirebaseDiscussionRecyclerAdapter extends FirestoreRecyclerAdapter<
             @Override
             public void onComplete(@androidx.annotation.NonNull Task<DocumentSnapshot> task) {
                 buffer = (String) task.getResult().get("buffer");
+
+                if(currentUser.equals(discussionTopic.getUser_id())|| buffer.equals("4.0"))
+                {
+                    discussionHolder.delete.setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    discussionHolder.delete.setVisibility(View.GONE);
+                }
             }
         });
 
-        if(currentUser.equals(discussionTopic.getUser_id())|| buffer == "4.0")
-        {
-            discussionHolder.delete.setVisibility(View.VISIBLE);
-        }
-        else
-        {
-            discussionHolder.delete.setVisibility(View.GONE);
-        }
+
 
         //deletion
         discussionHolder.delete.setOnClickListener(new View.OnClickListener() {
