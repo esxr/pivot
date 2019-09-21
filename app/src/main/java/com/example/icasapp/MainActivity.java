@@ -68,6 +68,10 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
 
+        if(user == null){
+            setLoginActivity();
+        }
+
         InternetAvailabilityChecker.init(this);
 
         mInternetAvailabilityChecker = InternetAvailabilityChecker.getInstance();

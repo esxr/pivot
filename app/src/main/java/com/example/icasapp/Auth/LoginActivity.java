@@ -1,6 +1,7 @@
 package com.example.icasapp.Auth;
 
 import android.app.ActivityOptions;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
@@ -43,6 +44,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
 
+    private ProgressDialog progressBar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +56,13 @@ public class LoginActivity extends AppCompatActivity {
         inputPassword = findViewById(R.id.inputPassword);
         onReg = findViewById(R.id.button3);
         Login = findViewById(R.id.login);
+
+        progressBar = new ProgressDialog(this);
+        progressBar.setCancelable(false);//you can cancel it by pressing back button
+        progressBar.setMessage("LOADING ...");
+        progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressBar.setMax(100);//sets the maximum value 100
+        progressBar.setProgress(0);//initially progress is 0
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
@@ -103,6 +113,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void FirebaseLogin() {
+        progressBar.show();
 
         try {
 
@@ -116,12 +127,14 @@ public class LoginActivity extends AppCompatActivity {
                                 FirebaseUser user = mAuth.getCurrentUser();
                                 finish();
                                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                progressBar.hide();
 
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Log.w("msg", "signInWithEmail:failure", task.getException());
                                 Toast.makeText(getApplicationContext(), "Authentication failed.",
                                         Toast.LENGTH_SHORT).show();
+                                progressBar.hide();
 
                             }
 
@@ -134,6 +147,7 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "AUTHENTICATION FAILED", Toast.LENGTH_LONG).show();
         } finally {
             inputEmail.requestFocus();
+            progressBar.hide();
         }
 
     }
