@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.icasapp.Firebase.FirebaseHelper;
+import com.example.icasapp.Forums.ForumActivities.questionView;
 import com.example.icasapp.Forums.ForumFragment;
 import com.example.icasapp.ObjectClasses.Answers;
 import com.example.icasapp.Profile.ProfileDisplayActivity;
@@ -47,6 +48,8 @@ import javax.annotation.Nullable;
 
 import io.reactivex.annotations.NonNull;
 
+import static com.example.icasapp.Forums.ForumActivities.AnswersActivity.ans_id;
+import static com.example.icasapp.Forums.ForumActivities.QuestionsActivity.docId;
 import static com.example.icasapp.Forums.ForumFragment.collectionReference;
 import static com.example.icasapp.Forums.ForumFragment.i_d;
 import static com.example.icasapp.Forums.ForumFragment.query;
@@ -65,7 +68,7 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull final FirebaseAnswerHolder holder, final int position, @NonNull Answers model) {
+    protected void onBindViewHolder(@NonNull final FirebaseAnswerHolder holder, final int position, @NonNull final Answers model) {
         FirebaseAuth firebaseAuth=FirebaseAuth.getInstance();
 
         //progress dialogue box
@@ -80,6 +83,7 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
         final String currentUser = firebaseAuth.getCurrentUser().getUid();
         final String id = model.getUser_id();
         String name = model.getName();
+        final String url2 = model.getImage_url();
 
         if(!name.equals("empty"))
             firebaseFirestore.collection("USER").document(id).addSnapshotListener(new EventListener<DocumentSnapshot>() {
@@ -89,23 +93,21 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
                         Log.d("NAME", documentSnapshot.get("name").toString());
                         String user_name = documentSnapshot.get("name").toString();
                         holder.setName(user_name);
-                        holder.name.setOnClickListener(new View.OnClickListener() {
-                                                           @Override
-                                                           public void onClick(View v) {
 
-                                                           }
-                                                       });
+
                         listener3 = firebaseFirestore.collection("USER").document(id).addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
-                                        try {
-                                            String url = documentSnapshot.get("downloadURL").toString();
-                                            holder.setProfilePic(url);
-                                        } catch (Exception d) {
-                                            Log.d("msg", "Question Adapter. No photo of user");
-                                        }
-                                    }
-                                });
+                            @Override
+                            public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
+                                try {
+                                    String url = documentSnapshot.get("downloadURL").toString();
+                                   holder.setProfilePic(url);
+                                }
+                                catch (Exception d)
+                                {
+                                    Log.d("msg","Question Adapter. No photo of user");
+                                }
+                            }
+                        });
                     }
                 }
             });
@@ -133,14 +135,15 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
                                                                                                      @Override
                                                                                                      public void onComplete(@androidx.annotation.NonNull Task<DocumentSnapshot> task) {
                                                                                                          buffer = (String) task.getResult().get("buffer");
+                                                                                                         //if current user is logged
+                                                                                                         if( model.getUser_id().equals(currentUser) || buffer.equals("4.0")){
+                                                                                                             holder.delete.setVisibility(View.VISIBLE);
+                                                                                                         }
+                                                                                                         else
+                                                                                                             holder.delete.setVisibility(View.GONE);
                                                                                                      }
                                                                                                  });
-                //if current user is logged
-        if( model.getUser_id().equals(currentUser) || buffer == "4"){
-            holder.delete.setVisibility(View.VISIBLE);
-        }
-        else
-            holder.delete.setVisibility(View.GONE);
+
 
 
 
@@ -159,6 +162,38 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
 
 
         holder.setName(name);
+
+
+        if(url2.equals("")){
+            holder.picture.setVisibility(View.GONE);
+        }else{
+            holder.setPicture(url2);
+            holder.picture.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, questionView.class);
+                    intent.putExtra("image_url",url2);
+                    intent.putExtra("activity","answer");
+                    context.startActivity(intent);
+                }
+            });}
+
+        if(!name.equals("empty")){
+            holder.name.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final Intent intent = new Intent(context , ProfileDisplayActivity.class);
+                    FirebaseHelper.getUserDetails(id, new FirebaseHelper.CallbackObject<Map<String, Object>>() {
+                        @Override
+                        public void callbackCall(Map<String, Object> object) {
+                            Log.e("mfc", "lolwa: "+object.toString());
+                            intent.putExtra("user", (User) new User(object));
+                            context.startActivity(intent);
+                        }
+                    });
+                }
+            });
+        }
 
                 holder.upvotes.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -208,6 +243,15 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
 
                 });
 
+                holder.name.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(context , ProfileDisplayActivity.class);
+                        intent.putExtra("USER_ID",id);
+                        context.startActivity(intent);
+                    }
+                });
+
     }
 
     @NonNull
@@ -234,7 +278,7 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
                         getSnapshots().getSnapshot(position).getReference().delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@androidx.annotation.NonNull Task<Void> task) {
-                               getSnapshots().getSnapshot(position).getReference().getParent().getParent().update("answers",FieldValue.increment(-1));
+                                collectionReference.document(docId).collection("Questions").document(ans_id).update("answers",FieldValue.increment(-1));
                             }
                         });
                     }
@@ -264,6 +308,7 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
         TextView time;
         ImageView delete;
         ImageView profilePic;
+        ImageView picture;
 
         public FirebaseAnswerHolder(@NonNull View itemView) {
             super(itemView);
@@ -275,6 +320,7 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
             delete = mView.findViewById(R.id.delete);
             time = mView.findViewById(R.id.time);
             profilePic = mView.findViewById(R.id.profilePic);
+            picture = mView.findViewById(R.id.image);
         }
 
         public void setAnswer(String answer){
@@ -297,6 +343,8 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
         {
             Glide.with(context).load(url).into(profilePic);
         }
+
+        public void setPicture(String url){ Glide.with(context).load(url).into(picture);}
 
 
 

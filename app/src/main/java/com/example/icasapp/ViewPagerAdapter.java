@@ -17,6 +17,7 @@ import java.util.List;
 public class ViewPagerAdapter extends FragmentPagerAdapter {
 
 
+
     ViewPagerAdapter(FragmentManager manager) {
         super(manager);
     }

@@ -9,6 +9,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -62,6 +64,8 @@ public class AnswersActivity extends AppCompatActivity {
 
     private Button recent;
     private Button votes;
+    private String Topic;
+    private String Content;
 
     private TextView topic;
     private TextView content;
@@ -88,11 +92,14 @@ public class AnswersActivity extends AppCompatActivity {
 
         Intent intent=getIntent();
         ans_id = intent.getStringExtra("id"); //question document id
-        String Topic=intent.getStringExtra("topic");
-        String Content=intent.getStringExtra("content");
+       // Topic = intent.getStringExtra("topic");
+       // Content=intent.getStringExtra("content");
         Category=intent.getStringExtra("Category");
         i_d=intent.getStringExtra("ID"); //specific category id
         docId=intent.getStringExtra("post_id"); //topic id
+
+        //in the starting sort is according to timestamp
+        sort = "timestamp";
 
         addAnswer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,16 +124,19 @@ public class AnswersActivity extends AppCompatActivity {
             collectionReference = firebaseFirestore.collection("Specific").document(i_d).collection("Subjects").document(Category).collection("Posts");
         }
 
-        topic.setText(Topic);
-        content.setText(Content);
 
+        collectionReference.document(docId).collection("Questions").document(ans_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@androidx.annotation.NonNull Task<DocumentSnapshot> task) {
 
+                DocumentSnapshot documentSnapshot = task.getResult();
+                Topic = documentSnapshot.get("topic").toString();
+                Content = documentSnapshot.get("content").toString();
+                topic.setText("Question:" + Topic);
+                content.setText("Description:" + Content );
 
-
-
-        isFirstPageLoad=true;
-        sort="timestamp";
-        setQuery(sort);
+            }
+        });
 
          firebaseFirestore.collection("USER").document(currentUserId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -157,55 +167,6 @@ public class AnswersActivity extends AppCompatActivity {
 
     }
 
-    public void Dialog() {
-        AlertDialog.Builder alert = new AlertDialog.Builder(AnswersActivity.this);
-
-        alert.setTitle("Add your Answer");
-        //  alert.setMessage("Message");
-
-        // Set an EditText view to get user input
-        final EditText input = new EditText(AnswersActivity.this);
-        alert.setView(input);
-
-
-        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-
-                answer = input.getText().toString();
-
-                if(answer.equals(""));
-
-                Map<String, Object> postMap = new HashMap<>();
-                postMap.put("answer", answer);
-                postMap.put("user_id", currentUserId);
-                postMap.put("timestamp", FieldValue.serverTimestamp());
-                postMap.put("upvotes",0);
-                postMap.put("dirtybit",0);
-
-                collectionReference.document(docId).collection("Questions").document(ans_id).collection("Answers").add(postMap)
-                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                            @Override
-                            public void onSuccess(DocumentReference documentReference) {
-                                collectionReference.document(docId).collection("Questions").document(ans_id).update("answers",FieldValue.increment(1)).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                                                                                                                                 @Override
-                                                                                                                                                                                 public void onComplete(@androidx.annotation.NonNull Task<Void> task) {
-                                                                                                                                                                                     Toast.makeText(AnswersActivity.this, "Uploaded", Toast.LENGTH_LONG).show();
-                                                                                                                                                                                 }
-                                                                                                                                                                             });
-                            }
-                        });
-
-            }
-        });
-
-        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                // Canceled.
-            }
-        });
-
-        alert.show();
-    }
 
     public void setQuery(final String sort)
     {
@@ -273,7 +234,8 @@ public class AnswersActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-       // adapter.startListening();
+        isFirstPageLoad=true;
+        setQuery(sort);
     }
 
     @Override

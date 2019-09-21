@@ -11,8 +11,12 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
@@ -43,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
 
     TabLayout tabLayout;
     ImageView navigationImage;
+    DrawerLayout drawerLayout;
     TextView navigationText;
     FirebaseFirestore firebaseFirestore;
     FloatingActionButton developerOptions;
@@ -50,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
     FirebaseAuth mAuth;
     FirebaseUser user;
     String TAG = "msg";
-    private FloatingNavigationView mFloatingNavigationView;
+    private NavigationView mFloatingNavigationView;
     //declaring viewPager
     private ViewPager viewPager;
     private InternetAvailabilityChecker mInternetAvailabilityChecker;
@@ -62,7 +67,6 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
         //NOTE: ENTRY POINT OF THE APPLICATION CHANGED TO LOGIN ACTIVITY.
         setContentView(R.layout.activity_main);
 
-
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
@@ -71,15 +75,20 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
 
         mInternetAvailabilityChecker = InternetAvailabilityChecker.getInstance();
         mInternetAvailabilityChecker.addInternetConnectivityListener(this);
-
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        //setSupportActionBar(toolbar);
+        drawerLayout = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.common_open_on_phone,R.string.vector_path_close);
+        drawerLayout.addDrawerListener(toggle);
+        toolbar.setNavigationIcon(R.drawable.pivot_white);
+        toggle.syncState();
 
 
         firebaseFirestore = FirebaseFirestore.getInstance();
         final String user = FirebaseAuth.getInstance().getCurrentUser().getUid();
         Log.i("msg",user);
+        Log.i("USER_ID",user);
 
-        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-            GlobalState.isSignedIn = true;
             final DocumentReference docRef = db.collection("USER").document(user);
             docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
                 @Override
@@ -89,7 +98,6 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                         Log.w(TAG, "Listen failed.", e);
                         return;
                     }
-
                     if (snapshot != null && snapshot.exists()) {
                         Log.d(TAG, "Current data: " + snapshot.getData());
                         String userType = snapshot.get("userType").toString();
@@ -115,18 +123,17 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                     }
                 }
             });
-        }else
-            GlobalState.isSignedIn = false;
 
-        developerOptions = findViewById(R.id.developerOptions);
-        developerOptions.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, DeveloperOptions.class);
-                startActivity(intent);
-                finish();
-            }
-        });
+
+//        developerOptions = findViewById(R.id.developerOptions);
+//        developerOptions.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(MainActivity.this, DeveloperOptions.class);
+//                startActivity(intent);
+//                finish();
+//            }
+//        });
         //Initializing viewPager
         viewPager = findViewById(R.id.viewPager);
         tabLayout = findViewById(R.id.tabLayout);
@@ -159,11 +166,10 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
         tabLayout.setupWithViewPager(viewPager);
 
 
-        mFloatingNavigationView = findViewById(R.id.floating_navigation_view);
+        mFloatingNavigationView = findViewById(R.id.nav_view);
         mFloatingNavigationView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mFloatingNavigationView.open();
                 navigationImage = mFloatingNavigationView.getHeaderView(0).findViewById(R.id.navigation_photo);
                 navigationText = mFloatingNavigationView.getHeaderView(0).findViewById(R.id.name);
 
@@ -220,7 +226,7 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                 }
 
                 Snackbar.make((View) mFloatingNavigationView.getParent(), item.getTitle() + " Selected!", Snackbar.LENGTH_SHORT).show();
-                mFloatingNavigationView.close();
+                drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             }
         });
@@ -230,8 +236,8 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
 
     @Override
     public void onBackPressed() {
-        if (mFloatingNavigationView.isOpened()) {
-            mFloatingNavigationView.close();
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)){
+            drawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
@@ -239,12 +245,12 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
 
     //SECURITY
     @Override
-    public void onStart() {
-        super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        if (!FirebaseHelper.checkLoginStatus()) {
-            setLoginActivity();
-        }
+        public void onStart() {
+            super.onStart();
+            // Check if user is signed in (non-null) and update UI accordingly.
+            if (!FirebaseHelper.checkLoginStatus()) {
+                setLoginActivity();
+            }
     }
 
     public void signOut() {

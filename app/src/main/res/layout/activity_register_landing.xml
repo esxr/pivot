@@ -6,32 +6,61 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center"
     android:layout_gravity="center_horizontal"
-    tools:context=".Auth.RegisterLandingActivity">
+    tools:context=".Auth.RegisterLandingActivity"
+    android:orientation="vertical"
+    android:background="@color/Register">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:text="Please Select The Relevant Option"
+        android:textSize="20sp"/>
+
+    <ImageView
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:src="@drawable/register_landing"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:weightSum="3">
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/studentButton"
+            android:layout_marginRight="15dp"
+            android:padding="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="onStudent"
-            android:text="STUDENT" />
+            android:textColor="@color/navy"
+            android:text="STUDENT"
+            android:background="@drawable/solid_button_white"
+            android:layout_weight="1"/>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/facultyButton"
             android:layout_width="wrap_content"
+            android:layout_marginRight="15dp"
+            android:padding="20dp"
             android:layout_height="wrap_content"
+            android:textColor="@color/navy"
             android:onClick="onFaculty"
-            android:text="FACULTY" />
+            android:text="FACULTY"
+            android:background="@drawable/solid_button_white"
+            android:layout_weight="1"/>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/alumniButton"
             android:layout_width="wrap_content"
+            android:textColor="@color/navy"
             android:layout_height="match_parent"
             android:onClick="onAlumni"
-            android:text="ALUMNI" />
+            android:padding="20dp"
+            android:text="ALUMNI"
+            android:background="@drawable/solid_button_white"
+            android:layout_weight="1"/>
 
     </LinearLayout>
 

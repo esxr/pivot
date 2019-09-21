@@ -63,11 +63,11 @@ public class NotesAdapter extends FirestoreRecyclerAdapter<Notes, NotesAdapter.N
         notesHolder.subjectName.setText("SUBJECT:" + notes.getSubject());
 
 
-        if (notes.getUsername().equalsIgnoreCase(FirebaseHelper.getUser().getDisplayName())) {
-            notesHolder.deleteButton.setVisibility(View.VISIBLE);
-        } else {
-            notesHolder.deleteButton.setVisibility(View.INVISIBLE);
-        }
+//        if (notes.getUsername().equalsIgnoreCase(FirebaseHelper.getUser().getDisplayName())) {
+//            notesHolder.deleteButton.setVisibility(View.VISIBLE);
+//        } else {
+//            notesHolder.deleteButton.setVisibility(View.INVISIBLE);
+//        }
 
         notesHolder.downloadButton.setOnClickListener(new View.OnClickListener() {
             @Override

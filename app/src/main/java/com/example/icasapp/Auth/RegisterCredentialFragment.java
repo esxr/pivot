@@ -63,10 +63,16 @@ public class RegisterCredentialFragment extends Fragment {
                 if(formHelper.validateEmail(email) && formHelper.validatePassword(password)){
                     RegisterProgressActivity.pager.setCurrentItem(1);
                     Log.i("msg", email);
-                    if(userType.equalsIgnoreCase("FACULTY"))
+                    if(userType.equalsIgnoreCase("FACULTY")) {
                         Faculty.faculty.setEmail(email);
-                    else
+                        RegisterProgressActivity.stepView.go(1, true);
+                        RegisterProgressActivity.i++;
+                    }
+                    else {
                         Alumni.alumni.setEmail(email);
+                        RegisterProgressActivity.stepView.go(1, true);
+                        RegisterProgressActivity.i++;
+                    }
                 }
                 else {
                     Toast.makeText(registerCredentialFragment.getContext(), "INVALID OR INCOMPLETE CREDENTIALS.", Toast.LENGTH_LONG).show();

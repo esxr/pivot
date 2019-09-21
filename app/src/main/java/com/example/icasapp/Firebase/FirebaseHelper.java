@@ -52,7 +52,7 @@ public class FirebaseHelper {
     }
 
     public static FirebaseUser getUser() {
-        return user;
+        return FirebaseAuth.getInstance().getCurrentUser();
     }
 
     /*

@@ -1,6 +1,8 @@
 package com.example.icasapp.Auth;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.viewpager.widget.PagerAdapter;
 
 import android.annotation.SuppressLint;
@@ -13,11 +15,16 @@ import com.example.icasapp.Auth.StudentAuth.StudentRegisterPagerAdapter;
 import com.example.icasapp.Student;
 import com.example.icasapp.NonSwipeableViewpager;
 import com.example.icasapp.R;
+import com.shuhart.stepview.StepView;
+
+import java.util.ArrayList;
 
 public class RegisterProgressActivity extends AppCompatActivity {
 
     public static NonSwipeableViewpager pager;
     PagerAdapter pagerAdapter;
+   public static StepView stepView;
+   public static int i=0;
 
 
     @SuppressLint("ClickableViewAccessibility")
@@ -27,6 +34,7 @@ public class RegisterProgressActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register_progress);
 
         pager = findViewById(R.id.pager);
+        stepView = findViewById(R.id.step_view);
 
         final Bundle bundle = getIntent().getExtras();
         final String userType = bundle.getString("userType");
@@ -51,6 +59,22 @@ public class RegisterProgressActivity extends AppCompatActivity {
 
 
         pager.setAdapter(pagerAdapter);
+        stepView.getState()
+                .animationType(StepView.ANIMATION_ALL)
+                // You should specify only stepsNumber or steps array of strings.
+                // In case you specify both steps array is chosen.
+                .steps(new ArrayList<String>() {{
+                    add("First step");
+                    add("Second step");
+                    add("Third step");
+                }})
+                // You should specify only steps number or steps array of strings.
+                // In case you specify both steps array is chosen.
+                .stepsNumber(4)
+                .animationDuration(getResources().getInteger(android.R.integer.config_shortAnimTime))
+                // other state methods are equal to the corresponding xml attributes
+                .commit();
+
 
     }
 
@@ -62,6 +86,7 @@ public class RegisterProgressActivity extends AppCompatActivity {
             finish();
         }else{
             pager.setCurrentItem(--currentPosition);
+            RegisterProgressActivity.stepView.go(--i,true);
         }
 
     }
