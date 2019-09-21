@@ -18,9 +18,10 @@ import androidx.fragment.app.Fragment;
 
 import com.example.icasapp.Auth.FormHelper;
 import com.example.icasapp.Auth.RegisterProgressActivity;
-import com.example.icasapp.Student;
 import com.example.icasapp.R;
+import com.example.icasapp.Student;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -34,15 +35,15 @@ import static com.example.icasapp.Student.student;
  */
 public class StudentRegisterCredentialFragment extends Fragment {
 
-    private View studentRegView;
     AppCompatEditText inputRegNo;
     AppCompatButton nextButton;
-    String name, email, regNo;
+    String name, email, regNo, fetchedRegNo;
     String[] emailList;
     FormHelper formHelper;
     FirebaseFirestore db;
     ProgressDialog progressDialog;
     CollectionReference query;
+    private View studentRegView;
 
 
     public StudentRegisterCredentialFragment() {
@@ -63,7 +64,8 @@ public class StudentRegisterCredentialFragment extends Fragment {
 
 
         inputRegNo = studentRegView.findViewById(R.id.inputRegNo);
-
+        regNo = "";
+        inputRegNo.setText("");
 
         db = FirebaseFirestore.getInstance();
         query = db.collection("Authentication");
@@ -72,14 +74,14 @@ public class StudentRegisterCredentialFragment extends Fragment {
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                regNo = "";
                 regNo = inputRegNo.getText().toString();
                 if (!formHelper.validateRegNo(regNo)) {
                     Toast.makeText(view.getContext(), "INVALID REGISTRATION NUMBER", Toast.LENGTH_LONG).show();
 
                 } else {
                     authenticateRegNo();
-                    RegisterProgressActivity.stepView.go(1,true);
-                    RegisterProgressActivity.i++;
+
                 }
             }
         });
@@ -127,52 +129,64 @@ public class StudentRegisterCredentialFragment extends Fragment {
                             })
                             .create()
                             .show();
-                }else{
+                } else {
                     store();
                     updateUI();
                 }
-
 
 
             }
         });
     }
 
-    public void store(){
+    public void store() {
         student.setEmail(email);
         student.setName(name);
         student.setUserType("STUDENT");
         student.setRegNo(regNo);
     }
 
-    public void updateUI(){
+    public void updateUI() {
+        Log.i("msg", "UPDATE UI REG NO:" + student.getRegNo());
         UserRegCredentialFragment.inputFullName.setText(name);
         UserRegCredentialFragment.inputEmail.setText(email);
         RegisterProgressActivity.pager.setCurrentItem(1);
-    }
-
-    private interface FireStoreCallback {
-        void onCallback(Student user);
+        inputRegNo.setText("");
+        regNo = "";
+        RegisterProgressActivity.stepView.go(1, true);
+        RegisterProgressActivity.i++;
     }
 
     private void readData(final FireStoreCallback fireStoreCallback) {
+        student = null;
         query
                 .whereEqualTo("regNo", regNo)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
+                        if (task.isSuccessful() && !task.getResult().isEmpty()) {
                             for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                                 student = documentSnapshot.toObject(Student.class);
                             }
                             //CALLBACK
                             fireStoreCallback.onCallback(student);
+                        } else {
+                            progressDialog.hide();
+                            Toast.makeText(getContext(), "REGISTRATION NO NOT FOUND.", Toast.LENGTH_LONG).show();
                         }
                     }
-                });
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.i("msg", "REGISTRATION NUMBER NOT FOUND");
+            }
+        });
 
     }
 
+    private interface FireStoreCallback {
+        void onCallback(Student user);
+    }
 
 }
