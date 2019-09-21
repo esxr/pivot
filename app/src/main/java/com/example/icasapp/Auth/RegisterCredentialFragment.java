@@ -76,10 +76,13 @@ public class RegisterCredentialFragment extends Fragment {
                 }
                 else {
                     Toast.makeText(registerCredentialFragment.getContext(), "INVALID OR INCOMPLETE CREDENTIALS.", Toast.LENGTH_LONG).show();
-                    if(!formHelper.validateEmail(email))
+                    if(!formHelper.validateEmail(email)) {
                         inputEmail.requestFocus();
-                    else
+                    }
+                    else {
+                        Toast.makeText(getContext(), "PASSWORD MUST BE OF ATLEAST 6 CHARACTERS.", Toast.LENGTH_LONG).show();
                         inputPassword.requestFocus();
+                    }
                 }
             }
         });
