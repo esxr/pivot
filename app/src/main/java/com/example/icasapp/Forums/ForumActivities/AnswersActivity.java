@@ -1,6 +1,5 @@
 package com.example.icasapp.Forums.ForumActivities;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 
 import com.google.android.gms.tasks.OnCompleteListener;

@@ -55,6 +55,8 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
     FirebaseAuth mAuth;
     FirebaseUser user;
     String TAG = "msg";
+    private TextView navName;
+    private TextView navPhoto;
     private NavigationView mFloatingNavigationView;
     //declaring viewPager
     private ViewPager viewPager;
