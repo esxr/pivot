@@ -37,56 +37,22 @@
         app:layout_constraintTop_toTopOf="parent">
 
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+
+
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="0dp"
             android:background="@drawable/answer_back_curved"
             android:padding="15dp"
+            android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent">
-
-
-            <TextView
-                android:id="@+id/Answer"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="12dp"
-                android:layout_marginTop="25dp"
-                android:layout_marginBottom="8dp"
-                android:hint="Answer"
-                app:layout_constraintBottom_toTopOf="@+id/Answers"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/Content" />
-
-            <TextView
-                android:id="@+id/Question"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:hint="Question"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.9"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/user_name" />
-
-            <Button
-                android:id="@+id/Answers"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="256dp"
-                android:layout_marginLeft="256dp"
-                android:layout_marginTop="4dp"
-                android:background="@drawable/solid_button_black"
-                android:padding="10dp"
-                android:text="More Answers"
-                android:textColor="@color/white"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/Answer" />
+                android:orientation="horizontal"
+                android:weightSum="2">
 
             <TextView
                 android:id="@+id/user_name"
@@ -96,71 +62,72 @@
                 android:layout_marginLeft="56dp"
                 android:layout_marginTop="2dp"
                 android:layout_marginBottom="12dp"
+                android:layout_weight="1"
                 android:hint="Username"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/Question"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginBottom="12dp"
+                    android:text="TextView"
+                    app:layout_constraintBottom_toTopOf="@+id/Question"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/Question"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginLeft="12dp"
+                android:hint="Question"
+                android:textStyle="italic"
+                android:layout_marginBottom="5dp"
+                android:textSize="25sp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+
+
+
 
             <TextView
                 android:id="@+id/Content"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
+                android:maxHeight="100dp"
                 android:layout_marginTop="16dp"
                 android:hint="Content"
+                android:textSize="15sp"
+                android:textAlignment="center"
+                android:gravity="center_horizontal"
+                android:layout_gravity="center_horizontal"
                 android:inputType="textMultiLine"
                 android:scrollbarAlwaysDrawVerticalTrack="true"
-                android:textStyle="italic"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/answerImage" />
+                android:textStyle="italic"/>
 
-            <ImageView
-                android:id="@+id/delete"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="204dp"
-                android:layout_marginRight="204dp"
-                android:layout_marginBottom="1dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/Answers"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/Answer"
-                app:srcCompat="@drawable/ic_delete_forever_black_24dp" />
+
+
+
 
             <TextView
-                android:id="@+id/time"
-                android:layout_width="wrap_content"
+                android:id="@+id/Answer"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginBottom="13dp"
-                android:text="TextView"
-                app:layout_constraintBottom_toTopOf="@+id/Question"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_marginLeft="12dp"
+                android:layout_marginTop="25dp"
+                android:layout_marginBottom="20dp"
+                android:hint="Answer" />
 
-            <TextView
-                android:id="@+id/answers"
-                android:layout_width="wrap_content"
-                android:layout_height="25dp"
-                android:layout_marginStart="110dp"
-                android:layout_marginLeft="110dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginBottom="17dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/Answers"
-                app:layout_constraintStart_toEndOf="@+id/delete"
-                app:layout_constraintTop_toBottomOf="@+id/Answer" />
+
+
+
+
 
             <ImageView
                 android:id="@+id/answerImage"
@@ -168,10 +135,53 @@
                 android:layout_height="70dp"
                 android:layout_marginTop="24dp"
                 android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                android:layout_gravity="center_horizontal"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/Question"
                 app:srcCompat="@drawable/bg" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+
+            <TextView
+                android:id="@+id/answers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="No.of answers"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="17dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/Answers"
+                app:layout_constraintStart_toEndOf="@+id/delete"
+                app:layout_constraintTop_toBottomOf="@+id/Answer" />
+
+            <ImageView
+                android:id="@+id/delete"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="204dp"
+                android:layout_marginRight="204dp"
+                android:layout_marginBottom="-100dp"
+                app:srcCompat="@drawable/ic_delete_forever_black_24dp" />
+
+
+            <Button
+                android:id="@+id/Answers"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="64dp"
+                android:background="@drawable/solid_button_background"
+                android:padding="10dp"
+                android:text="Explore"
+                android:layout_gravity="center_horizontal"
+                android:textColor="@color/white"/>
+        </LinearLayout>
     </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
