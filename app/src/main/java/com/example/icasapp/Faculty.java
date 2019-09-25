@@ -7,7 +7,7 @@ import java.util.List;
 public class Faculty {
     public static Faculty faculty = new Faculty();
     private String email;
-    private String subjectsOfConcern;
+    private String subjects[];
     private String interests;
     private String name;
     private String workNumber;
@@ -51,13 +51,7 @@ public class Faculty {
         this.email = email;
     }
 
-    public String getSubjectsOfConcern() {
-        return subjectsOfConcern;
-    }
 
-    public void setSubjectsOfConcern(String subjectsOfConcern) {
-        this.subjectsOfConcern = subjectsOfConcern;
-    }
 
     public String getInterests() {
         return interests;
@@ -121,5 +115,13 @@ public class Faculty {
 
     public void setFreeTimings(String freeTimings) {
         this.freeTimings = freeTimings;
+    }
+
+    public String[] getSubjects() {
+        return subjects;
+    }
+
+    public void setSubjects(String[] subjects) {
+        this.subjects = subjects;
     }
 }

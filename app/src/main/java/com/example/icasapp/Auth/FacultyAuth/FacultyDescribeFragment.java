@@ -106,9 +106,9 @@ public class FacultyDescribeFragment extends Fragment {
                 FormHelper formHelper = new FormHelper();
 
                 String interests = inputInterests.getText().toString().trim();
-                String subjects = inputSubjects.getText().toString().trim();
-                if (formHelper.validateField(interests) && formHelper.validateField(subjects)) {
-                    Faculty.faculty.setSubjectsOfConcern(subjects);
+              //  String subjects = inputSubjects.getText().toString().trim();
+                if (formHelper.validateField(interests)) {
+                //    Faculty.faculty.setSubjects(subjects);
                     Faculty.faculty.setInterests(interests);
                     createUser(email, password);
                 } else
