@@ -113,18 +113,15 @@ public class FirebaseDiscussionRecyclerAdapter extends FirestoreRecyclerAdapter<
             @Override
             public void onComplete(@androidx.annotation.NonNull Task<DocumentSnapshot> task) {
                 buffer = (String) task.getResult().get("buffer");
-
-                if(currentUser.equals(discussionTopic.getUser_id())|| buffer.equals("4.0"))
-                {
+                Log.i("BUFFER",buffer);
+                //if current user is logged
+                if( discussionTopic.getUser_id().equals(currentUser) || buffer.equals("4.0")){
                     discussionHolder.delete.setVisibility(View.VISIBLE);
                 }
                 else
-                {
                     discussionHolder.delete.setVisibility(View.GONE);
-                }
             }
         });
-
 
 
         //deletion

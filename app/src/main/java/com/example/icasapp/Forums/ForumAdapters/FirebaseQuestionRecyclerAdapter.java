@@ -153,29 +153,24 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
             String dateString = DateFormat.format("MM/dd/yyyy", new Date(uploadtime)).toString();
             questionHolder.setTime(dateString);
         }
-        else
-        {
+        else {
             String dateString = DateFormat.format("hh:mm", new Date(uploadtime)).toString();
             questionHolder.setTime(dateString);
         }
+
 
         firebaseFirestore.collection("USER").document(currentUser).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@androidx.annotation.NonNull Task<DocumentSnapshot> task) {
                 buffer = (String) task.getResult().get("buffer");
-                if(currentUser.equals(questions.getUser_id())||buffer.equals("4.0"))
-                {
+                //if current user is logged
+                if( questions.getUser_id().equals(currentUser) || buffer.equals("4.0")){
                     questionHolder.delete.setVisibility(View.VISIBLE);
                 }
                 else
-                {
                     questionHolder.delete.setVisibility(View.GONE);
-                }
-
             }
         });
-
-
 
         questionHolder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
