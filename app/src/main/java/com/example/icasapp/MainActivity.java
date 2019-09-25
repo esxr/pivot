@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
     FirebaseUser user;
     String TAG = "msg";
     private TextView navName;
-    private TextView navPhoto;
+    private ImageView navPhoto;
     private NavigationView mFloatingNavigationView;
     //declaring viewPager
     private ViewPager viewPager;
@@ -168,34 +168,38 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
         tabLayout.setupWithViewPager(viewPager);
 
 
+
+
+
         mFloatingNavigationView = findViewById(R.id.nav_view);
-        mFloatingNavigationView.setOnClickListener(new View.OnClickListener() {
+        View hView =  mFloatingNavigationView.getHeaderView(0);
+        navName = (TextView)hView.findViewById(R.id.name);
+        navPhoto = hView.findViewById(R.id.navigation_photo);
+
+
+
+        // put photo and text in view
+        firebaseFirestore.collection("USER").document(user).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onClick(View v) {
-                navigationImage = mFloatingNavigationView.getHeaderView(0).findViewById(R.id.navigation_photo);
-                navigationText = mFloatingNavigationView.getHeaderView(0).findViewById(R.id.name);
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    DocumentSnapshot documentSnapshot = task.getResult();
 
-                // put photo and text in view
-                firebaseFirestore.collection("USER").document(user).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        try {
-                            DocumentSnapshot documentSnapshot = task.getResult();
-
-                            String url = documentSnapshot.get("downloadURL").toString();
-                            String name = documentSnapshot.get("name").toString();
-
-                            navigationText.setText(name);
-                            Glide.with(getApplicationContext()).load(url).into(navigationImage);
-                        } catch (Exception c) {
-
+                    if(task.isSuccessful() && documentSnapshot.exists() && task.getResult().exists() && !task.getResult().getData().isEmpty()) {
+                        String url = "";
+                        if((documentSnapshot.get("downloadURL")!=null))
+                        {
+                            url = documentSnapshot.get("downloadURL").toString();
                         }
+                        String name = documentSnapshot.get("name").toString();
+                        Log.i("NAMESS", name);
+
+                        navName.setText(name);
+                        Glide.with(getApplicationContext()).load(url).into(navPhoto);
                     }
-                });
+                }
 
-
-            }
         });
+
         mFloatingNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
