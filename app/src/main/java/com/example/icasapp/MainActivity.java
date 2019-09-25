@@ -58,7 +58,6 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
     //declaring viewPager
     private ViewPager viewPager;
     private InternetAvailabilityChecker mInternetAvailabilityChecker;
-    private ProgressDialog progressDialog;
 
 
     @Override
@@ -71,18 +70,32 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
 
-        progressDialog = new ProgressDialog(getApplicationContext());
 
-        progressDialog.setCancelable(false);
-        progressDialog.setProgress(0);
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progressDialog.setMax(100);
 
         if(user == null){
+            Log.i("msg", "NO USER");
+            FirebaseHelper.signOut();
             setLoginActivity();
         }else if(!user.isEmailVerified()) {
-            verifyEmail();
-            Toast.makeText(this, "EMAIL NOT VERIFIED.", Toast.LENGTH_LONG).show();
+            new AlertDialog.Builder(MainActivity.this)
+                    .setCancelable(false)
+                    .setTitle("EMAIL NOT VERIFIED.")
+                    .setMessage("Check your mail to verify your registration.")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            sendEmailForVerification();
+                            FirebaseHelper.signOut();
+                            setLoginActivity();
+                        }
+                    })
+                    .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            FirebaseHelper.signOut();
+                            setLoginActivity();
+                        }
+                    }).create().show();
         }
 
         InternetAvailabilityChecker.init(this);
@@ -146,15 +159,6 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                 });
 
 
-//        developerOptions = findViewById(R.id.developerOptions);
-//        developerOptions.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(MainActivity.this, DeveloperOptions.class);
-//                startActivity(intent);
-//                finish();
-//            }
-//        });
         //Initializing viewPager
         viewPager = findViewById(R.id.viewPager);
         tabLayout = findViewById(R.id.tabLayout);
@@ -311,25 +315,10 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
 
 
     public void setLoginActivity() {
-
         startActivity(new Intent(getApplicationContext(), LoginActivity.class));
         finish();
-
     }
 
-    private void verifyEmail(){
-        new AlertDialog.Builder(this)
-                .setCancelable(false)
-                .setTitle("YOU NEED TO VERIFY YOUR EMAIL BEFORE YOU START USING THE APP. Check the registered email address.")
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        progressDialog.show();
-                        sendEmailForVerification();
-                        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-                    }
-                }).create().show();
-    }
 
     private void sendEmailForVerification(){
         final FirebaseUser user = mAuth.getCurrentUser();
@@ -337,11 +326,11 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@androidx.annotation.NonNull Task<Void> task) {
+
                         if(task.isSuccessful()) {
-                            Toast.makeText(getApplicationContext(), "CHECK THE EMAIL SENT TO" + user.getEmail(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(MainActivity.this, "CHECK your mail : " + user.getEmail(), Toast.LENGTH_LONG).show();
                         }else{
-                            Toast.makeText(getApplicationContext(), "EMAIL VERIFICATION FAILED. TRY TO LOGIN AGAIN OR CONTACT DEV TEAM.", Toast.LENGTH_LONG).show();
-                            setLoginActivity();
+                            Toast.makeText(MainActivity.this, "EMAIL VERIFICATION FAILED. TRY TO LOGIN AGAIN OR CONTACT DEV TEAM.", Toast.LENGTH_LONG).show();
                         }
                     }
                 });

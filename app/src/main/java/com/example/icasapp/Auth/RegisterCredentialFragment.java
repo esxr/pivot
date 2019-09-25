@@ -177,7 +177,7 @@ public class RegisterCredentialFragment extends Fragment {
 
     private void readFacultyData(final FacultyCallback facultyCallback){
         facultyQuery
-                .whereEqualTo("phone", "9886832668")
+                .whereEqualTo("email", email)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
