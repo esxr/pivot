@@ -5,7 +5,6 @@ public class GlobalState {
     public  String userType;
     public  boolean internetConnection;
     public  boolean isSignedIn;
-    public  boolean isEmailVerified;
     public  String buffer = null;
     public  String name;
     public  String downloadURL;
@@ -44,14 +43,6 @@ public class GlobalState {
 
     public void setSignedIn(boolean signedIn) {
         isSignedIn = signedIn;
-    }
-
-    public boolean isEmailVerified() {
-        return isEmailVerified;
-    }
-
-    public void setEmailVerified(boolean emailVerified) {
-        isEmailVerified = emailVerified;
     }
 
     public String getBuffer() {

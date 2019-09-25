@@ -2,11 +2,13 @@ package com.example.icasapp.Auth.AlumniAuth;
 
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatImageView;
@@ -21,6 +23,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.icasapp.Alumni;
 import com.example.icasapp.Auth.FormHelper;
+import com.example.icasapp.Auth.LoginActivity;
 import com.example.icasapp.Auth.RegisterCredentialFragment;
 import com.example.icasapp.MainActivity;
 import com.example.icasapp.R;
@@ -285,6 +288,7 @@ public class AlumniDescribeFragment extends Fragment {
                                             }
                                         }
                                     });
+
                             Toast.makeText(getContext(), "Authentication SUCCESS.",
                                     Toast.LENGTH_SHORT).show();
                             //updateUI(user);
@@ -335,6 +339,7 @@ public class AlumniDescribeFragment extends Fragment {
                     }
                 });
     }
+
 
 }
 
