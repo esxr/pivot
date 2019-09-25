@@ -7,7 +7,7 @@ import java.util.List;
 public class Faculty {
     public static Faculty faculty = new Faculty();
     private String email;
-    private String subjects[];
+    private List<String> subjects;
     private String interests;
     private String name;
     private String workNumber;
@@ -26,21 +26,6 @@ public class Faculty {
 
     public static void setFaculty(Faculty faculty) {
         Faculty.faculty = faculty;
-    }
-
-    public List<List<String>> fetchList() {
-        List<List<String>> list = new ArrayList<>();
-
-        for (Field f : getClass().getDeclaredFields()) {
-            List<String> l = new ArrayList<>();
-            l.add(f.getName());
-            try {
-                l.add((String) f.get(this));
-            } catch (Exception e) {
-                l.add("undef");
-            }
-        }
-        return list;
     }
 
     public String getEmail() {
@@ -117,11 +102,12 @@ public class Faculty {
         this.freeTimings = freeTimings;
     }
 
-    public String[] getSubjects() {
+
+    public List<String> getSubjects() {
         return subjects;
     }
 
-    public void setSubjects(String[] subjects) {
+    public void setSubjects(List<String> subjects) {
         this.subjects = subjects;
     }
 }

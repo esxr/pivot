@@ -103,9 +103,6 @@ public class RegisterCredentialFragment extends Fragment {
         return registerCredentialFragment;
     }
 
-    private void storeFaculty() {
-
-    }
 
     private void updateUI() {
         RegisterProgressActivity.pager.setCurrentItem(1);
