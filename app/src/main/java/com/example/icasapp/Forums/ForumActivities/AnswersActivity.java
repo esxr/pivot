@@ -103,7 +103,6 @@ public class AnswersActivity extends AppCompatActivity {
         addAnswer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 //values sent so that they are preserved
                 Intent intent=new Intent(AnswersActivity.this, newAnswerActivity.class);
                 intent.putExtra("post_id", docId);
@@ -151,6 +150,10 @@ public class AnswersActivity extends AppCompatActivity {
                                           isFirstPageLoad=false;
                                           sort="timestamp";
                                           setQuery(sort);
+                                          recent.setBackgroundColor(getResources().getColor(android.R.color.black));
+                                          recent.setTextColor(getResources().getColor(android.R.color.white));
+                                          votes.setBackgroundColor(getResources().getColor(android.R.color.white));
+                                          votes.setTextColor(getResources().getColor(android.R.color.black));
                                       }
                                   });
 
@@ -159,6 +162,10 @@ public class AnswersActivity extends AppCompatActivity {
                                      public void onClick(View v) {
                                          //when another menu is selected the documents are loaded again
                                         sortUpvotes();
+                                         votes.setBackgroundColor(getResources().getColor(android.R.color.black));
+                                         votes.setTextColor(getResources().getColor(android.R.color.white));
+                                         recent.setBackgroundColor(getResources().getColor(android.R.color.white));
+                                         recent.setTextColor(getResources().getColor(android.R.color.black));
                                      }
                                  });
 
