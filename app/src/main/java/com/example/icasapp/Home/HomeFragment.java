@@ -1,23 +1,29 @@
 package com.example.icasapp.Home;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.Group;
 import androidx.fragment.app.Fragment;
 
+import android.text.Layout;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -28,10 +34,17 @@ import com.example.icasapp.Profile.ProfileDisplayActivity;
 import com.example.icasapp.R;
 import com.example.icasapp.User.TestUser;
 import com.example.icasapp.User.User;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -45,9 +58,10 @@ public class HomeFragment extends Fragment {
     private ArrayList<User> items;
     private ProfileAdapter itemsAdapter;
     private ListView listView;
+    private FirebaseFirestore firebaseFirestore;
 
     //Search
-    private EditText query;
+    private AutoCompleteTextView query;
 
     //toggle
     private Group group;
@@ -77,11 +91,7 @@ public class HomeFragment extends Fragment {
             }
         }).start();
 
-        new Thread(new Runnable() {
-            public void run() {
-                setProfileSearch();
-            }
-        }).start();
+        setProfileSearch();
 
         new Thread(new Runnable() {
             public void run() {
@@ -134,32 +144,41 @@ public class HomeFragment extends Fragment {
         LinearLayout parentLayout = (LinearLayout) homeView.findViewById(R.id.homeV);
 
         // Layout inflater
-
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
         View view;
 
-        // Profile Photo
-        ImageView profilePhoto = new ImageView(getContext());
         float dpCalculation = getResources().getDisplayMetrics().density;
 
-        // Customize image params
+        // Profile Photo
+        RelativeLayout imageHolder = new RelativeLayout(getContext());
+        RelativeLayout.LayoutParams imageHolderParams = new RelativeLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                (int) (220 * dpCalculation)
+        );
+        imageHolder.setLayoutParams(imageHolderParams);
+        imageHolder.setGravity(Gravity.CENTER);
+        imageHolder.setBackgroundColor(Color.parseColor("#121212"));
+
+        CircleImageView profilePhoto = new CircleImageView(getContext());
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
         params.gravity = Gravity.CENTER_HORIZONTAL;
         profilePhoto.setLayoutParams(params);
-
-        profilePhoto.setScaleType(ImageView.ScaleType.CENTER);
+        profilePhoto.setBorderColor(getResources().getColor(R.color.white));
+        profilePhoto.setBorderWidth(2);
         try {
             profilePhoto.getLayoutParams().height = (int) (150 * dpCalculation);
             profilePhoto.getLayoutParams().width = (int) (150 * dpCalculation);
         } catch(Exception e) {
             Log.e("mfc", e+"");
         }
-
         Glide.with(this).load(user.getProfilePhoto()).into(profilePhoto);
-        parentLayout.addView(profilePhoto);
+
+        // Customize image params
+        imageHolder.addView(profilePhoto);
+        parentLayout.addView(imageHolder);
 
         // LinearLayout
         for (List<String> element : list) {
@@ -210,7 +229,24 @@ public class HomeFragment extends Fragment {
     }
 
     private void setProfileSearch() {
-        query = (EditText) homeView.findViewById(R.id.query);
+        query =  homeView.findViewById(R.id.query);
+
+        final ArrayAdapter<String> autoComplete = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1);
+
+        firebaseFirestore = FirebaseFirestore.getInstance();
+
+        firebaseFirestore.collection("USER").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                for (DocumentSnapshot documentSnapshot : task.getResult()) {
+
+                    autoComplete.add(documentSnapshot.get("name").toString());
+                }
+            }
+        });
+
+        query.setAdapter(autoComplete);
+
         Button profileSearch = (Button) homeView.findViewById(R.id.profileSearch);
         profileSearch.setOnClickListener(new View.OnClickListener() {
             @Override

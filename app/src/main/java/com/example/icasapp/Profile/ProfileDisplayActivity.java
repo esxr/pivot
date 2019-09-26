@@ -2,6 +2,7 @@ package com.example.icasapp.Profile;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -9,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -58,32 +60,41 @@ public class ProfileDisplayActivity extends AppCompatActivity {
         LinearLayout parentLayout = (LinearLayout) findViewById(R.id.profile);
 
         // Layout inflater
-
         LayoutInflater layoutInflater = LayoutInflater.from(getApplicationContext());
         View view;
 
-        // Profile Photo
-        ImageView profilePhoto = new ImageView(getApplicationContext());
         float dpCalculation = getResources().getDisplayMetrics().density;
 
-        // Customize image params
+        // Profile Photo
+        RelativeLayout imageHolder = new RelativeLayout(getApplicationContext());
+        RelativeLayout.LayoutParams imageHolderParams = new RelativeLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                (int) (220 * dpCalculation)
+        );
+        imageHolder.setLayoutParams(imageHolderParams);
+        imageHolder.setGravity(Gravity.CENTER);
+        imageHolder.setBackgroundColor(Color.parseColor("#121212"));
+
+        CircleImageView profilePhoto = new CircleImageView(getApplicationContext());
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
         params.gravity = Gravity.CENTER_HORIZONTAL;
         profilePhoto.setLayoutParams(params);
-
-        profilePhoto.setScaleType(ImageView.ScaleType.CENTER);
+        profilePhoto.setBorderColor(getResources().getColor(R.color.white));
+        profilePhoto.setBorderWidth(2);
         try {
             profilePhoto.getLayoutParams().height = (int) (150 * dpCalculation);
             profilePhoto.getLayoutParams().width = (int) (150 * dpCalculation);
         } catch(Exception e) {
             Log.e("mfc", e+"");
         }
-
         Glide.with(this).load(user.getProfilePhoto()).into(profilePhoto);
-        parentLayout.addView(profilePhoto);
+
+        // Customize image params
+        imageHolder.addView(profilePhoto);
+        parentLayout.addView(imageHolder);
 
         // LinearLayout
         for (List<String> element : list) {
