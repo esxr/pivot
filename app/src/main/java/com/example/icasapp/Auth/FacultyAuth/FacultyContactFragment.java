@@ -54,20 +54,14 @@ public class FacultyContactFragment extends Fragment {
 
             @Override
             public void onClick(View view) {
-                String name, workPhoneNumber, cabinLocation, freeTimings;
-
-
+                String name, workPhoneNumber = "", cabinLocation, freeTimings;
 
                 name = inputFullName.getText().toString().trim();
                 workPhoneNumber = inputWorkPhoneNumber.getText().toString().trim();
                 cabinLocation = inputCabinLocation.getText().toString().trim();
                 freeTimings = inputFreeTimings.getText().toString().trim();
 
-                if (formHelper.validateField(freeTimings)
-                        && formHelper.validateField(cabinLocation)
-                        && formHelper.validateField(workPhoneNumber)
-                        && formHelper.validateField(freeTimings)
-                ){
+                if (formHelper.validateField(freeTimings) && formHelper.validateField(cabinLocation)){
                     Faculty.faculty.setFreeTimings(freeTimings);
                     Faculty.faculty.setCabinLocation(cabinLocation);
                     Faculty.faculty.setWorkNumber(workPhoneNumber);
@@ -76,7 +70,7 @@ public class FacultyContactFragment extends Fragment {
                     RegisterProgressActivity.stepView.go(2,true);
                     RegisterProgressActivity.i++;
                 }else
-                    Toast.makeText(getContext(), "FIELD MISSING.PLEASE ENTER.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "FIELDS MISSING.PLEASE FILL IN THE REQUIRED FIELDS.", Toast.LENGTH_LONG).show();
             }
         });
 

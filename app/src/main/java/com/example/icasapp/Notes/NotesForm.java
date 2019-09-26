@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.example.icasapp.Firebase.FirebaseHelper;
 
+import com.example.icasapp.MainActivity;
 import com.example.icasapp.R;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -375,7 +376,8 @@ public class NotesForm extends AppCompatActivity {
                     uploadMetaToFirebase(SEMESTER, SESSIONAL, SUBJECT, SUBJECT_ABR, FILE_NAME_BY_USER, downloadUri);
                     Toast.makeText(getApplicationContext(), "SUCCESSFULLY UPLOADED TO THE DATABASE.", Toast.LENGTH_LONG).show();
                     try {
-                        startActivity(new Intent(getApplicationContext(), NotesFragment.class));
+                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                        finish();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

@@ -3,6 +3,7 @@ package com.example.icasapp.DeveloperOptions;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.example.icasapp.MainActivity;
 import com.example.icasapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -46,7 +48,7 @@ public class setUserPriveledge extends AppCompatActivity {
         map.put("CR","1.1");
         map.put("Council","1.2");
         map.put("Faculty","2.0");
-        map.put("Alumni","3.0");
+        map.put("ALUMNI","3.0");
         map.put("Admin","4.0");
 
 
@@ -96,8 +98,13 @@ public class setUserPriveledge extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                 for (DocumentSnapshot documentSnapshot : task.getResult()) {
-                                        documentSnapshot.getReference().update("userType",radioButton.getText());
-                                        documentSnapshot.getReference().update("buffer",map.get(radioButton.getText()));
+
+                                        documentSnapshot.getReference().update("buffer",map.get(radioButton.getText())).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                            }
+                                        });
                                 }
                             }
                         });

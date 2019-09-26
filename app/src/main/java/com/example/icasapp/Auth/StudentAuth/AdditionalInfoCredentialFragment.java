@@ -1,6 +1,7 @@
 package com.example.icasapp.Auth.StudentAuth;
 
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -61,6 +62,8 @@ public class AdditionalInfoCredentialFragment extends Fragment {
     FirebaseAuth mAuth;
     FirebaseFirestore db;
 
+    ProgressDialog progressDialog;
+
     public AdditionalInfoCredentialFragment() {
         // Required empty public constructor
     }
@@ -79,6 +82,12 @@ public class AdditionalInfoCredentialFragment extends Fragment {
         skipButton = view.findViewById(R.id.nextButton);
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
+
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setCancelable(false);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setProgress(0);
+        progressDialog.setMax(100);
 
         skipButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -190,6 +199,7 @@ public class AdditionalInfoCredentialFragment extends Fragment {
     }
 
     private void upload() {
+        progressDialog.show();
         final StorageReference ref = storageRef.child("PROFILE_PICTURES/" + Student.student.getRegNo());
         UploadTask uploadTask = ref.putBytes(getCompressedImageData());
 
@@ -208,11 +218,13 @@ public class AdditionalInfoCredentialFragment extends Fragment {
             public void onComplete(@NonNull Task<Uri> task) {
                 if (task.isSuccessful()) {
                     Uri downloadUri = task.getResult();
+                    progressDialog.hide();
                     setDownloadUrl(downloadUri);
                     Student.student.setDownloadURL(downloadUrl.toString());
                 } else {
                     // Handle failures
                     // ...
+                    progressDialog.hide();
                 }
             }
         });
@@ -220,6 +232,9 @@ public class AdditionalInfoCredentialFragment extends Fragment {
     }
 
     private void createUser(String email, String password) {
+        progressDialog.show();
+
+
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                     @Override
@@ -251,6 +266,7 @@ public class AdditionalInfoCredentialFragment extends Fragment {
                             Log.w("msg", "createUserWithEmail:failure", task.getException());
                             Toast.makeText(getContext(), "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
+                            progressDialog.hide();
                             //updateUI(null);
                         }
 
@@ -277,6 +293,8 @@ public class AdditionalInfoCredentialFragment extends Fragment {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.w("msg", "Error writing document", e);
+                        progressDialog.hide();
+
                     }
                 })
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -284,7 +302,11 @@ public class AdditionalInfoCredentialFragment extends Fragment {
                     public void onComplete(@androidx.annotation.NonNull Task<Void> task) {
                         if(task.isSuccessful()) {
                             Log.i("msg", "UPLOADED THE STUDENT.");
+                            progressDialog.hide();
                             startActivity(new Intent(getContext(), MainActivity.class));
+                            getActivity().finish();
+                        }else{
+                            progressDialog.hide();
                         }
                     }
                 });

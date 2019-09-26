@@ -22,6 +22,7 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.example.icasapp.Auth.FormHelper;
 import com.example.icasapp.Faculty;
+import com.example.icasapp.MainActivity;
 import com.example.icasapp.R;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -295,8 +296,12 @@ public class EditFacultyFragment extends Fragment {
                     public void onComplete(@androidx.annotation.NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             Toast.makeText(getContext(), "UPDATED.", Toast.LENGTH_LONG).show();
+                            startActivity(new Intent(getContext(), MainActivity.class));
+                            getActivity().finish();
                         } else {
                             Toast.makeText(getContext(), "FAILED. RETRY.", Toast.LENGTH_LONG).show();
+                            startActivity(new Intent(getContext(), MainActivity.class));
+                            getActivity().finish();
                         }
                     }
                 });

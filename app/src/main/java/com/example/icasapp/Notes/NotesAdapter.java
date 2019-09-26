@@ -81,12 +81,12 @@ public class NotesAdapter extends FirestoreRecyclerAdapter<Notes, NotesAdapter.N
         notesHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                new AlertDialog.Builder(view.getContext())
+                new AlertDialog
+                        .Builder(view.getContext())
                         .setIcon(R.drawable.alert)
                         .setTitle("ARE YOU SURE?")
                         .setCancelable(false)
                         .setMessage("This will delete the " + notes.getFileName() + " file forever.")
-
                         .setPositiveButton("YES", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {

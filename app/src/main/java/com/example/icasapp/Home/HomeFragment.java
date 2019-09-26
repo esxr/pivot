@@ -21,6 +21,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.icasapp.DeveloperOptions.DeveloperOptions;
 import com.example.icasapp.Firebase.FirebaseHelper;
 import com.example.icasapp.Profile.ProfileAdapter;
 import com.example.icasapp.Profile.ProfileDisplayActivity;
@@ -116,6 +117,7 @@ public class HomeFragment extends Fragment {
     private void setSearchToggle() {
         group = (Group) homeView.findViewById(R.id.group);
         ImageButton searchInitButton = homeView.findViewById(R.id.initSearch);
+
         searchInitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

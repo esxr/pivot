@@ -1,5 +1,6 @@
 package com.example.icasapp.Notes;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,14 +13,20 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.icasapp.GlobalState;
 import com.example.icasapp.R;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
@@ -37,12 +44,13 @@ public class NotesFragment extends Fragment {
     private CollectionReference notesRef;
     private NotesAdapter adapter;
 
-    FloatingActionButton floatingActionButton;
+    private FloatingActionButton floatingActionButton;
 
     RecyclerView recyclerView;
     EditText editText;
     RecyclerView.LayoutManager layoutManager;
     boolean isFilterActive;
+    String buffer;
     //NotesAdapter notesAdapter;
 
 
@@ -63,6 +71,26 @@ public class NotesFragment extends Fragment {
         notesRef = db.collection("NOTES");
 
         floatingActionButton = notesView.findViewById(R.id.addNotes);
+        floatingActionButton.hide();
+
+        db.collection("USER").document(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()){
+                            DocumentSnapshot document = task.getResult();
+                            if(document.exists()) {
+                                buffer = document.get("buffer").toString();
+                                Log.i("msg", "BUFFER:" + buffer);
+                                if (buffer.isEmpty() || buffer == null || buffer.equals("1.0") || buffer.equals("3.0"))
+                                    floatingActionButton.hide();
+                                else
+                                    floatingActionButton.show();
+                            }
+                        }
+                    }
+                });
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override

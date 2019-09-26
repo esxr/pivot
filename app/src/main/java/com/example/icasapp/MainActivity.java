@@ -1,16 +1,18 @@
 package com.example.icasapp;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,7 +22,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.andremion.floatingnavigationview.FloatingNavigationView;
 import com.bumptech.glide.Glide;
 import com.example.icasapp.Auth.LoginActivity;
 import com.example.icasapp.DeveloperOptions.DeveloperOptions;
@@ -36,9 +37,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.treebo.internetavailabilitychecker.InternetAvailabilityChecker;
 import com.treebo.internetavailabilitychecker.InternetConnectivityListener;
 
@@ -51,12 +50,12 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
     TextView navigationText;
     FirebaseFirestore firebaseFirestore;
     FloatingActionButton developerOptions;
+    private TextView navName;
+    private ImageView navPhoto;
     FirebaseFirestore db;
     FirebaseAuth mAuth;
     FirebaseUser user;
     String TAG = "msg";
-    private TextView navName;
-    private ImageView navPhoto;
     private NavigationView mFloatingNavigationView;
     //declaring viewPager
     private ViewPager viewPager;
@@ -73,6 +72,34 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
 
+
+
+        if(user == null){
+            Log.i("msg", "NO USER");
+            FirebaseHelper.signOut();
+            setLoginActivity();
+        }else if(!user.isEmailVerified()) {
+            new AlertDialog.Builder(MainActivity.this)
+                    .setCancelable(false)
+                    .setTitle("EMAIL NOT VERIFIED.")
+                    .setMessage("Check your mail to verify your registration.")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            sendEmailForVerification();
+                            FirebaseHelper.signOut();
+                            setLoginActivity();
+                        }
+                    })
+                    .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            FirebaseHelper.signOut();
+                            setLoginActivity();
+                        }
+                    }).create().show();
+        }
+
         InternetAvailabilityChecker.init(this);
 
         mInternetAvailabilityChecker = InternetAvailabilityChecker.getInstance();
@@ -80,62 +107,60 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
         Toolbar toolbar = findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
         drawerLayout = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.common_open_on_phone,R.string.vector_path_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.common_open_on_phone, R.string.vector_path_close);
         drawerLayout.addDrawerListener(toggle);
-        toolbar.setNavigationIcon(R.drawable.pivot_white);
+        //toolbar.setNavigationIcon(R.drawable.pivot_white);
         toggle.syncState();
+
+        mFloatingNavigationView = findViewById(R.id.nav_view);
 
 
         firebaseFirestore = FirebaseFirestore.getInstance();
-        final String user = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        Log.i("msg",user);
-        Log.i("USER_ID",user);
 
-            final DocumentReference docRef = db.collection("USER").document(user);
-            docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                @Override
-                public void onEvent(@Nullable DocumentSnapshot snapshot,
-                                    @Nullable FirebaseFirestoreException e) {
-                    if (e != null) {
-                        Log.w(TAG, "Listen failed.", e);
-                        return;
-                    }
-                    if (snapshot != null && snapshot.exists()) {
-                        Log.d(TAG, "Current data: " + snapshot.getData());
-                        String userType = snapshot.get("userType").toString();
-                        String buffer = snapshot.get("buffer").toString();
-                        GlobalState.buffer = buffer;
-                        GlobalState.userType = userType;
-                        Log.i("msg", GlobalState.userType + " ENTERED THE APP");
-                        switch (userType) {
-                            case "STUDENT":
-                                Student.student = snapshot.toObject(Student.class);
-                                break;
-                            case "FACULTY":
-                                Faculty.faculty = snapshot.toObject(Faculty.class);
-                                break;
-                            case "ALUMNI":
-                                Alumni.alumni = snapshot.toObject(Alumni.class);
-                                break;
-                            default:
-                                break;
+
+        final DocumentReference docRef = db.collection("USER").document(user.getUid());
+
+        docRef
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot documentSnapshot = task.getResult();
+                            if (documentSnapshot.exists()) {
+                                Log.i("msg", documentSnapshot.getData().toString());
+                                Log.i("msg", documentSnapshot.get("buffer").toString());
+
+                                String userType = documentSnapshot.get("userType").toString();
+                                String buffer = documentSnapshot.get("buffer").toString();
+
+                                GlobalState.globalState.setBuffer(buffer);
+                                GlobalState.globalState.setUserType(userType);
+                                GlobalState.globalState.setName(documentSnapshot.get("name").toString());
+
+                                if (documentSnapshot.get("downloadURL") != null)
+                                    GlobalState.globalState.setDownloadURL(documentSnapshot.get("downloadURL").toString());
+
+                                Log.i("msg", GlobalState.globalState.getUserType() + " ENTERED THE APP");
+                                switch (userType) {
+                                    case "STUDENT":
+                                        Student.student = documentSnapshot.toObject(Student.class);
+                                        break;
+                                    case "FACULTY":
+                                        Faculty.faculty = documentSnapshot.toObject(Faculty.class);
+                                        break;
+                                    case "ALUMNI":
+                                        Alumni.alumni = documentSnapshot.toObject(Alumni.class);
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
                         }
-                    } else {
-                        Log.d(TAG, "Current data: null");
                     }
-                }
-            });
+                });
 
 
-//        developerOptions = findViewById(R.id.developerOptions);
-//        developerOptions.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(MainActivity.this, DeveloperOptions.class);
-//                startActivity(intent);
-//                finish();
-//            }
-//        });
         //Initializing viewPager
         viewPager = findViewById(R.id.viewPager);
         tabLayout = findViewById(R.id.tabLayout);
@@ -169,8 +194,6 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
 
 
 
-
-
         mFloatingNavigationView = findViewById(R.id.nav_view);
         View hView =  mFloatingNavigationView.getHeaderView(0);
         navName = (TextView)hView.findViewById(R.id.name);
@@ -179,24 +202,24 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
 
 
         // put photo and text in view
-        firebaseFirestore.collection("USER").document(user).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        firebaseFirestore.collection("USER").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    DocumentSnapshot documentSnapshot = task.getResult();
+                DocumentSnapshot documentSnapshot = task.getResult();
 
-                    if(task.isSuccessful() && documentSnapshot.exists() && task.getResult().exists() && !task.getResult().getData().isEmpty()) {
-                        String url = "";
-                        if((documentSnapshot.get("downloadURL")!=null))
-                        {
-                            url = documentSnapshot.get("downloadURL").toString();
-                        }
-                        String name = documentSnapshot.get("name").toString();
-                        Log.i("NAMESS", name);
-
-                        navName.setText(name);
-                        Glide.with(getApplicationContext()).load(url).into(navPhoto);
+                if(task.isSuccessful() && documentSnapshot.exists() && task.getResult().exists() && !task.getResult().getData().isEmpty()) {
+                    String url = "";
+                    if((documentSnapshot.get("downloadURL")!=null))
+                    {
+                        url = documentSnapshot.get("downloadURL").toString();
                     }
+                    String name = documentSnapshot.get("name").toString();
+                    Log.i("NAMESS", name);
+
+                    navName.setText(name);
+                    Glide.with(getApplicationContext()).load(url).into(navPhoto);
                 }
+            }
 
         });
 
@@ -226,6 +249,9 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                         signOut();
                         return true;
                     case R.id.nav_help:
+                        Intent intent = new Intent(MainActivity.this, DeveloperOptions.class);
+                        startActivity(intent);
+                        finish();
                         break;
                     default:
                         return false;
@@ -242,7 +268,7 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
 
     @Override
     public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)){
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
@@ -251,21 +277,19 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
 
     //SECURITY
     @Override
-        public void onStart() {
-            super.onStart();
-            // Check if user is signed in (non-null) and update UI accordingly.
-            if (!FirebaseHelper.checkLoginStatus()) {
-                setLoginActivity();
-            }
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        if (!FirebaseHelper.checkLoginStatus()) {
+            setLoginActivity();
+        }
     }
 
     public void signOut() {
         //dialog box sign out
         final AlertDialog.Builder signOutDialog = new AlertDialog.Builder(this);
 
-        this.setTheme(R.style.AlertDialogCustom);
         signOutDialog
-                .setIcon(R.drawable.alert)
                 .setTitle("ARE YOU SURE?")
                 .setMessage("You will be shifted to the login screen and will have to sign in in order to continue using the app.")
                 .setPositiveButton("YES", new DialogInterface.OnClickListener() {
@@ -282,19 +306,32 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
     }
 
 
-
     public void setLoginActivity() {
-
         startActivity(new Intent(getApplicationContext(), LoginActivity.class));
         finish();
+    }
 
+
+    private void sendEmailForVerification(){
+        final FirebaseUser user = mAuth.getCurrentUser();
+        user.sendEmailVerification()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@androidx.annotation.NonNull Task<Void> task) {
+
+                        if(task.isSuccessful()) {
+                            Toast.makeText(MainActivity.this, "CHECK your mail : " + user.getEmail(), Toast.LENGTH_LONG).show();
+                        }else{
+                            Toast.makeText(MainActivity.this, "EMAIL VERIFICATION FAILED. TRY TO LOGIN AGAIN OR CONTACT DEV TEAM.", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
     }
 
     @Override
     public void onInternetConnectivityChanged(boolean isConnected) {
         Log.i("msg", "CONNECTION:" + isConnected);
-        GlobalState.internetConnection = isConnected;
-
+        GlobalState.globalState.setInternetConnection(isConnected);
     }
 
     @Override

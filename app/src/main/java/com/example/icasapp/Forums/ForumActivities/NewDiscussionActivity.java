@@ -69,8 +69,6 @@ public class NewDiscussionActivity extends AppCompatActivity {
     private TextView discuss_txt;
     private String Category;
     private ProgressDialog progressBar;
-    UploadTask uploadTask;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

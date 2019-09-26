@@ -23,6 +23,7 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.example.icasapp.MainActivity;
 import com.example.icasapp.R;
 import com.example.icasapp.Student;
 import com.google.android.gms.tasks.Continuation;
@@ -102,7 +103,6 @@ public class EditStudentFragment extends Fragment {
         resetPasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
 
                 new AlertDialog.Builder(getContext())
                         .setTitle("A password reset form will been sent to your mail.")
@@ -346,8 +346,12 @@ public class EditStudentFragment extends Fragment {
                     public void onComplete(@androidx.annotation.NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             Toast.makeText(getContext(), "UPDATED.", Toast.LENGTH_LONG).show();
+                            startActivity(new Intent(getContext(), MainActivity.class));
+                            getActivity().finish();
                         } else {
                             Toast.makeText(getContext(), "FAILED. RETRY.", Toast.LENGTH_LONG).show();
+                            startActivity(new Intent(getContext(), MainActivity.class));
+                            getActivity().finish();
                         }
                     }
                 });
