@@ -1,6 +1,7 @@
 package com.example.icasapp.Forums;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -68,6 +69,7 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
 
    private FloatingActionButton addPost;
    private Spinner spinner;
+   private ProgressDialog progressBar;
 
    private FirebaseFirestore firebaseFirestore;
    public static CollectionReference collectionReference;
@@ -91,6 +93,13 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
         view = inflater.inflate(R.layout.fragment_forum, container, false);
 
         addPost = view.findViewById(R.id.addPost);
+
+        //SET PROGRESS DIALOG.
+        progressBar = new ProgressDialog(getContext());
+        progressBar.setCancelable(false);//you can cancel it by pressing back button
+        progressBar.setMessage("Loading Forums...");
+        progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressBar.setMax(100);//sets the maximum value 100
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
@@ -119,6 +128,9 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
                 if (task.isSuccessful()) {
                     final DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
+                        //progress bar is hidden after Snapshot is set to query
+                        progressBar.setProgress(0);
+                        progressBar.show();
                         firebaseFirestore.collection("USER").document(currentUser).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                             @Override
                             public void onComplete(@androidx.annotation.NonNull Task<DocumentSnapshot> task) {
@@ -335,6 +347,8 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
 
         adapter.startListening();
         isFirstPageFirstLoad=true;
+
+        progressBar.hide();
     }
 
 
