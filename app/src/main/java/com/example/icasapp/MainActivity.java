@@ -27,6 +27,7 @@ import com.example.icasapp.Auth.LoginActivity;
 import com.example.icasapp.DeveloperOptions.DeveloperOptions;
 import com.example.icasapp.Firebase.FirebaseHelper;
 import com.example.icasapp.Menu_EditProfile.EditProfileActivity;
+import com.example.icasapp.Notes.NotesFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -141,7 +142,6 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                                 if (documentSnapshot.get("downloadURL") != null)
                                     GlobalState.globalState.setDownloadURL(documentSnapshot.get("downloadURL").toString());
 
-                                Log.i("msg", GlobalState.globalState.getUserType() + " ENTERED THE APP");
                                 switch (userType) {
                                     case "STUDENT":
                                         Student.student = documentSnapshot.toObject(Student.class);

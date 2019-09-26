@@ -25,7 +25,8 @@ public class FacultyContactFragment extends Fragment {
 
 
     View view;
-    AppCompatEditText inputFullName, inputWorkPhoneNumber, inputCabinLocation, inputFreeTimings;
+    static AppCompatEditText inputFullName, inputWorkPhoneNumber;
+    static AppCompatEditText inputCabinLocation, inputFreeTimings;
     AppCompatButton nextButton;
 
     public FacultyContactFragment() {
@@ -54,7 +55,7 @@ public class FacultyContactFragment extends Fragment {
 
             @Override
             public void onClick(View view) {
-                String name, workPhoneNumber = "", cabinLocation, freeTimings;
+                String name, workPhoneNumber, cabinLocation, freeTimings;
 
                 name = inputFullName.getText().toString().trim();
                 workPhoneNumber = inputWorkPhoneNumber.getText().toString().trim();

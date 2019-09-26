@@ -58,7 +58,7 @@ public class FacultyDescribeFragment extends Fragment {
     private static final int SELECT_PICTURE = 100;
     View view;
     AppCompatButton nextButton, uploadButton;
-    AppCompatEditText inputSubjects, inputInterests;
+    static AppCompatEditText inputSubjects, inputInterests;
     CircleImageView imageView;
 
     Uri localImageUri, downloadUrl = null;
