@@ -1,11 +1,9 @@
 package com.example.icasapp;
 
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -27,7 +25,6 @@ import com.example.icasapp.Auth.LoginActivity;
 import com.example.icasapp.DeveloperOptions.DeveloperOptions;
 import com.example.icasapp.Firebase.FirebaseHelper;
 import com.example.icasapp.Menu_EditProfile.EditProfileActivity;
-import com.example.icasapp.Notes.NotesFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -51,12 +48,12 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
     TextView navigationText;
     FirebaseFirestore firebaseFirestore;
     FloatingActionButton developerOptions;
-    private TextView navName;
-    private ImageView navPhoto;
     FirebaseFirestore db;
     FirebaseAuth mAuth;
     FirebaseUser user;
     String TAG = "msg";
+    private TextView navName;
+    private ImageView navPhoto;
     private NavigationView mFloatingNavigationView;
     //declaring viewPager
     private ViewPager viewPager;
@@ -73,13 +70,16 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
 
+        mFloatingNavigationView = findViewById(R.id.nav_view);
+        View hView = mFloatingNavigationView.getHeaderView(0);
+        navName = (TextView) hView.findViewById(R.id.name);
+        navPhoto = hView.findViewById(R.id.navigation_photo);
 
-
-        if(user == null){
+        if (user == null) {
             Log.i("msg", "NO USER");
             FirebaseHelper.signOut();
             setLoginActivity();
-        }else if(!user.isEmailVerified()) {
+        } else if (!user.isEmailVerified()) {
             new AlertDialog.Builder(MainActivity.this)
                     .setCancelable(false)
                     .setTitle("EMAIL NOT VERIFIED.")
@@ -102,7 +102,6 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
         }
 
         InternetAvailabilityChecker.init(this);
-
         mInternetAvailabilityChecker = InternetAvailabilityChecker.getInstance();
         mInternetAvailabilityChecker.addInternetConnectivityListener(this);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -112,8 +111,6 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
         drawerLayout.addDrawerListener(toggle);
         //toolbar.setNavigationIcon(R.drawable.pivot_white);
         toggle.syncState();
-
-        mFloatingNavigationView = findViewById(R.id.nav_view);
 
 
         firebaseFirestore = FirebaseFirestore.getInstance();
@@ -138,6 +135,8 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                                 GlobalState.globalState.setBuffer(buffer);
                                 GlobalState.globalState.setUserType(userType);
                                 GlobalState.globalState.setName(documentSnapshot.get("name").toString());
+                                if (buffer.equals("4.0"))
+                                    mFloatingNavigationView.getMenu().findItem(R.id.nav_developer_options).setVisible(true);
 
                                 if (documentSnapshot.get("downloadURL") != null)
                                     GlobalState.globalState.setDownloadURL(documentSnapshot.get("downloadURL").toString());
@@ -193,24 +192,15 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
         tabLayout.setupWithViewPager(viewPager);
 
 
-
-        mFloatingNavigationView = findViewById(R.id.nav_view);
-        View hView =  mFloatingNavigationView.getHeaderView(0);
-        navName = (TextView)hView.findViewById(R.id.name);
-        navPhoto = hView.findViewById(R.id.navigation_photo);
-
-
-
         // put photo and text in view
         firebaseFirestore.collection("USER").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 DocumentSnapshot documentSnapshot = task.getResult();
 
-                if(task.isSuccessful() && documentSnapshot.exists() && task.getResult().exists() && !task.getResult().getData().isEmpty()) {
+                if (task.isSuccessful() && documentSnapshot.exists() && task.getResult().exists() && !task.getResult().getData().isEmpty()) {
                     String url = "";
-                    if((documentSnapshot.get("downloadURL")!=null))
-                    {
+                    if ((documentSnapshot.get("downloadURL") != null)) {
                         url = documentSnapshot.get("downloadURL").toString();
                     }
                     String name = documentSnapshot.get("name").toString();
@@ -243,12 +233,10 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                     case R.id.nav_edit_profile:
                         startActivity(new Intent(getApplicationContext(), EditProfileActivity.class));
                         break;
-                    case R.id.nav_display_profile:
-                        return false;
                     case R.id.nav_sign_out:
                         signOut();
                         return true;
-                    case R.id.nav_help:
+                    case R.id.nav_developer_options:
                         Intent intent = new Intent(MainActivity.this, DeveloperOptions.class);
                         startActivity(intent);
                         finish();
@@ -312,16 +300,16 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
     }
 
 
-    private void sendEmailForVerification(){
+    private void sendEmailForVerification() {
         final FirebaseUser user = mAuth.getCurrentUser();
         user.sendEmailVerification()
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@androidx.annotation.NonNull Task<Void> task) {
 
-                        if(task.isSuccessful()) {
+                        if (task.isSuccessful()) {
                             Toast.makeText(MainActivity.this, "CHECK your mail : " + user.getEmail(), Toast.LENGTH_LONG).show();
-                        }else{
+                        } else {
                             Toast.makeText(MainActivity.this, "EMAIL VERIFICATION FAILED. TRY TO LOGIN AGAIN OR CONTACT DEV TEAM.", Toast.LENGTH_LONG).show();
                         }
                     }
