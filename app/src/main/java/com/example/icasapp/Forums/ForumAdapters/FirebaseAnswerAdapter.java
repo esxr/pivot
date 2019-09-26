@@ -85,6 +85,8 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
         String name = model.getName();
         final String url2 = model.getImage_url();
 
+        holder.delete.setVisibility(View.GONE);
+
         if(!name.equals("empty"))
             firebaseFirestore.collection("USER").document(id).addSnapshotListener(new EventListener<DocumentSnapshot>() {
                 @Override
@@ -114,6 +116,8 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
         else{
            holder.setName("Anonymous");
         }
+
+
 
         // set time
         long currentTime = Calendar.getInstance().getTime().getTime();

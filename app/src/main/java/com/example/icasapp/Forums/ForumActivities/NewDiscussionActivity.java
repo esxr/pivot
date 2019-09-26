@@ -233,6 +233,13 @@ public class NewDiscussionActivity extends AppCompatActivity {
                                 }
                             });
                 }
+                else
+                {
+                    if(!TextUtils.isEmpty(content))
+                    Toast.makeText(NewDiscussionActivity.this, "Enter Text", Toast.LENGTH_LONG).show();
+                    else
+                        Toast.makeText(NewDiscussionActivity.this, "Upload an image", Toast.LENGTH_LONG).show();
+                }
             }
         });
     }

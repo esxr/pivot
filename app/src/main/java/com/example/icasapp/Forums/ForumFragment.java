@@ -76,7 +76,6 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
    private FirebaseDiscussionRecyclerAdapter adapter;
 
    private View view;
-   private static Map docs;
 
     public ForumFragment() {
 
@@ -97,6 +96,18 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
 
         final String currentUser = firebaseAuth.getCurrentUser().getUid();
         i_d = null;
+        addPost.setVisibility(View.INVISIBLE);
+        addPost.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("RestrictedApi")
+            @Override
+            public void onClick(View v) {
+                Intent postBtnIntent = new Intent(getActivity(), NewDiscussionActivity.class);
+                //Category and document id that is passed between activities so that the value can be used globally
+                postBtnIntent.putExtra("Category",Category);
+                postBtnIntent.putExtra("ID",i_d);
+                startActivity(postBtnIntent);
+            }
+        });
 
 
 
@@ -133,18 +144,6 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
             }
         });
 
-
-        addPost.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("RestrictedApi")
-            @Override
-            public void onClick(View v) {
-                Intent postBtnIntent = new Intent(getActivity(), NewDiscussionActivity.class);
-                //Category and document id that is passed between activities so that the value can be used globally
-                postBtnIntent.putExtra("Category",Category);
-                postBtnIntent.putExtra("ID",i_d);
-                startActivity(postBtnIntent);
-            }
-        });
 
 
 
@@ -234,6 +233,7 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
                             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
 
                                 Category = subject.get(position);
+                                setAddPost();
                                 firebaseFirestore.collection("Specific").document("parent").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                     @Override
                                     public void onComplete(@androidx.annotation.NonNull Task<DocumentSnapshot> task) {
@@ -288,6 +288,7 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
                     public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
 
                         Category = subject.get(position);
+                        setAddPost();
                         //Query static variable is created that points to the category that has its constituent topic
                         setFirestoreReference(firebaseFirestore,i_d,"q");
 
@@ -329,7 +330,7 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
         recyclerView.setAdapter(adapter);
         recyclerView.setNestedScrollingEnabled(true);
 
-        addPost.show();
+
         setAddPost();
 
         adapter.startListening();
@@ -346,7 +347,7 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
                 collectionReference = firebaseFirestore.collection("General").document(Category).collection("Posts");
             } else {
 
-                    collectionReference = firebaseFirestore.collection("Specific").document(ID).collection("Subjects").document(Category).collection("Posts");
+                collectionReference = firebaseFirestore.collection("Specific").document(ID).collection("Subjects").document(Category).collection("Posts");
 
 
             }
@@ -364,14 +365,24 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
         }
     }
 
+    @SuppressLint("RestrictedApi")
     void setAddPost(){
-//        if(Category.equals("Alumni")&&!(buffer.equals("3.0")||buffer.equals("4.0"))){
-//            addPost.hide();
-//        }
-//        else {
-//            if(!Category.equals("General")){
-//               if(!buffer.equals("1.0"))
-//            addPost.hide();
-//        }}
+        addPost.hide();
+        Log.i("CAT",Category);
+        if(Category.equals("Alumni")){
+            if(buffer.equals("4.0")||buffer.equals("3.0"))
+                Log.i("CAT","Invoked Alum");
+            addPost.show();
+        }
+        else {
+            if(!Category.equals("General")){
+               if(!buffer.equals("1.0"))
+                   Log.i("CAT","Invoked Subject");
+                addPost.show();
+        }
+        else
+            {  addPost.show();
+            }
+        }
     }
 }

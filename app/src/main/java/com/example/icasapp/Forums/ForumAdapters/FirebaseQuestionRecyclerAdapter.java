@@ -85,6 +85,8 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
         final String uid = questions.getUser_id();
         Log.i("USER_ID",uid);
 
+        questionHolder.delete.setVisibility(View.GONE);
+
         if(!name.equals("empty"))
         firebaseFirestore.collection("USER").document(uid).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
