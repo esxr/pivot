@@ -63,6 +63,7 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
    private  ArrayList<String> subject;
    private static String buffer;
    private String email;
+   int i = 1;
    public static DocumentReference documentReference;
 
    private FloatingActionButton addPost;
@@ -331,7 +332,6 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
         recyclerView.setNestedScrollingEnabled(true);
 
 
-        setAddPost();
 
         adapter.startListening();
         isFirstPageFirstLoad=true;
@@ -367,21 +367,27 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
 
     @SuppressLint("RestrictedApi")
     void setAddPost(){
-        addPost.hide();
+
+        addPost.setVisibility(View.INVISIBLE);
         Log.i("CAT",Category);
+        Log.i("CAT buf",buffer);
         if(Category.equals("Alumni")){
-            if(buffer.equals("4.0")||buffer.equals("3.0"))
-                Log.i("CAT","Invoked Alum");
-            addPost.show();
+            if(buffer.equals("4.0")||buffer.equals("3.0")) {
+                Log.i("CAT", "Invoked Alum");
+                addPost.setVisibility(View.VISIBLE);
+            }
         }
         else {
             if(!Category.equals("General")){
-               if(!buffer.equals("1.0"))
-                   Log.i("CAT","Invoked Subject");
-                addPost.show();
+               if(!buffer.equals("1.0")) {
+                   Log.i("CAT", "Invoked Subject");
+                   addPost.setVisibility(View.VISIBLE);
+               }
         }
         else
-            {  addPost.show();
+            {
+                Log.i("CAT","Invoked General");
+                addPost.setVisibility(View.VISIBLE);
             }
         }
     }
