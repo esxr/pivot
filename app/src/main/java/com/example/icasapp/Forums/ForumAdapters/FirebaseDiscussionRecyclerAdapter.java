@@ -46,6 +46,7 @@ public class FirebaseDiscussionRecyclerAdapter extends FirestoreRecyclerAdapter<
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth firebaseAuth;
     private ListenerRegistration listenerRegistration;
+    private String buffer;
 
     /**
      * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
@@ -58,7 +59,7 @@ public class FirebaseDiscussionRecyclerAdapter extends FirestoreRecyclerAdapter<
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull final DiscussionHolder discussionHolder, final int i, @NonNull DiscussionTopic discussionTopic) {
+    protected void onBindViewHolder(@NonNull final DiscussionHolder discussionHolder, final int i, @NonNull final DiscussionTopic discussionTopic) {
 
         final String blogPostId = getSnapshots().getSnapshot(i).getId();
 
@@ -66,7 +67,7 @@ public class FirebaseDiscussionRecyclerAdapter extends FirestoreRecyclerAdapter<
         final String content=discussionTopic.getContent();
         discussionHolder.setContentText(content);
 
-        String currentUser= firebaseAuth.getInstance().getUid();
+        final String currentUser= firebaseAuth.getInstance().getUid();
 
         int n = discussionTopic.getQuestion();
         discussionHolder.setCommentCount(Integer.toString(n));
@@ -108,14 +109,20 @@ public class FirebaseDiscussionRecyclerAdapter extends FirestoreRecyclerAdapter<
             }
         });
 
-        if(currentUser.equals(discussionTopic.getUser_id()))
-        {
-            discussionHolder.delete.setVisibility(View.VISIBLE);
-        }
-        else
-        {
-            discussionHolder.delete.setVisibility(View.GONE);
-        }
+        firebaseFirestore.collection("USER").document(currentUser).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@androidx.annotation.NonNull Task<DocumentSnapshot> task) {
+                buffer = (String) task.getResult().get("buffer");
+                Log.i("BUFFER",buffer);
+                //if current user is logged
+                if( discussionTopic.getUser_id().equals(currentUser) || buffer.equals("4.0")){
+                    discussionHolder.delete.setVisibility(View.VISIBLE);
+                }
+                else
+                    discussionHolder.delete.setVisibility(View.GONE);
+            }
+        });
+
 
         //deletion
         discussionHolder.delete.setOnClickListener(new View.OnClickListener() {
