@@ -35,8 +35,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="top"
+                app:tabIndicatorColor="@color/white"
+                app:tabIndicatorAnimationDuration="3"
                 android:background="#121212"
-                app:tabTextColor="@color/white"
+                app:tabSelectedTextColor="@color/white"
+                android:animateLayoutChanges="true"
+                app:tabTextColor="@color/per70white"
                 android:defaultFocusHighlightEnabled="true"
                 android:elevation="4dp"
                 >

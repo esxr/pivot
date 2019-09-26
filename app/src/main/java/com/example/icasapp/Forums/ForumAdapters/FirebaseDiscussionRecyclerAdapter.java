@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -95,33 +96,32 @@ public class FirebaseDiscussionRecyclerAdapter extends FirestoreRecyclerAdapter<
         }
 
 
-        discussionHolder.CommentBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent commentIntent=new Intent(context, QuestionsActivity.class);
-                commentIntent.putExtra("post_id", blogPostId);
-                //Category is passed between activities so that the value can be used
-                commentIntent.putExtra("Category",Category);
-                commentIntent.putExtra("ID",i_d);
-                commentIntent.putExtra("Topic",content);
-                context.startActivity(commentIntent);
 
-            }
-        });
+        discussionHolder.blogPost.setOnClickListener(new View.OnClickListener() {
+                                                         @Override
+                                                         public void onClick(View v) {
+                                                             Intent commentIntent=new Intent(context, QuestionsActivity.class);
+                                                             commentIntent.putExtra("post_id", blogPostId);
+                                                             //Category is passed between activities so that the value can be used
+                                                             commentIntent.putExtra("Category",Category);
+                                                             commentIntent.putExtra("ID",i_d);
+                                                             commentIntent.putExtra("Topic",content);
+                                                             context.startActivity(commentIntent);
+                                                         }
+                                                     });
 
-        firebaseFirestore.collection("USER").document(currentUser).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@androidx.annotation.NonNull Task<DocumentSnapshot> task) {
-                buffer = (String) task.getResult().get("buffer");
-                Log.i("BUFFER",buffer);
-                //if current user is logged
-                if( discussionTopic.getUser_id().equals(currentUser) || buffer.equals("4.0")){
-                    discussionHolder.delete.setVisibility(View.VISIBLE);
-                }
-                else
-                    discussionHolder.delete.setVisibility(View.GONE);
-            }
-        });
+                firebaseFirestore.collection("USER").document(currentUser).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@androidx.annotation.NonNull Task<DocumentSnapshot> task) {
+                        buffer = (String) task.getResult().get("buffer");
+                        Log.i("BUFFER", buffer);
+                        //if current user is logged
+                        if (discussionTopic.getUser_id().equals(currentUser) || buffer.equals("4.0")) {
+                            discussionHolder.delete.setVisibility(View.VISIBLE);
+                        } else
+                            discussionHolder.delete.setVisibility(View.GONE);
+                    }
+                });
 
 
         //deletion
@@ -147,9 +147,9 @@ public class FirebaseDiscussionRecyclerAdapter extends FirestoreRecyclerAdapter<
     class DiscussionHolder extends RecyclerView.ViewHolder{
         //used to put values in card view elements
         private View mView;
+        private CardView blogPost;
         private TextView contentView;
         private ImageView imageView;
-        private  ImageView CommentBtn;
         private ImageView delete;
         private TextView commentCount;
         private TextView Time;
@@ -157,8 +157,8 @@ public class FirebaseDiscussionRecyclerAdapter extends FirestoreRecyclerAdapter<
         public DiscussionHolder(@NonNull View itemView) {
             super(itemView);
             mView=itemView;
-            CommentBtn=mView.findViewById(R.id.blog_comment_icon);
             delete=mView.findViewById(R.id.delete);
+            blogPost=mView.findViewById(R.id.main_blog_post);
         }
 
         public void setContentText(String text){
