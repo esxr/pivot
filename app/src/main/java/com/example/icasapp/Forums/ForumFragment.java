@@ -61,7 +61,7 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
    public static String Category;
    private  ArrayList<String> subject;
    private static String buffer;
-   private String name;
+   private String email;
    public static DocumentReference documentReference;
 
    private FloatingActionButton addPost;
@@ -120,9 +120,9 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
                                 }
                                 //sets the document id that contains the subjects of the particular stream and semester
                                 if(buffer.equals("2.0")){
-                                    name = document.get("name").toString();
-                                    findDocumentIdFaculty(name);
-                                    Log.i("name",name);
+                                    email = document.get("email").toString();
+                                    setSubjectArrayFaculty(email);
+                                    Log.i("email",email);
                                 }
                                 if(buffer.equals("3.0")){
                                     subject.add("General");
@@ -152,7 +152,6 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
         //Array list inflates spinner afterwards
         //first category General is added initially
         subject=new ArrayList<>();
-        subject.add("General");
 
         return view;
     }
@@ -203,9 +202,9 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
             });
     }
 
-    public void findDocumentIdFaculty(String name)
+    public void setSubjectArrayFaculty(String name)
     {
-        firebaseFirestore.collection("Specific").whereEqualTo("name", name).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        firebaseFirestore.collection("Specific").whereEqualTo("email", email).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@androidx.annotation.NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful())
@@ -217,10 +216,9 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
                         subject = (ArrayList) document.get("subjects");
                         Log.i("Subjects of Faculty", String.valueOf(subject));
                     }
+
+
                     subject.add(0,"General");
-
-
-
                     subject.add("Alumni");
                     spinner = view.findViewById(R.id.subjects);
 
@@ -256,10 +254,7 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
                             }
 
                         });
-                        if(Category == null)
-                        {
-                            Category = "General";
-                        }
+
 
                 }
             }
@@ -276,6 +271,8 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
                 for (DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()) {
                     subject.add(doc.getId());
                 }
+
+                subject.add(0,"General");
 
                 subject.add("Alumni");
                 spinner = view.findViewById(R.id.subjects);
@@ -307,11 +304,6 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
                     }
 
                 });
-
-                if(Category== null)
-                {
-                    Category = "General";
-                }
 
                 //after category is initialised
             }

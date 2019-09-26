@@ -62,7 +62,7 @@ public class DeveloperOptions extends AppCompatActivity {
             public void onClick(View v) {
                 Log.i("DEVOPS","clicked");
                 FirebaseForumsHelper firebaseForumsHelper = new FirebaseForumsHelper();
-              //  firebaseForumsHelper.answerEmptyDelete();
+                //firebaseForumsHelper.answerEmptyDelete();
                 firebaseForumsHelper.emptyTopicDelete();
                // firebaseForumsHelper.questionEmptyDelete();
             }
