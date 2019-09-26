@@ -121,44 +121,11 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
                                     findDocumentIdStudent(semester, stream, view);
                                 }
                                 //sets the document id that contains the subjects of the particular stream and semester
-                                if(buffer.equals("2.0")){
+                                else{
+                                    //if not student.
                                     email = document.get("email").toString();
-                                    setSubjectArrayFaculty(email);
+                                    setSubjectArrayOthers(email);
                                     Log.i("email",email);
-                                }
-                                if(buffer.equals("3.0")||buffer.equals("4.0")){
-                                    subject.add("Alumni");
-                                    spinner = view.findViewById(R.id.subjects);
-
-                                    //creates new adapter with inflated subject
-                                    ArrayAdapter<String> a = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, subject);
-                                    a.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-                                    spinner.setAdapter(a);
-
-
-                                    //when a spinner item is selected, snapshot is added to its particular category item
-                                    spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                                        @Override
-                                        public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-
-                                            Category = subject.get(position);
-                                            firebaseFirestore.collection("Specific").document("parent").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                                @Override
-                                                public void onComplete(@androidx.annotation.NonNull Task<DocumentSnapshot> task) {
-                                                    setFirestoreReference(firebaseFirestore,i_d,"q");
-                                                    //add snapshot to query
-                                                    addSnapshotToQuery(query);
-                                                }
-                                            });
-
-                                        }
-
-
-                                        @Override
-                                        public void onNothingSelected(AdapterView<?> parent) {
-
-                                        }});
                                 }
                             }
                         });
@@ -234,7 +201,7 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
             });
     }
 
-    public void setSubjectArrayFaculty(String name)
+    public void setSubjectArrayOthers(String email)
     {
         firebaseFirestore.collection("Specific").whereEqualTo("email", email).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
