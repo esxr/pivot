@@ -57,10 +57,10 @@ public class NotesAdapter extends FirestoreRecyclerAdapter<Notes, NotesAdapter.N
     @Override
     protected void onBindViewHolder(@NonNull final NotesHolder notesHolder, final int i, @NonNull final Notes notes) {
         notesHolder.inputName.setText(notes.getFileName());
-        notesHolder.semesterInput.setText("SEM:" + notes.getSemester());
-        notesHolder.sessionalInput.setText("SES:" + notes.getSessional());
-        notesHolder.authorName.setText("AUTHOR:" + notes.getUsername());
-        notesHolder.subjectName.setText("SUBJECT:" + notes.getSubject());
+        notesHolder.semesterInput.setText("Sem:" + notes.getSemester());
+        notesHolder.sessionalInput.setText("Ses:" + notes.getSessional());
+        notesHolder.authorName.setText("Auth:" + notes.getUsername());
+        notesHolder.subjectName.setText("" + notes.getSubject());
 
 
 //        if (notes.getUsername().equalsIgnoreCase(FirebaseHelper.getUser().getDisplayName())) {
