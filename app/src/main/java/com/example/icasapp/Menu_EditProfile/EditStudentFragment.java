@@ -147,7 +147,8 @@ public class EditStudentFragment extends Fragment {
                 "Mechatronics",
                 "Electrical",
                 "Aero",
-                "Civil"
+                "Civil",
+                "None"
         };
 
         final List<String> streamList = new ArrayList<>(Arrays.asList(streams));
