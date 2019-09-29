@@ -1,6 +1,5 @@
 package com.example.icasapp.Notes;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,7 +17,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.icasapp.GlobalState;
 import com.example.icasapp.R;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -29,6 +27,8 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -39,18 +39,15 @@ public class NotesFragment extends Fragment {
     Uri DATA;
 
     Query query;
-
-    private FirebaseFirestore db;
-    private CollectionReference notesRef;
-    private NotesAdapter adapter;
-
-    private FloatingActionButton floatingActionButton;
-
     RecyclerView recyclerView;
     EditText editText;
     RecyclerView.LayoutManager layoutManager;
     boolean isFilterActive;
     String buffer;
+    private FirebaseFirestore db;
+    private CollectionReference notesRef;
+    private NotesAdapter adapter;
+    private FloatingActionButton floatingActionButton;
     //NotesAdapter notesAdapter;
 
 
@@ -78,9 +75,9 @@ public class NotesFragment extends Fragment {
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if(task.isSuccessful()){
+                        if (task.isSuccessful()) {
                             DocumentSnapshot document = task.getResult();
-                            if(document.exists()) {
+                            if (document.exists()) {
                                 buffer = document.get("buffer").toString();
                                 Log.i("msg", "BUFFER:" + buffer);
                                 if (buffer.isEmpty() || buffer == null || buffer.equals("1.0") || buffer.equals("3.0"))
@@ -88,6 +85,19 @@ public class NotesFragment extends Fragment {
                                 else
                                     floatingActionButton.show();
                             }
+                        }
+                    }
+                });
+
+        db
+                .collection("NOTES")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult())
+                                Log.d("msg", document.getId() + " => " + document.getData());
                         }
                     }
                 });
