@@ -278,8 +278,38 @@ public class AdditionalInfoCredentialFragment extends Fragment {
     private void createFirestore(String UID){
 
         Student.student.setUserType("STUDENT");
-        Student.student.setSemester(Student.student.getRegNo().contains("19")? "1" : "3");
-        Student.student.setStream("CSE");
+        String substring = Student.student.getRegNo().substring(4, 6);
+        switch (substring){
+            case "23":
+                Student.student.setStream("Aero");
+                break;
+            case "25":
+                Student.student.setStream("Chem");
+                break;
+            case "26":
+                Student.student.setStream("Civil");
+                break;
+            case "27":
+                Student.student.setStream("CSE");
+                break;
+            case "29":
+                Student.student.setStream("Electrical");
+                break;
+            case "33":
+                Student.student.setStream("Mechanical");
+                break;
+            case "34":
+                Student.student.setStream("Mechatronics");
+                break;
+            default:
+                Student.student.setStream("None");
+        }
+
+        Student.student.setSemester(Student.student.getRegNo().substring(0 , 2).contains("19")? "1" : "3");
+        if(Student.student.getSemester().equals("1"))
+            Student.student.setStream("None");
+
+        Log.i("msg", Student.student.getSemester() + Student.student.getStream());
 
         db.collection("USER").document(UID)
                 .set(Student.student)
