@@ -24,8 +24,10 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,6 +40,7 @@ public class setOptions extends AppCompatActivity {
     EditText count;
     Boolean firstTime = true;
     DocumentReference documentReference;
+    Boolean alreadyExist = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,15 +114,11 @@ public class setOptions extends AppCompatActivity {
                                        documentSnapshot.getReference().delete();
                                    }
                                    Log.i("LOLLL",subs.toString());
+                                   Map map = new HashMap();
+                                   map.put("subjects", subs);
+
                                    for(Object s : subs){
-                                       Map<String, Object> postMap = new HashMap<>();
-                                       postMap.put("active", "yes");
-                                       documentReference.collection("Subjects").document(s.toString()).set(postMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                           @Override
-                                           public void onComplete(@NonNull Task<Void> task) {
-                                               Toast.makeText(getApplicationContext(),"Success",Toast.LENGTH_LONG).show();
-                                           }
-                                       });
+                                       setDocument(s);
                                    }
                                }
                            });
@@ -174,4 +173,61 @@ public class setOptions extends AppCompatActivity {
         });
 
     }
+    void setDocument(Object s)
+    {
+        Map < String, Object > postMap = new HashMap<>();
+        postMap.put("active", "yes");
+        postMap.put("alreadyExist",alreadyExist);
+        documentReference.collection("Subjects").document(s.toString()).set(postMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                setArrayList(documentReference);
+                Toast.makeText(getApplicationContext(),"Success",Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+    void setArrayList(final DocumentReference documentReference)
+    {
+        final FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+        final ArrayList arrayList = new ArrayList();
+
+        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                documentReference.collection("Subjects").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        for(DocumentSnapshot documentSnapshot : task.getResult()){
+                            arrayList.add(documentSnapshot.getId());
+                        }
+                        HashMap map = new HashMap();
+                        map.put("subjects",arrayList);
+                        documentReference.set(map,SetOptions.merge());
+                       firebaseFirestore.collection("Specific").document("parent").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                           @Override
+                           public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                               HashMap map = (HashMap) task.getResult().getData();
+                               for(Object sub : arrayList) {
+                                   if(map.containsKey(sub.toString()))
+                                   {
+                                       documentReference.collection("Subjects").document(sub.toString()).update("alreadyExist",true);
+                                   }
+                                   else{
+                                       HashMap map2 = new HashMap();
+                                       map2.put(sub.toString(),documentReference.getId());
+                                       task.getResult().getReference().set(map2,SetOptions.merge());
+                                   }
+
+                               }
+                           }
+                       });
+
+                    }
+        });
+
+
+            }
+        });
+    }
 }
+
