@@ -6,88 +6,128 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="5dp"
-    app:cardBackgroundColor="@color/black"
+    android:layout_margin="15dp"
     app:cardCornerRadius="12dp"
     app:cardElevation="3dp"
-    app:contentPadding="4dp"
+    android:background="@drawable/notes_card_background"
     android:foreground="?selectableItemBackground"
-    android:clickable="true"
-    >
+    android:clickable="true">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp" >
+        android:layout_height="match_parent"
+        android:padding="0dp"
+        android:gravity="center_horizontal"
+        android:layout_gravity="center_horizontal"
+        android:foregroundGravity="center_horizontal"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="#161616"
+            android:layout_weight="2">
+            <TextView
+                android:id="@+id/subjectInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:layout_below="@+id/sessionalInput"
+                android:text=""
+                android:textSize="20sp"
+                android:textColor="@color/white"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/semesterInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:layout_marginLeft="10dp"
+                android:text="Sem:"
+                android:textColor="@color/white"
+                android:textStyle="normal" />
+
+            <TextView
+                android:id="@+id/sessionalInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_below="@+id/semesterInput"
+                android:text="Sessional:"
+                android:textColor="@color/white"
+                android:textStyle="normal" />
+            <Button
+                android:id="@+id/deleteButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/downloadButton"
+                android:textColor="@color/white"
+                android:layout_marginTop="10dp"
+                android:background="@android:color/transparent"
+                android:text="Delete?"
+                android:textAllCaps="false"
+                android:textStyle="normal" />
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@color/card_color2"
+            android:layout_weight="1">
 
         <TextView
             android:id="@+id/inputFileName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:text="NAME:"
-            android:textColor="@color/white"
+            android:gravity="center"
+            android:text="Topic Name"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/black"
             android:textSize="30sp"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/semesterInput"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/inputFileName"
-            android:text="SEMESTER:"
-            android:textColor="@color/white"
-            android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/sessionalInput"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/semesterInput"
 
-            android:text="SESSIONAL:"
-            android:textColor="@color/white"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/subjectInput"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/sessionalInput"
-            android:text="SUBJECT:"
-            android:textColor="@color/white"
-            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/authorName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/subjectInput"
-            android:text="AUTHOR:"
-            android:textColor="@color/white"
+            android:layout_marginTop="20dp"
+            android:text="Auth:"
+            android:gravity="center"
+            android:textColor="@color/black"
             android:textStyle="bold" />
 
         <Button
             android:id="@+id/downloadButton"
-            android:layout_width="match_parent"
+            android:layout_width="170dp"
+            android:layout_marginTop="20dp"
+            android:layout_gravity="center"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/authorName"
-            android:background="@color/white"
-            android:onClick="downloadFile"
-            android:text="DOWNLOAD"
-            android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/deleteButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/downloadButton"
             android:textColor="@color/white"
-            android:background="@color/maroon"
-            android:text="DELETE NOTES"
-            android:textStyle="bold" />
+            android:background="@drawable/round_btn_black"
+            android:onClick="downloadFile"
+            android:text="Download"
+            android:drawableRight="@drawable/download"
+            android:gravity="center"
+            android:paddingRight="30dp"
+            android:drawablePadding="-30dp"
+            android:textAllCaps="false"
+            android:textStyle="normal"
+            android:layout_marginBottom="10dp"/>
 
-    </RelativeLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 
 </androidx.cardview.widget.CardView>

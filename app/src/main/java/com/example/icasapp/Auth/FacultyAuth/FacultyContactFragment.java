@@ -1,6 +1,7 @@
 package com.example.icasapp.Auth.FacultyAuth;
 
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.fragment.app.Fragment;
@@ -28,6 +30,10 @@ public class FacultyContactFragment extends Fragment {
     static AppCompatEditText inputFullName, inputWorkPhoneNumber;
     static AppCompatEditText inputCabinLocation, inputFreeTimings;
     AppCompatButton nextButton;
+    AppCompatButton dialogButton;
+
+
+
 
     public FacultyContactFragment() {
         // Required empty public constructor
@@ -50,6 +56,25 @@ public class FacultyContactFragment extends Fragment {
         inputCabinLocation = view.findViewById(R.id.inputCabinLocation);
         inputFreeTimings = view.findViewById(R.id.inputFreeTimings);
         nextButton = view.findViewById(R.id.nextButton);
+
+        dialogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new AlertDialog.Builder(getContext())
+                        .setPositiveButton("1st Year Subjects", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+                        });
+            }
+        });
+
+
+
+
+
+
 
         nextButton.setOnClickListener(new View.OnClickListener() {
 
