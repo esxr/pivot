@@ -363,6 +363,7 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
 
                 collectionReference = firebaseFirestore.collection("Specific").document(ID).collection("Subjects").document(Category).collection("Posts");
 
+
             }
         }
         if(type.equals("q"))
@@ -373,7 +374,6 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
 
 
                     query = firebaseFirestore.collection("Specific").document(ID).collection("Subjects").document(Category).collection("Posts");
-
 
             }
         }

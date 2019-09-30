@@ -199,7 +199,6 @@ public class NewDiscussionActivity extends AppCompatActivity {
                                         Log.i("LOL", "SUC");
                                         collectionReference = firebaseFirestore.collection("Specific").document(i_d).collection("Subjects").document(Category).collection("Posts");
 
-
                                     }
 
 
