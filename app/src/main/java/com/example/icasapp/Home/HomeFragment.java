@@ -29,9 +29,11 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.icasapp.DeveloperOptions.DeveloperOptions;
 import com.example.icasapp.Firebase.FirebaseHelper;
+import com.example.icasapp.MainActivity;
 import com.example.icasapp.Profile.ProfileAdapter;
 import com.example.icasapp.Profile.ProfileDisplayActivity;
 import com.example.icasapp.R;
+import com.example.icasapp.TimeTableDisplay;
 import com.example.icasapp.User.TestUser;
 import com.example.icasapp.User.User;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -98,6 +100,13 @@ public class HomeFragment extends Fragment {
                 populateView(FirebaseHelper.getUser().getUid());
             }
         }).start();
+
+        homeView.findViewById(R.id.test_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getContext(), TimeTableDisplay.class));
+            }
+        });
 
         return homeView;
     }

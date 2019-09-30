@@ -27,6 +27,12 @@
             android:visibility="gone"
             app:constraint_referenced_ids="query, profileSearch, profile_menu, emptyElement" />
 
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="test"
+                    android:id="@+id/test_button"/>
+
                 <!--Search Toggle-->
                 <ImageButton
                     android:id="@+id/initSearch"
@@ -84,7 +90,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:gravity="center"
-                    android:text="No matches found ..."
+                    android:text=""
                     android:textColor="@color/gray"
                     android:textSize="32sp"
                     app:layout_constraintTop_toBottomOf="@id/profile_menu" />
