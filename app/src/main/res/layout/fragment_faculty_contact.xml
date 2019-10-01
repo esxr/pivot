@@ -68,7 +68,7 @@
         android:layout_marginTop="20dp"
         android:textColor="@color/white"
         android:textStyle="bold"
-        android:text="MIT CAMPUS LOCATION"/>
+        android:text="WHERE CAN STUDENTS FIND YOU?"/>
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/inputCabinLocation"
@@ -95,7 +95,7 @@
         android:textColor="@color/white"
         android:textStyle="bold"
         android:layout_height="wrap_content"
-        android:text="WHEN ARE YOU USUALLY FREE?"/>
+        android:text="WHEN CAN STUDENTS APPROACH YOU?"/>
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/inputFreeTimings"
@@ -113,15 +113,6 @@
         android:layout_marginRight="10dp"
         android:hint="Eg. \nOFFICE HOURS : \nWORKING DAYS: \nFREE SLOT TIMINGS:"
         android:inputType="textMultiLine" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/dialogButton"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:background="@drawable/solid_button_white"
-        android:textColor="@color/navy"
-        android:text="CHOOSE SUBJECTS" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/nextButton"

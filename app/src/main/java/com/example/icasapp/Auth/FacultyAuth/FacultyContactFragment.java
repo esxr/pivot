@@ -1,7 +1,6 @@
 package com.example.icasapp.Auth.FacultyAuth;
 
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.fragment.app.Fragment;
@@ -26,13 +24,10 @@ import com.example.icasapp.R;
 public class FacultyContactFragment extends Fragment {
 
 
-    View view;
     static AppCompatEditText inputFullName, inputWorkPhoneNumber;
     static AppCompatEditText inputCabinLocation, inputFreeTimings;
+    View view;
     AppCompatButton nextButton;
-    AppCompatButton dialogButton;
-
-
 
 
     public FacultyContactFragment() {
@@ -57,24 +52,6 @@ public class FacultyContactFragment extends Fragment {
         inputFreeTimings = view.findViewById(R.id.inputFreeTimings);
         nextButton = view.findViewById(R.id.nextButton);
 
-        dialogButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new AlertDialog.Builder(getContext())
-                        .setPositiveButton("1st Year Subjects", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-
-                            }
-                        });
-            }
-        });
-
-
-
-
-
-
 
         nextButton.setOnClickListener(new View.OnClickListener() {
 
@@ -87,15 +64,15 @@ public class FacultyContactFragment extends Fragment {
                 cabinLocation = inputCabinLocation.getText().toString().trim();
                 freeTimings = inputFreeTimings.getText().toString().trim();
 
-                if (formHelper.validateField(freeTimings) && formHelper.validateField(cabinLocation)){
+                if (formHelper.validateField(freeTimings) && formHelper.validateField(cabinLocation)) {
                     Faculty.faculty.setFreeTimings(freeTimings);
                     Faculty.faculty.setCabinLocation(cabinLocation);
                     Faculty.faculty.setWorkNumber(workPhoneNumber);
                     Faculty.faculty.setName(name);
                     RegisterProgressActivity.pager.setCurrentItem(2);
-                    RegisterProgressActivity.stepView.go(2,true);
+                    RegisterProgressActivity.stepView.go(2, true);
                     RegisterProgressActivity.i++;
-                }else
+                } else
                     Toast.makeText(getContext(), "FIELDS MISSING.PLEASE FILL IN THE REQUIRED FIELDS.", Toast.LENGTH_LONG).show();
             }
         });
