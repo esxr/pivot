@@ -10,18 +10,6 @@
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_menu_camera"
             android:title="Home"/>
-        <item
-            android:id="@+id/nav_notes"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Notes"/>
-        <item
-            android:id="@+id/nav_forums"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Forums"/>
-        <item
-            android:id="@+id/nav_feed"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Feed"/>
     </group>
 
     <item android:title="Profile Settings">

@@ -95,12 +95,6 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
 
         addPost = view.findViewById(R.id.addPost);
 
-        //SET PROGRESS DIALOG.
-        progressBar = new ProgressDialog(getContext());
-        progressBar.setCancelable(false);//you can cancel it by pressing back button
-        progressBar.setMessage("Loading Forums...");
-        progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progressBar.setMax(100);//sets the maximum value 100
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
@@ -130,8 +124,6 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
                     final DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         //progress bar is hidden after Snapshot is set to query
-                        progressBar.setProgress(0);
-                        progressBar.show();
                         subject=new ArrayList<>();
                         firebaseFirestore.collection("USER").document(currentUser).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                             @Override
@@ -435,7 +427,6 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
         adapter.startListening();
         isFirstPageFirstLoad=true;
 
-        progressBar.hide();
     }
 
 

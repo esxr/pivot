@@ -10,7 +10,7 @@ public class Faculty {
     private List<String> subjects;
     private String interests;
     private String name;
-    private String workNumber;
+    private String phone;
     private String freeTimings;
     private String cabinLocation;
     private String userType;
@@ -52,14 +52,6 @@ public class Faculty {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getWorkNumber() {
-        return workNumber;
-    }
-
-    public void setWorkNumber(String workNumber) {
-        this.workNumber = workNumber;
     }
 
     public String getCabinLocation() {
@@ -109,5 +101,13 @@ public class Faculty {
 
     public void setSubjects(List<String> subjects) {
         this.subjects = subjects;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

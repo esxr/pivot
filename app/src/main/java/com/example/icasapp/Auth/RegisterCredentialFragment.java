@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import static com.example.icasapp.Alumni.alumni;
 import static com.example.icasapp.Faculty.faculty;
 import com.example.icasapp.Alumni;
+import com.example.icasapp.Auth.FacultyAuth.FacultyContactFragment;
 import com.example.icasapp.Faculty;
 import com.example.icasapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -141,14 +142,17 @@ public class RegisterCredentialFragment extends Fragment {
             public void onCallback(Faculty faculty) {
                 progressDialog.hide();
 
-                if(faculty.getEmail().equals(email))
+                if(faculty.getEmail().equals(email)) {
                     updateUI();
-                else
+                    FacultyContactFragment.inputFullName.setText(faculty.getName());
+                    FacultyContactFragment.inputWorkPhoneNumber.setText(faculty.getPhone());
+                }else
                     Toast.makeText(getContext(), "EMAIL NOT VERIFIED. CONTACT DEV TEAM.", Toast.LENGTH_LONG).show();
             }
         });
 
     }
+
 
     private void readAlumniData(final AlumniCallback alumniCallback) {
         alumniQuery

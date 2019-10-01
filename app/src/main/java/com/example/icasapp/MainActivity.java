@@ -1,6 +1,5 @@
 package com.example.icasapp;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -28,7 +27,6 @@ import com.example.icasapp.Firebase.FirebaseHelper;
 import com.example.icasapp.Menu_EditProfile.EditProfileActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
@@ -37,18 +35,13 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.treebo.internetavailabilitychecker.InternetAvailabilityChecker;
-import com.treebo.internetavailabilitychecker.InternetConnectivityListener;
 
 
-public class MainActivity extends AppCompatActivity implements InternetConnectivityListener {
+public class MainActivity extends AppCompatActivity{
 
     TabLayout tabLayout;
-    ImageView navigationImage;
     DrawerLayout drawerLayout;
-    TextView navigationText;
     FirebaseFirestore firebaseFirestore;
-    FloatingActionButton developerOptions;
     FirebaseFirestore db;
     FirebaseAuth mAuth;
     FirebaseUser user;
@@ -58,11 +51,6 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
     private NavigationView mFloatingNavigationView;
     //declaring viewPager
     private ViewPager viewPager;
-    private InternetAvailabilityChecker mInternetAvailabilityChecker;
-
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
             Log.i("msg", "NO USER");
             FirebaseHelper.signOut();
             setLoginActivity();
+            return;
         } else if (!user.isEmailVerified()) {
             new AlertDialog.Builder(MainActivity.this)
                     .setCancelable(false)
@@ -105,10 +94,6 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
         navName = (TextView) hView.findViewById(R.id.name);
         navPhoto = hView.findViewById(R.id.navigation_photo);
 
-
-        InternetAvailabilityChecker.init(this);
-        mInternetAvailabilityChecker = InternetAvailabilityChecker.getInstance();
-        mInternetAvailabilityChecker.addInternetConnectivityListener(this);
         Toolbar toolbar = findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -165,8 +150,10 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                             }
                         }
                     });
-        }else
+        }else {
             setLoginActivity();
+            return;
+        }
 
 
         //Initializing viewPager
@@ -223,8 +210,10 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
 
             });
         }
-        else
+        else {
             setLoginActivity();
+            return;
+        }
 
         mFloatingNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -233,15 +222,6 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                 switch (item.getItemId()) {
                     case R.id.nav_home:
                         viewPager.setCurrentItem(0);
-                        break;
-                    case R.id.nav_notes:
-                        viewPager.setCurrentItem(1);
-                        break;
-                    case R.id.nav_forums:
-                        viewPager.setCurrentItem(2);
-                        break;
-                    case R.id.nav_feed:
-                        viewPager.setCurrentItem(3);
                         break;
                     case R.id.nav_edit_profile:
                         startActivity(new Intent(getApplicationContext(), EditProfileActivity.class));
@@ -283,6 +263,9 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
 
         user = mAuth.getCurrentUser();
         // Check if user is signed in (non-null) and update UI accordingly.
+        if(user == null){
+            setLoginActivity();
+        }
 
     }
 
@@ -298,8 +281,6 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                             public void onClick(DialogInterface dialog, int which) {
                                 FirebaseAuth.getInstance().signOut();
                                 setLoginActivity();
-
-
                             }
                         }
                 )
@@ -329,19 +310,6 @@ public class MainActivity extends AppCompatActivity implements InternetConnectiv
                         }
                     }
                 });
-    }
-
-    @Override
-    public void onInternetConnectivityChanged(boolean isConnected) {
-        Log.i("msg", "CONNECTION:" + isConnected);
-        GlobalState.globalState.setInternetConnection(isConnected);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mInternetAvailabilityChecker
-                .removeInternetConnectivityChangeListener(this);
     }
 }
 

@@ -24,7 +24,7 @@ import com.example.icasapp.R;
 public class FacultyContactFragment extends Fragment {
 
 
-    static AppCompatEditText inputFullName, inputWorkPhoneNumber;
+    public static AppCompatEditText inputFullName, inputWorkPhoneNumber;
     static AppCompatEditText inputCabinLocation, inputFreeTimings;
     View view;
     AppCompatButton nextButton;
@@ -67,7 +67,7 @@ public class FacultyContactFragment extends Fragment {
                 if (formHelper.validateField(freeTimings) && formHelper.validateField(cabinLocation)) {
                     Faculty.faculty.setFreeTimings(freeTimings);
                     Faculty.faculty.setCabinLocation(cabinLocation);
-                    Faculty.faculty.setWorkNumber(workPhoneNumber);
+                    Faculty.faculty.setPhone(workPhoneNumber);
                     Faculty.faculty.setName(name);
                     RegisterProgressActivity.pager.setCurrentItem(2);
                     RegisterProgressActivity.stepView.go(2, true);

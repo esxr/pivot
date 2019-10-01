@@ -28,6 +28,7 @@ import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -37,6 +38,9 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import id.zelory.compressor.Compressor;
@@ -63,6 +67,12 @@ public class EditFacultyFragment extends Fragment {
     StorageReference storageRef;
     byte[] compressedImageData;
     FirebaseFirestore db;
+    private ArrayList selectedItemList;
+    boolean firstClicked = true;
+    private ArrayList selectSubs;
+    private android.app.AlertDialog.Builder builder;
+    AppCompatButton Select_sub;
+    ArrayList subs;
 
 
     public EditFacultyFragment() {
@@ -81,7 +91,10 @@ public class EditFacultyFragment extends Fragment {
 
         circleImageView = view.findViewById(R.id.profilePhoto);
 
+        Select_sub = view.findViewById(R.id.Select_Sub);
+
         editPencil = view.findViewById(R.id.editPencil);
+        subs = new ArrayList();
 
         db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
@@ -128,6 +141,25 @@ public class EditFacultyFragment extends Fragment {
                         }).create().show();
 
 
+            }
+        });
+        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+
+        builder = new android.app.AlertDialog.Builder(getContext());
+        builder.setTitle("Choose your subjects");
+        firebaseFirestore.collection("Specific").document("parent").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@androidx.annotation.NonNull Task<DocumentSnapshot> task) {
+                DocumentSnapshot documentSnapshot = task.getResult();
+                Map map = documentSnapshot.getData();
+                Iterator iterator = map.entrySet().iterator();
+
+                while (iterator.hasNext()) {
+                    Map.Entry pair = (Map.Entry)iterator.next();
+                    subs.add(pair.getKey());
+                    iterator.remove(); // avoids a ConcurrentModificationException
+                }
+                alertDialogue();
             }
         });
 
@@ -274,8 +306,6 @@ public class EditFacultyFragment extends Fragment {
         String freeTimings = inputFreeTimings.getText().toString();
         String cabinLocation = inputCabinLocation.getText().toString();
         String interests = inputInterests.getText().toString();
-        String subjects = inputSubjects.getText().toString();
-
         FormHelper formHelper = new FormHelper();
 
         if(formHelper.validateField(freeTimings))
@@ -284,8 +314,8 @@ public class EditFacultyFragment extends Fragment {
             Faculty.faculty.setFreeTimings(cabinLocation);
         if(formHelper.validateField(interests))
             Faculty.faculty.setFreeTimings(interests);
-        if(formHelper.validateField(subjects))
-            Faculty.faculty.setFreeTimings(subjects);
+        if(!selectedItemList.isEmpty())
+            Faculty.faculty.setSubjects(selectedItemList);
 
         db
                 .collection("USER")
@@ -305,6 +335,61 @@ public class EditFacultyFragment extends Fragment {
                         }
                     }
                 });
+    }
+
+    void alertDialogue()
+    {
+        String[] subjects = new String[subs.size()];
+        subjects = (String[]) subs.toArray(subjects);
+
+        boolean[] arr = new boolean[subs.size()];
+        for(int i = 0;i < subs.size(); i ++){
+            arr[i] = false;
+        }
+
+        selectedItemList = new ArrayList();
+
+
+        builder.setMultiChoiceItems(subjects, null, new DialogInterface.OnMultiChoiceClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                if(!firstClicked)
+                    selectedItemList.clear();
+                if(isChecked)
+                {
+                    selectedItemList.add(subs.get(which));
+                }
+                else if (selectedItemList.contains(subs.get(which)))
+                {
+                    selectedItemList.remove(subs.get(which));
+                }
+            }
+        });
+
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Select_sub.setText("Subjects selected. Click again to change.");
+                Log.i("SUB",selectedItemList.toString());
+                firstClicked = false;
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                selectedItemList.clear();
+                firstClicked = false;
+            }
+        });
+
+        Select_sub.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                android.app.AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+        });
     }
 
 }
