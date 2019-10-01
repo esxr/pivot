@@ -124,8 +124,10 @@ public class HomeFragment extends Fragment {
     //toggle functionality
     private void toggle() {
         homeV = homeView.findViewById(R.id.homeV);
+        LinearLayout photoLayout = homeView.findViewById(R.id.photoLayout);
         group.setVisibility(visibilityOf(visible));
         homeV.setVisibility(visibilityOf(!visible));
+        photoLayout.setVisibility(visibilityOf(!visible));
         visible = !visible;
     }
     private int visibilityOf(boolean visible) {
@@ -158,41 +160,22 @@ public class HomeFragment extends Fragment {
 
         float dpCalculation = getResources().getDisplayMetrics().density;
 
-        // Profile Photo
-        RelativeLayout imageHolder = new RelativeLayout(getContext());
-        RelativeLayout.LayoutParams imageHolderParams = new RelativeLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                (int) (220 * dpCalculation)
-        );
-        imageHolder.setLayoutParams(imageHolderParams);
-        imageHolder.setGravity(Gravity.CENTER);
-        imageHolder.setBackgroundColor(Color.parseColor("#121212"));
-
-        CircleImageView profilePhoto = new CircleImageView(getContext());
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        params.gravity = Gravity.CENTER_HORIZONTAL;
-        profilePhoto.setLayoutParams(params);
-        profilePhoto.setBorderColor(getResources().getColor(R.color.white));
-        profilePhoto.setBorderWidth(2);
-        try {
-            profilePhoto.getLayoutParams().height = (int) (150 * dpCalculation);
-            profilePhoto.getLayoutParams().width = (int) (150 * dpCalculation);
-        } catch(Exception e) {
-            Log.e("mfc", e+"");
-        }
+        // Name, Email and Profile Photo
+        TextView name = homeView.findViewById(R.id.name);
+        TextView email = homeView.findViewById(R.id.email);
+        CircleImageView profilePhoto = homeView.findViewById(R.id.profilePhoto);
+        name.setText(user.getName());
+        email.setText(user.getEmail());
         Glide.with(this).load(user.getProfilePhoto()).into(profilePhoto);
-
-        // Customize image params
-        imageHolder.addView(profilePhoto);
-        parentLayout.addView(imageHolder);
 
         // LinearLayout
         for (List<String> element : list) {
             // Add the text layout to the parent layout
             view = layoutInflater.inflate(R.layout.profilefieldelement, null);
+
+            // handle Name and Email seperately
+            if(element.get(0).equals("email")) continue;
+            if(element.get(0).equals("name")) continue;
 
             // In order to get the view we have to use the new view with text_layout in it
             TextView t1 = (TextView) view.findViewById(R.id.t1);
