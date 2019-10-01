@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="15dp"
-    app:cardCornerRadius="12dp"
+    app:cardCornerRadius="5dp"
     app:cardElevation="3dp"
     android:background="@drawable/notes_card_background"
     android:foreground="?selectableItemBackground"

@@ -76,15 +76,14 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
                     android:layout_marginTop="50dp"
-                    android:orientation="horizontal"
-                    android:weightSum="2">
+                    android:orientation="horizontal">
 
 
                     <TextView
                         android:id="@+id/blog_comment_count"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="30dp"
+                        android:layout_marginLeft="10dp"
                         android:layout_weight="1"
                         android:text="No Comments"
                         android:textColor="@color/white" />
@@ -92,15 +91,19 @@
                     <View
                         android:layout_width="1dp"
                         android:layout_height="30dp"
-                        android:layout_marginRight="70dp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginLeft="60dp"
                         android:background="@color/white" />
+                    <View
+                        android:layout_width="100dp"
+                        android:layout_height="30dp"/>
 
                     <TextView
                         android:id="@+id/time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:hint="Time"
+                        android:hint="Timeeeee"
+                        android:layout_marginRight="10dp"
                         android:textColor="@color/white"
                         android:textColorHint="@color/white" />
                 </LinearLayout>

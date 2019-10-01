@@ -6,74 +6,80 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/profilePic"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="340dp"
-        android:layout_marginRight="340dp"
-        android:elevation="3dp"
-        android:src="@drawable/account_circle"
-        app:layout_constraintEnd_toEndOf="@+id/cardView"
-        app:layout_constraintTop_toTopOf="@+id/cardView" />
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView"
+        android:id="@+id/questionCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginLeft="20dp"
         android:layout_marginTop="32dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginRight="20dp"
-        android:background="@drawable/answer_back"
-        android:foregroundTint="@color/darkCyan"
-        app:cardCornerRadius="40dp"
+        android:clickable="true"
+        android:foreground="?android:attr/selectableItemBackground"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-
-
+        app:layout_constraintTop_toTopOf="parent"
+        android:elevation="12dp"
+        android:outlineAmbientShadowColor="@color/black"
+        android:outlineSpotShadowColor="@color/black"
+        android:shadowDx="30"
+        android:shadowDy="30"
+        app:cardElevation="10dp"
+        android:shadowColor="#000">
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="0dp"
-            android:background="@drawable/answer_back_curved"
-            android:padding="15dp"
             android:orientation="vertical"
+            android:background="#F2F2F2"
+            android:padding="7dp"
             app:layout_constraintBottom_toBottomOf="parent">
+            <ImageView
+                android:id="@+id/delete"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_gravity="end"
+                android:tint="@color/black"
+                app:srcCompat="@drawable/ic_delete_forever_black_24dp" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:weightSum="2">
 
-            <TextView
-                android:id="@+id/user_name"
-                android:layout_width="wrap_content"
-                android:layout_height="24dp"
-                android:layout_marginStart="56dp"
-                android:layout_marginLeft="56dp"
-                android:layout_marginTop="2dp"
-                android:layout_marginBottom="12dp"
-                android:layout_weight="1"
-                android:hint="Username"
-                android:textStyle="bold" />
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/profilePic"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/account_24dp"
+                    app:layout_constraintEnd_toEndOf="@+id/questionCard"
+                    app:layout_constraintTop_toTopOf="@+id/questionCard" />
+
+                <TextView
+                    android:id="@+id/user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginLeft="6dp"
+                    android:layout_marginTop="2dp"
+                    android:textColor="#707070"
+                    android:textSize="12dp"
+                    android:layout_marginBottom="12dp"
+                    android:layout_weight="1"
+                    android:hint="Username"
+                    android:textStyle="bold" />
+
                 <TextView
                     android:id="@+id/time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textSize="12dp"
                     android:layout_marginTop="2dp"
                     android:layout_marginEnd="8dp"
-                    android:layout_weight="1"
                     android:layout_marginRight="8dp"
+                    android:textColor="#707070"
                     android:layout_marginBottom="12dp"
+                    android:layout_weight="1"
                     android:text="TextView"
                     app:layout_constraintBottom_toTopOf="@+id/Question"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -85,34 +91,43 @@
                 android:id="@+id/Question"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:maxHeight="330dp"
                 android:layout_marginLeft="12dp"
-                android:hint="Question"
-                android:textStyle="italic"
+                android:layout_marginTop="12dp"
                 android:layout_marginBottom="5dp"
+                android:hint="Question"
+                android:textColor="#707070"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:textSize="25sp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
-
-
+                android:textStyle="bold" />
 
 
             <TextView
                 android:id="@+id/Content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxHeight="100dp"
-                android:layout_marginTop="16dp"
-                android:hint="Content"
-                android:textSize="15sp"
-                android:textAlignment="center"
-                android:gravity="center_horizontal"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
+                android:layout_marginLeft="12dp"
+                android:hint="Content"
+                android:textColor="#707070"
                 android:inputType="textMultiLine"
+                android:maxHeight="100dp"
                 android:scrollbarAlwaysDrawVerticalTrack="true"
-                android:textStyle="italic"/>
+                android:textSize="15sp"
+                android:textStyle="italic" />
 
-
-
+            <ImageView
+                android:id="@+id/answerImage"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="24dp"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/Question"
+                app:srcCompat="@drawable/bg" />
 
 
             <TextView
@@ -120,27 +135,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="12dp"
+                android:textColor="@color/black"
+                android:textSize="12dp"
                 android:layout_marginTop="25dp"
                 android:layout_marginBottom="20dp"
                 android:hint="Answer" />
-
-
-
-
-
-
-            <ImageView
-                android:id="@+id/answerImage"
-                android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:layout_marginTop="24dp"
-                android:adjustViewBounds="true"
-                android:scaleType="centerCrop"
-                android:layout_gravity="center_horizontal"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/Question"
-                app:srcCompat="@drawable/bg" />
-
 
 
 
@@ -149,38 +148,16 @@
                 android:id="@+id/answers"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="No.of answers"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
+
                 android:layout_marginBottom="17dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/Answers"
-                app:layout_constraintStart_toEndOf="@+id/delete"
-                app:layout_constraintTop_toBottomOf="@+id/Answer" />
-
-            <ImageView
-                android:id="@+id/delete"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="0dp"
-                android:layout_marginEnd="204dp"
-                android:layout_marginRight="204dp"
-                android:layout_marginBottom="-100dp"
-                app:srcCompat="@drawable/ic_delete_forever_black_24dp" />
+                android:textSize="9dp"
+                android:hint="No.of answers" />
 
 
-            <Button
-                android:id="@+id/Answers"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="64dp"
-                android:background="@drawable/solid_button_background"
-                android:padding="10dp"
-                android:text="Explore"
-                android:layout_gravity="center_horizontal"
-                android:textColor="@color/white"/>
+
+
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
