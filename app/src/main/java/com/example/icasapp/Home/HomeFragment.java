@@ -101,12 +101,12 @@ public class HomeFragment extends Fragment {
             }
         }).start();
 
-        homeView.findViewById(R.id.test_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getContext(), TimeTableDisplay.class));
-            }
-        });
+//        homeView.findViewById(R.id.test_button).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                startActivity(new Intent(getContext(), TimeTableDisplay.class));
+//            }
+//        });
 
         return homeView;
     }
