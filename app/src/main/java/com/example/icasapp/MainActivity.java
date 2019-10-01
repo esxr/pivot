@@ -2,6 +2,7 @@ package com.example.icasapp;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -220,15 +221,17 @@ public class MainActivity extends AppCompatActivity{
             public boolean onNavigationItemSelected(MenuItem item) {
 
                 switch (item.getItemId()) {
-                    case R.id.nav_home:
-                        viewPager.setCurrentItem(0);
-                        break;
                     case R.id.nav_edit_profile:
                         startActivity(new Intent(getApplicationContext(), EditProfileActivity.class));
                         break;
                     case R.id.nav_sign_out:
                         signOut();
                         return true;
+                    case R.id.nav_help:
+                        Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+                        emailIntent.setData(Uri.parse("mailto:icasapp.team@gmail.com"));
+                        startActivity(Intent.createChooser(emailIntent, "Send feedback"));
+                        break;
                     case R.id.nav_developer_options:
                         Intent intent = new Intent(MainActivity.this, DeveloperOptions.class);
                         startActivity(intent);

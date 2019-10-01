@@ -26,11 +26,11 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position){
             case 0:
-                return new HomeFragment();
+                return new ForumFragment();
             case 1:
                 return new NotesFragment();
             case 2:
-                return new ForumFragment();
+                return new HomeFragment();
             case 3:
                 return new FeedFragment();
             default:
@@ -50,11 +50,11 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position){
             case 0:
-                return "HOME";
+                return "FORUMS";
             case 1:
                 return "NOTES";
             case 2:
-                return "FORUMS";
+                return "HOME";
             case 3:
                 return "FEED";
             default:
