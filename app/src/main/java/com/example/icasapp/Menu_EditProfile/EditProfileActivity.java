@@ -22,7 +22,7 @@ public class EditProfileActivity extends AppCompatActivity {
         editProfilePagerAdapter = new EditProfilePagerAdapter(getSupportFragmentManager());
         pager.setAdapter(editProfilePagerAdapter);
 
-        switch (GlobalState.userType){
+        switch (GlobalState.globalState.getUserType()){
             case "STUDENT":
                 pager.setCurrentItem(0);
                 break;

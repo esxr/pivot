@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatEditText;
@@ -65,9 +66,11 @@ public class UserRegCredentialFragment extends Fragment {
                 if(formHelper.validatePassword(password)) {
                     store();
                     updateUI();
+                    RegisterProgressActivity.stepView.go(2,true);
+                    RegisterProgressActivity.i++;
+                }else{
+                    Toast.makeText(getContext(), "PASSWORD SHOULD BE OF ATLEAST 6 CHARACTERS.", Toast.LENGTH_LONG).show();
                 }
-                RegisterProgressActivity.stepView.go(2,true);
-                RegisterProgressActivity.i++;
             }
         });
 

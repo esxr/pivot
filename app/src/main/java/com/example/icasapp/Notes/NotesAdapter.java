@@ -1,6 +1,7 @@
 package com.example.icasapp.Notes;
 
 import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -19,6 +20,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.icasapp.Firebase.FirebaseHelper;
+import com.example.icasapp.GlobalState;
 import com.example.icasapp.R;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -27,6 +29,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -44,13 +48,15 @@ public class NotesAdapter extends FirestoreRecyclerAdapter<Notes, NotesAdapter.N
      * @param options
      */
 
-    private String fileName;
+    private String fileName, buffer;
     private ProgressDialog progressBar;
+    private FirebaseFirestore db;
 
 
     NotesAdapter(@NonNull FirestoreRecyclerOptions<Notes> options) {
         super(options);
         fileName = "";
+        db = FirebaseFirestore.getInstance();
     }
 
     @SuppressLint("SetTextI18n")
@@ -61,13 +67,25 @@ public class NotesAdapter extends FirestoreRecyclerAdapter<Notes, NotesAdapter.N
         notesHolder.sessionalInput.setText("Ses:" + notes.getSessional());
         notesHolder.authorName.setText("Auth:" + notes.getUsername());
         notesHolder.subjectName.setText("" + notes.getSubject());
+        notesHolder.deleteButton.setVisibility(View.INVISIBLE);
 
 
-//        if (notes.getUsername().equalsIgnoreCase(FirebaseHelper.getUser().getDisplayName())) {
-//            notesHolder.deleteButton.setVisibility(View.VISIBLE);
-//        } else {
-//            notesHolder.deleteButton.setVisibility(View.INVISIBLE);
-//        }
+        db
+                .collection("USER")
+                .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        DocumentSnapshot documentSnapshot = task.getResult();
+                        if(documentSnapshot.exists() && task.isSuccessful()){
+                            buffer = documentSnapshot.get("buffer").toString();
+                            if(!buffer.equals("3.0") && !buffer.equals("1.0"))
+                                notesHolder.deleteButton.setVisibility(View.VISIBLE);
+                        }
+
+                    }
+                });
 
         notesHolder.downloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,12 +99,12 @@ public class NotesAdapter extends FirestoreRecyclerAdapter<Notes, NotesAdapter.N
         notesHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                new AlertDialog.Builder(view.getContext())
+                new AlertDialog
+                        .Builder(view.getContext())
                         .setIcon(R.drawable.alert)
                         .setTitle("ARE YOU SURE?")
                         .setCancelable(false)
                         .setMessage("This will delete the " + notes.getFileName() + " file forever.")
-
                         .setPositiveButton("YES", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {

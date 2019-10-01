@@ -1,36 +1,52 @@
 package com.example.icasapp.Home;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.Group;
 import androidx.fragment.app.Fragment;
 
+import android.text.Layout;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.icasapp.DeveloperOptions.DeveloperOptions;
 import com.example.icasapp.Firebase.FirebaseHelper;
+import com.example.icasapp.MainActivity;
 import com.example.icasapp.Profile.ProfileAdapter;
 import com.example.icasapp.Profile.ProfileDisplayActivity;
 import com.example.icasapp.R;
+import com.example.icasapp.TimeTableDisplay;
 import com.example.icasapp.User.TestUser;
 import com.example.icasapp.User.User;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -44,9 +60,10 @@ public class HomeFragment extends Fragment {
     private ArrayList<User> items;
     private ProfileAdapter itemsAdapter;
     private ListView listView;
+    private FirebaseFirestore firebaseFirestore;
 
     //Search
-    private EditText query;
+    private AutoCompleteTextView query;
 
     //toggle
     private Group group;
@@ -76,17 +93,20 @@ public class HomeFragment extends Fragment {
             }
         }).start();
 
-        new Thread(new Runnable() {
-            public void run() {
-                setProfileSearch();
-            }
-        }).start();
+        setProfileSearch();
 
         new Thread(new Runnable() {
             public void run() {
                 populateView(FirebaseHelper.getUser().getUid());
             }
         }).start();
+
+//        homeView.findViewById(R.id.test_button).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                startActivity(new Intent(getContext(), TimeTableDisplay.class));
+//            }
+//        });
 
         return homeView;
     }
@@ -104,8 +124,10 @@ public class HomeFragment extends Fragment {
     //toggle functionality
     private void toggle() {
         homeV = homeView.findViewById(R.id.homeV);
+        LinearLayout photoLayout = homeView.findViewById(R.id.photoLayout);
         group.setVisibility(visibilityOf(visible));
         homeV.setVisibility(visibilityOf(!visible));
+        photoLayout.setVisibility(visibilityOf(!visible));
         visible = !visible;
     }
     private int visibilityOf(boolean visible) {
@@ -116,6 +138,7 @@ public class HomeFragment extends Fragment {
     private void setSearchToggle() {
         group = (Group) homeView.findViewById(R.id.group);
         ImageButton searchInitButton = homeView.findViewById(R.id.initSearch);
+
         searchInitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -132,37 +155,27 @@ public class HomeFragment extends Fragment {
         LinearLayout parentLayout = (LinearLayout) homeView.findViewById(R.id.homeV);
 
         // Layout inflater
-
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
         View view;
 
-        // Profile Photo
-        ImageView profilePhoto = new ImageView(getContext());
         float dpCalculation = getResources().getDisplayMetrics().density;
 
-        // Customize image params
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        params.gravity = Gravity.CENTER_HORIZONTAL;
-        profilePhoto.setLayoutParams(params);
-
-        profilePhoto.setScaleType(ImageView.ScaleType.CENTER);
-        try {
-            profilePhoto.getLayoutParams().height = (int) (150 * dpCalculation);
-            profilePhoto.getLayoutParams().width = (int) (150 * dpCalculation);
-        } catch(Exception e) {
-            Log.e("mfc", e+"");
-        }
-
+        // Name, Email and Profile Photo
+        TextView name = homeView.findViewById(R.id.name);
+        TextView email = homeView.findViewById(R.id.email);
+        CircleImageView profilePhoto = homeView.findViewById(R.id.profilePhoto);
+        name.setText(user.getName());
+        email.setText(user.getEmail());
         Glide.with(this).load(user.getProfilePhoto()).into(profilePhoto);
-        parentLayout.addView(profilePhoto);
 
         // LinearLayout
         for (List<String> element : list) {
             // Add the text layout to the parent layout
             view = layoutInflater.inflate(R.layout.profilefieldelement, null);
+
+            // handle Name and Email seperately
+            if(element.get(0).equals("email")) continue;
+            if(element.get(0).equals("name")) continue;
 
             // In order to get the view we have to use the new view with text_layout in it
             TextView t1 = (TextView) view.findViewById(R.id.t1);
@@ -208,7 +221,24 @@ public class HomeFragment extends Fragment {
     }
 
     private void setProfileSearch() {
-        query = (EditText) homeView.findViewById(R.id.query);
+        query =  homeView.findViewById(R.id.query);
+
+        final ArrayAdapter<String> autoComplete = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1);
+
+        firebaseFirestore = FirebaseFirestore.getInstance();
+
+        firebaseFirestore.collection("USER").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                for (DocumentSnapshot documentSnapshot : task.getResult()) {
+
+                    autoComplete.add(documentSnapshot.get("name").toString());
+                }
+            }
+        });
+
+        query.setAdapter(autoComplete);
+
         Button profileSearch = (Button) homeView.findViewById(R.id.profileSearch);
         profileSearch.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -1,6 +1,7 @@
 package com.example.icasapp.Auth;
 
 import android.app.ActivityOptions;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
@@ -44,6 +45,7 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +55,8 @@ public class LoginActivity extends AppCompatActivity {
         inputPassword = findViewById(R.id.inputPassword);
         onReg = findViewById(R.id.button3);
         Login = findViewById(R.id.login);
+
+
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
@@ -117,12 +121,12 @@ public class LoginActivity extends AppCompatActivity {
                                 finish();
                                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
 
+
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Log.w("msg", "signInWithEmail:failure", task.getException());
                                 Toast.makeText(getApplicationContext(), "Authentication failed.",
                                         Toast.LENGTH_SHORT).show();
-
                             }
 
                             // ...

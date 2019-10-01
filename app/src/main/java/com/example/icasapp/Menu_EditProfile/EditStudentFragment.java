@@ -1,6 +1,7 @@
 package com.example.icasapp.Menu_EditProfile;
 
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -23,6 +24,7 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.example.icasapp.MainActivity;
 import com.example.icasapp.R;
 import com.example.icasapp.Student;
 import com.google.android.gms.tasks.Continuation;
@@ -69,6 +71,8 @@ public class EditStudentFragment extends Fragment {
     byte[] compressedImageData;
     FirebaseFirestore db;
     private View view;
+    private Context mContext;
+
 
     public EditStudentFragment() {
         // Required empty public constructor
@@ -80,6 +84,8 @@ public class EditStudentFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_edit_student, container, false);
+        mContext = getActivity();
+
 
         profileName = view.findViewById(R.id.profileName);
         profileName.setText(Student.student.getName());
@@ -102,7 +108,6 @@ public class EditStudentFragment extends Fragment {
         resetPasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
 
                 new AlertDialog.Builder(getContext())
                         .setTitle("A password reset form will been sent to your mail.")
@@ -142,7 +147,8 @@ public class EditStudentFragment extends Fragment {
                 "Mechatronics",
                 "Electrical",
                 "Aero",
-                "Civil"
+                "Civil",
+                "None"
         };
 
         final List<String> streamList = new ArrayList<>(Arrays.asList(streams));
@@ -345,9 +351,14 @@ public class EditStudentFragment extends Fragment {
                     @Override
                     public void onComplete(@androidx.annotation.NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            Toast.makeText(getContext(), "UPDATED.", Toast.LENGTH_LONG).show();
+                            if (EditStudentFragment.this.isVisible() & mContext != null)
+                                Toast.makeText(mContext, "UPDATED", Toast.LENGTH_LONG).show();
+                       //     Toast.makeText(getContext(), "UPDATED.", Toast.LENGTH_LONG).show();
+                            startActivity(new Intent(mContext, MainActivity.class));
                         } else {
-                            Toast.makeText(getContext(), "FAILED. RETRY.", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getActivity(), "FAILED. RETRY.", Toast.LENGTH_LONG).show();
+                            startActivity(new Intent(getContext(), MainActivity.class));
+                            getActivity().finish();
                         }
                     }
                 });
