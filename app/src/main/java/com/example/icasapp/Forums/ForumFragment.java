@@ -285,53 +285,6 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
 
 
     public void setSubjectArray(final View view) {
-//        firebaseFirestore.collection("Specific").document(ID).collection("Subjects").addSnapshotListener(new EventListener<QuerySnapshot>() {
-//            @Override
-//            public void onEvent(@javax.annotation.Nullable QuerySnapshot queryDocumentSnapshots, @javax.annotation.Nullable FirebaseFirestoreException e) {
-//
-//                for (DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()) {
-//                    subject.add(doc.getId());
-//                }
-//
-//                subject.add(0,"General");
-//
-//                subject.add("Alumni");
-//                spinner = view.findViewById(R.id.subjects);
-//
-//                //creates new adapter with inflated subject
-//                ArrayAdapter<String> a = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, subject);
-//                a.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//
-//                spinner.setAdapter(a);
-//
-//                //when a spinner item is selected, snapshot is added to its particular category item
-//                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//                    @Override
-//                    public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-//
-//
-//
-//                        Category = subject.get(position);
-//                        setAddPost();
-//                        //Query static variable is created that points to the category that has its constituent topic
-//                        setFirestoreReference(firebaseFirestore,i_d,"q");
-//
-//                        //add snapshot to query
-//                        addSnapshotToQuery(query);
-//
-//                    }
-//
-//
-//                    @Override
-//                    public void onNothingSelected(AdapterView<?> parent) {
-//
-//                    }
-//
-//                });
-//
-//                //after category is initialised
-//            }
-//        });
 
             subject.add(0,"General");
 

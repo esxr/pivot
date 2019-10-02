@@ -4,13 +4,19 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.example.icasapp.R;
+import com.jsibbold.zoomage.ZoomageView;
 
 public class questionView extends AppCompatActivity {
     String activity;
+    private ScaleGestureDetector mScaleGestureDetector;
+    private float mScaleFactor = 1.0f;
+    private ZoomageView image;
 
 
     @Override
@@ -19,10 +25,11 @@ public class questionView extends AppCompatActivity {
         setContentView(R.layout.activity_question_view);
 
         Intent intent = getIntent();
-        ImageView image = findViewById(R.id.image);
+        image = findViewById(R.id.image);
         String url = intent.getStringExtra("image_url");
         activity = intent.getStringExtra("activity");
         Glide.with(getApplicationContext()).load(url).into(image);
+
 
 
     }
@@ -31,4 +38,5 @@ public class questionView extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
     }
+
 }
