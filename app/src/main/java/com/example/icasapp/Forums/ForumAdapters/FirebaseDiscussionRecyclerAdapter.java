@@ -73,6 +73,8 @@ public class FirebaseDiscussionRecyclerAdapter extends FirestoreRecyclerAdapter<
         int n = discussionTopic.getQuestion();
         discussionHolder.setCommentCount(Integer.toString(n));
 
+        discussionHolder.delete.setVisibility(View.GONE);
+
         final int question=discussionTopic.getQuestion();
         discussionHolder.setCommentCount(Integer.toString(question));
 

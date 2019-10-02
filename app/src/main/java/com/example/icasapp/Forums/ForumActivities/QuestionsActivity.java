@@ -65,9 +65,7 @@ public class QuestionsActivity extends AppCompatActivity {
             Log.i("LOL","SUCC");
             collectionReference = firebaseFirestore.collection("General").document(Category).collection("Posts");
         } else {
-
-
-                collectionReference = firebaseFirestore.collection("Specific").document(i_d).collection("Subjects").document(Category).collection("Posts");
+            collectionReference = firebaseFirestore.collection("Specific").document(i_d).collection("Subjects").document(Category).collection("Posts");
 
 
         }

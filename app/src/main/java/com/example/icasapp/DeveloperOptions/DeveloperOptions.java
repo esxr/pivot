@@ -15,11 +15,15 @@ import com.example.icasapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 public class DeveloperOptions extends AppCompatActivity {
@@ -31,6 +35,7 @@ public class DeveloperOptions extends AppCompatActivity {
     Button authentication;
     Button setFacultySubjects;
     Button setPriveledge;
+    ArrayList arrayList;
     FirebaseFirestore firebaseFirestore;
 
     @Override
@@ -62,7 +67,7 @@ public class DeveloperOptions extends AppCompatActivity {
             public void onClick(View v) {
                 Log.i("DEVOPS","clicked");
                 FirebaseForumsHelper firebaseForumsHelper = new FirebaseForumsHelper();
-              //  firebaseForumsHelper.answerEmptyDelete();
+                //firebaseForumsHelper.answerEmptyDelete();
                 firebaseForumsHelper.emptyTopicDelete();
                // firebaseForumsHelper.questionEmptyDelete();
             }
@@ -81,6 +86,31 @@ public class DeveloperOptions extends AppCompatActivity {
                 
             }
         });
+
+//        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+//        arrayList = new ArrayList();
+//
+//        firebaseFirestore.collection("Specific").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                for(DocumentSnapshot documentSnapshot : task.getResult()){
+//                    final DocumentReference documentReference = documentSnapshot.getReference();
+//                    documentReference.collection("Subjects").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                            for(DocumentSnapshot documentSnapshot : task.getResult()){
+//                                arrayList.add(documentSnapshot.getId());
+//                            }
+//                            HashMap map = new HashMap();
+//                            map.put("subjects",arrayList);
+//                            documentReference.set(map,SetOptions.merge());
+//                            arrayList.clear();
+//                        }
+//                    });
+//                }
+//
+//            }
+//        });
 
 
     }

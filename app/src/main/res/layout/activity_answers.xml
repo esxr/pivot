@@ -51,6 +51,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
                     android:layout_weight="1"
+                    android:paddingTop="10dp"
+                    android:layout_gravity="center"
                     android:background="@android:color/transparent"
                     android:text="Recent" />
 
@@ -58,7 +60,9 @@
                     android:id="@+id/topVoted"
                     android:layout_width="wrap_content"
                     android:layout_marginTop="-10dp"
+                    android:layout_gravity="center"
                     android:layout_height="50dp"
+                    android:paddingTop="10dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:text="Top Voted" />
