@@ -9,6 +9,7 @@ import androidx.constraintlayout.widget.Group;
 import androidx.fragment.app.Fragment;
 
 import android.text.Layout;
+import android.text.method.TextKeyListener;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -41,6 +42,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.jgabrielfreitas.core.BlurImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -168,8 +170,18 @@ public class HomeFragment extends Fragment {
         email.setText(user.getEmail());
         Glide.with(this).load(user.getProfilePhoto()).into(profilePhoto);
 
+
+        if(!user.getProfilePhoto().isEmpty()) {
+            BlurImageView blurImageView = homeView.findViewById(R.id.blurImage);
+            Glide.with(this).load(user.getProfilePhoto()).into(blurImageView);
+        }
+
         // LinearLayout
         for (List<String> element : list) {
+            // Apply Case to elements
+           String key = capitalize(element.get(0));
+           String value = capitalize(element.get(1));
+
             // Add the text layout to the parent layout
             view = layoutInflater.inflate(R.layout.profilefieldelement, null);
 
@@ -179,14 +191,20 @@ public class HomeFragment extends Fragment {
 
             // In order to get the view we have to use the new view with text_layout in it
             TextView t1 = (TextView) view.findViewById(R.id.t1);
-            t1.setText(element.get(0));
+            t1.setText(key);
 
             TextView t2 = (TextView) view.findViewById(R.id.t2);
-            t2.setText(element.get(1));
+            t2.setText(value);
 
             // Add the text view to the parent layout
             parentLayout.addView(view);
         }
+    }
+
+    public static String capitalize(String str)
+    {
+        if(str == null) return str;
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 
     private void populateView(String uid) {

@@ -75,6 +75,7 @@ dependencies {
     implementation 'com.shuhart.stepview:stepview:1.5.0'
     implementation 'com.google.firebase:firebase-auth:19.0.0'
     implementation 'com.google.android.gms:play-services-auth:17.0.0'
+    implementation 'com.github.jgabrielfreitas:BlurImageView:1.0.1'
 
 }
 apply plugin: 'com.google.gms.google-services'

@@ -6,52 +6,70 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         tools:context=".Home.HomeFragment"
-        android:background="#c5aeae">
+        android:background="@color/white">
 
         <!--ONLY FOR DEBUGGING -->
         <!--data binding-->
+        <com.jgabrielfreitas.core.BlurImageView
+            android:id="@+id/blurImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:radius="3"
+            android:src="@drawable/pivot_back"
+            android:scaleType="centerCrop"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+                android:background="@color/black"
+                android:alpha="0.8"/>
 
         <LinearLayout
             app:layout_constraintTop_toTopOf="parent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="#c5aeae"
+            android:background="@android:color/transparent"
             android:id="@+id/photoLayout">
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/profilePhoto"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
                     android:layout_centerHorizontal="true"
                     android:layout_gravity="center"
-                    android:layout_marginTop="15dp"
-                    android:elevation="2dp"
-                    app:civ_border_color="@color/white"
-                    app:civ_border_width="2dp" />
+                    android:layout_marginTop="35dp"
+                    android:elevation="2dp" />
 
                 <TextView
+                    android:layout_marginTop="20dp"
                     android:id="@+id/name"
                     android:layout_gravity="center"
+                    android:textColor="#c5aeae"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
                 <TextView
+                    android:layout_marginTop="10dp"
                     android:layout_gravity="center"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="#c5aeae"
                     android:id="@+id/email"/>
 
         </LinearLayout>
 
         <LinearLayout
+            android:layout_marginTop="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/photoLayout"
             android:layout_width="match_parent"
+            android:gravity="center_horizontal"
             android:layout_height="wrap_content"
             android:id="@+id/homeV"
-            android:orientation="vertical"></LinearLayout>
+            android:orientation="vertical">
+
+        </LinearLayout>
 
         <!--Group-->
         <androidx.constraintlayout.widget.Group
