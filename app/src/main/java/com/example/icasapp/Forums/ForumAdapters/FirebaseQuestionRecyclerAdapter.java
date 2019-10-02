@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -87,32 +88,31 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
 
         questionHolder.delete.setVisibility(View.GONE);
 
-        if(!name.equals("empty"))
-        firebaseFirestore.collection("USER").document(uid).addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
-                if(documentSnapshot.exists()){
-                    Log.d("NAME", documentSnapshot.get("name").toString());
-                    String user_name = documentSnapshot.get("name").toString();
-                    questionHolder.setUsername(user_name);
+        if(!name.equals("empty")) {
+            firebaseFirestore.collection("USER").document(uid).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                @Override
+                public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
+                    if (documentSnapshot.exists()) {
+                        Log.d("NAME", documentSnapshot.get("name").toString());
+                        String user_name = documentSnapshot.get("name").toString();
+                        questionHolder.setUsername(user_name);
 
 
-                    listener3 = firebaseFirestore.collection("USER").document(uid).addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                        @Override
-                        public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
-                            try {
-                                String url = documentSnapshot.get("downloadURL").toString();
-                                questionHolder.setProfileView(url);
+                        listener3 = firebaseFirestore.collection("USER").document(uid).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                            @Override
+                            public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
+                                try {
+                                    String url = documentSnapshot.get("downloadURL").toString();
+                                    questionHolder.setProfileView(url);
+                                } catch (Exception d) {
+                                    Log.d("msg", "Question Adapter. No photo of user");
+                                }
                             }
-                            catch (Exception d)
-                            {
-                                Log.d("msg","Question Adapter. No photo of user");
-                            }
-                        }
-                    });
+                        });
+                    }
                 }
-            }
-        });
+            });
+        }
         else{
             questionHolder.setUsername("Anonymous");
         }
@@ -127,20 +127,22 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
         Log.i("total answers",totalAnswers);
         questionHolder.setDisplayAnswers(totalAnswers);
 
+        questionHolder.questionCard.setOnClickListener(new View.OnClickListener() {
+                                                           @Override
+                                                           public void onClick(View v) {
+                                                               Intent intent = new Intent(context, AnswersActivity.class);
+                                                               intent.putExtra("id", id);
+                                                               intent.putExtra("topic", question);
+                                                               intent.putExtra("content", content);
+                                                               intent.putExtra("Category", Category);
+                                                               intent.putExtra("ID", i_d);
+                                                               intent.putExtra("post_id", docId);
+                                                               context.startActivity(intent);
+                                                           }
+                                                       });
 
-                questionHolder.addAnswer.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(context, AnswersActivity.class);
-                        intent.putExtra("id", id);
-                        intent.putExtra("topic", question);
-                        intent.putExtra("content", content);
-                        intent.putExtra("Category", Category);
-                        intent.putExtra("ID", i_d);
-                        intent.putExtra("post_id",docId);
-                        context.startActivity(intent);
-                    }
-                });
+
+
 
 
 
@@ -204,7 +206,6 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
                 //sets best answer
                 bestAnswer(i, questionHolder);
 
-
 if(url.equals("")){
     questionHolder.displayPicture.setVisibility(View.GONE);
 }else{
@@ -236,7 +237,6 @@ if(url.equals("")){
 
         private TextView question;
 
-        private Button addAnswer;
 
         private TextView userName;
 
@@ -254,16 +254,19 @@ if(url.equals("")){
 
         private ImageView displayPicture;
 
+        private CardView questionCard;
+
 
         public QuestionHolder(@NonNull View itemView) {
             super(itemView);
             mView = itemView;
-            addAnswer = mView.findViewById(R.id.Answers);
+
             userName = mView.findViewById(R.id.user_name);
             delete = mView.findViewById(R.id.delete);
             displayAnswers = mView.findViewById(R.id.answers);
             content = mView.findViewById(R.id.Content);
             displayPicture = mView.findViewById(R.id.answerImage);
+            questionCard = mView.findViewById(R.id.questionCard);
         }
 
         public void setQuestion(String message){

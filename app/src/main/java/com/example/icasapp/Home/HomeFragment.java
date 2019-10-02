@@ -9,6 +9,7 @@ import androidx.constraintlayout.widget.Group;
 import androidx.fragment.app.Fragment;
 
 import android.text.Layout;
+import android.text.method.TextKeyListener;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -29,9 +30,11 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.icasapp.DeveloperOptions.DeveloperOptions;
 import com.example.icasapp.Firebase.FirebaseHelper;
+import com.example.icasapp.MainActivity;
 import com.example.icasapp.Profile.ProfileAdapter;
 import com.example.icasapp.Profile.ProfileDisplayActivity;
 import com.example.icasapp.R;
+import com.example.icasapp.TimeTableDisplay;
 import com.example.icasapp.User.TestUser;
 import com.example.icasapp.User.User;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -39,6 +42,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.jgabrielfreitas.core.BlurImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,6 +103,13 @@ public class HomeFragment extends Fragment {
             }
         }).start();
 
+//        homeView.findViewById(R.id.test_button).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                startActivity(new Intent(getContext(), TimeTableDisplay.class));
+//            }
+//        });
+
         return homeView;
     }
 
@@ -115,8 +126,10 @@ public class HomeFragment extends Fragment {
     //toggle functionality
     private void toggle() {
         homeV = homeView.findViewById(R.id.homeV);
+        LinearLayout photoLayout = homeView.findViewById(R.id.photoLayout);
         group.setVisibility(visibilityOf(visible));
         homeV.setVisibility(visibilityOf(!visible));
+        photoLayout.setVisibility(visibilityOf(!visible));
         visible = !visible;
     }
     private int visibilityOf(boolean visible) {
@@ -149,52 +162,49 @@ public class HomeFragment extends Fragment {
 
         float dpCalculation = getResources().getDisplayMetrics().density;
 
-        // Profile Photo
-        RelativeLayout imageHolder = new RelativeLayout(getContext());
-        RelativeLayout.LayoutParams imageHolderParams = new RelativeLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                (int) (220 * dpCalculation)
-        );
-        imageHolder.setLayoutParams(imageHolderParams);
-        imageHolder.setGravity(Gravity.CENTER);
-        imageHolder.setBackgroundColor(Color.parseColor("#121212"));
-
-        CircleImageView profilePhoto = new CircleImageView(getContext());
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        params.gravity = Gravity.CENTER_HORIZONTAL;
-        profilePhoto.setLayoutParams(params);
-        profilePhoto.setBorderColor(getResources().getColor(R.color.white));
-        profilePhoto.setBorderWidth(2);
-        try {
-            profilePhoto.getLayoutParams().height = (int) (150 * dpCalculation);
-            profilePhoto.getLayoutParams().width = (int) (150 * dpCalculation);
-        } catch(Exception e) {
-            Log.e("mfc", e+"");
-        }
+        // Name, Email and Profile Photo
+        TextView name = homeView.findViewById(R.id.name);
+        TextView email = homeView.findViewById(R.id.email);
+        CircleImageView profilePhoto = homeView.findViewById(R.id.profilePhoto);
+        name.setText(user.getName());
+        email.setText(user.getEmail());
         Glide.with(this).load(user.getProfilePhoto()).into(profilePhoto);
 
-        // Customize image params
-        imageHolder.addView(profilePhoto);
-        parentLayout.addView(imageHolder);
+        try{
+        if(!user.getProfilePhoto().isEmpty()) {
+            BlurImageView blurImageView = homeView.findViewById(R.id.blurImage);
+            Glide.with(this).load(user.getProfilePhoto()).into(blurImageView);
+        }}
 
         // LinearLayout
         for (List<String> element : list) {
+            // Apply Case to elements
+           String key = capitalize(element.get(0));
+           String value = capitalize(element.get(1));
+
             // Add the text layout to the parent layout
             view = layoutInflater.inflate(R.layout.profilefieldelement, null);
 
+            // handle Name and Email seperately
+            if(element.get(0).equals("email")) continue;
+            if(element.get(0).equals("name")) continue;
+
             // In order to get the view we have to use the new view with text_layout in it
             TextView t1 = (TextView) view.findViewById(R.id.t1);
-            t1.setText(element.get(0));
+            t1.setText(key);
 
             TextView t2 = (TextView) view.findViewById(R.id.t2);
-            t2.setText(element.get(1));
+            t2.setText(value);
 
             // Add the text view to the parent layout
             parentLayout.addView(view);
         }
+    }
+
+    public static String capitalize(String str)
+    {
+        if(str == null) return str;
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 
     private void populateView(String uid) {

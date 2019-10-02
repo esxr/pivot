@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.icasapp.Forums.ForumAdapters.FirebaseDiscussionRecyclerAdapter;
+import com.example.icasapp.MainActivity;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.fragment.app.Fragment;
@@ -19,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.icasapp.Forums.ForumActivities.NewDiscussionActivity;
 import com.example.icasapp.ObjectClasses.DiscussionTopic;
@@ -277,53 +279,6 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
 
 
     public void setSubjectArray(final View view) {
-//        firebaseFirestore.collection("Specific").document(ID).collection("Subjects").addSnapshotListener(new EventListener<QuerySnapshot>() {
-//            @Override
-//            public void onEvent(@javax.annotation.Nullable QuerySnapshot queryDocumentSnapshots, @javax.annotation.Nullable FirebaseFirestoreException e) {
-//
-//                for (DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()) {
-//                    subject.add(doc.getId());
-//                }
-//
-//                subject.add(0,"General");
-//
-//                subject.add("Alumni");
-//                spinner = view.findViewById(R.id.subjects);
-//
-//                //creates new adapter with inflated subject
-//                ArrayAdapter<String> a = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, subject);
-//                a.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//
-//                spinner.setAdapter(a);
-//
-//                //when a spinner item is selected, snapshot is added to its particular category item
-//                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//                    @Override
-//                    public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-//
-//
-//
-//                        Category = subject.get(position);
-//                        setAddPost();
-//                        //Query static variable is created that points to the category that has its constituent topic
-//                        setFirestoreReference(firebaseFirestore,i_d,"q");
-//
-//                        //add snapshot to query
-//                        addSnapshotToQuery(query);
-//
-//                    }
-//
-//
-//                    @Override
-//                    public void onNothingSelected(AdapterView<?> parent) {
-//
-//                    }
-//
-//                });
-//
-//                //after category is initialised
-//            }
-//        });
 
             subject.add(0,"General");
 
@@ -381,7 +336,7 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
 
 
-
+                try{
                 Category = subject.get(position);
                 setAddPost();
                 firebaseFirestore.collection("Specific").document("parent").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -396,6 +351,10 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
                 });
 
             }
+            catch(Exception e)
+            {
+
+            }}
 
 
             @Override

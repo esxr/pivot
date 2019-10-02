@@ -157,7 +157,7 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
             @Override
             public void onClick(View v) {
                 deleteItem(position);
-                Log.i("POSITION", "INDELETE"+String.valueOf(position));
+                Log.i("POSITION", "INDELETE"+(position));
                 notifyDataSetChanged();
             }
         });
@@ -183,10 +183,11 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
             });}
 
         if(!name.equals("empty")){
-            holder.name.setOnClickListener(new View.OnClickListener() {
+           holder.name.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     final Intent intent = new Intent(context , ProfileDisplayActivity.class);
+                    Log.i("ID",id);
                     FirebaseHelper.getUserDetails(id, new FirebaseHelper.CallbackObject<Map<String, Object>>() {
                         @Override
                         public void callbackCall(Map<String, Object> object) {
@@ -224,6 +225,7 @@ public class FirebaseAnswerAdapter extends FirestoreRecyclerAdapter<Answers, Fir
                                     });
 
                                 } else {
+                                 
 
                                     HashMap<String, Object> postMap = new HashMap<>();
                                     postMap.put("timestamp", FieldValue.serverTimestamp());
