@@ -18,6 +18,7 @@ import com.example.icasapp.Firebase.FirebaseHelper;
 import com.example.icasapp.R;
 import com.example.icasapp.User.TestUser;
 import com.example.icasapp.User.User;
+import com.jgabrielfreitas.core.BlurImageView;
 
 import org.w3c.dom.Text;
 
@@ -65,53 +66,51 @@ public class ProfileDisplayActivity extends AppCompatActivity {
 
         float dpCalculation = getResources().getDisplayMetrics().density;
 
-        // Profile Photo
-        RelativeLayout imageHolder = new RelativeLayout(getApplicationContext());
-        RelativeLayout.LayoutParams imageHolderParams = new RelativeLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                (int) (220 * dpCalculation)
-        );
-        imageHolder.setLayoutParams(imageHolderParams);
-        imageHolder.setGravity(Gravity.CENTER);
-        imageHolder.setBackgroundColor(Color.parseColor("#121212"));
-
-        CircleImageView profilePhoto = new CircleImageView(getApplicationContext());
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        params.gravity = Gravity.CENTER_HORIZONTAL;
-        profilePhoto.setLayoutParams(params);
-        profilePhoto.setBorderColor(getResources().getColor(R.color.white));
-        profilePhoto.setBorderWidth(2);
-        try {
-            profilePhoto.getLayoutParams().height = (int) (150 * dpCalculation);
-            profilePhoto.getLayoutParams().width = (int) (150 * dpCalculation);
-        } catch(Exception e) {
-            Log.e("mfc", e+"");
-        }
+        // Name, Email and Profile Photo
+        TextView name = findViewById(R.id.profile_name);
+        TextView email = findViewById(R.id.profile_email);
+        CircleImageView profilePhoto = findViewById(R.id.profile_profilePhoto);
+        name.setText(user.getName());
+        email.setText(user.getEmail());
         Glide.with(this).load(user.getProfilePhoto()).into(profilePhoto);
 
-        // Customize image params
-        imageHolder.addView(profilePhoto);
-        parentLayout.addView(imageHolder);
+
+        if(!user.getProfilePhoto().isEmpty()) {
+            BlurImageView blurImageView = findViewById(R.id.profile_blurImage);
+            Glide.with(this).load(user.getProfilePhoto()).into(blurImageView);
+        }
 
         // LinearLayout
         for (List<String> element : list) {
+            // Apply Case to elements
+            String key = capitalize(element.get(0));
+            String value = capitalize(element.get(1));
+
             // Add the text layout to the parent layout
             view = layoutInflater.inflate(R.layout.profilefieldelement, null);
 
+            // handle Name and Email seperately
+            if(element.get(0).equals("email")) continue;
+            if(element.get(0).equals("name")) continue;
+
             // In order to get the view we have to use the new view with text_layout in it
             TextView t1 = (TextView) view.findViewById(R.id.t1);
-            t1.setText(element.get(0));
+            t1.setText(key);
 
             TextView t2 = (TextView) view.findViewById(R.id.t2);
-            t2.setText(element.get(1));
+            t2.setText(value);
 
             // Add the text view to the parent layout
             parentLayout.addView(view);
         }
     }
+
+    public static String capitalize(String str)
+    {
+        if(str == null) return str;
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
+    }
+
 
     private void populateView(String uid) {
         Log.e("populate", "Working 0");
