@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.icasapp.Forums.ForumAdapters.FirebaseDiscussionRecyclerAdapter;
+import com.example.icasapp.MainActivity;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.fragment.app.Fragment;
@@ -19,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.icasapp.Forums.ForumActivities.NewDiscussionActivity;
 import com.example.icasapp.ObjectClasses.DiscussionTopic;
@@ -342,7 +344,7 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
 
 
-
+                try{
                 Category = subject.get(position);
                 setAddPost();
                 firebaseFirestore.collection("Specific").document("parent").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -357,6 +359,10 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
                 });
 
             }
+            catch(Exception e)
+            {
+
+            }}
 
 
             @Override

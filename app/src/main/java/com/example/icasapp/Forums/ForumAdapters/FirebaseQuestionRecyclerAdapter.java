@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -126,24 +127,26 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
         Log.i("total answers",totalAnswers);
         questionHolder.setDisplayAnswers(totalAnswers);
 
-
-        questionHolder.addAnswer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, AnswersActivity.class);
-                intent.putExtra("id", id);
-                intent.putExtra("topic", question);
-                intent.putExtra("content", content);
-                intent.putExtra("Category", Category);
-                intent.putExtra("ID", i_d);
-                intent.putExtra("post_id",docId);
-                context.startActivity(intent);
-            }
-        });
-
+        questionHolder.questionCard.setOnClickListener(new View.OnClickListener() {
+                                                           @Override
+                                                           public void onClick(View v) {
+                                                               Intent intent = new Intent(context, AnswersActivity.class);
+                                                               intent.putExtra("id", id);
+                                                               intent.putExtra("topic", question);
+                                                               intent.putExtra("content", content);
+                                                               intent.putExtra("Category", Category);
+                                                               intent.putExtra("ID", i_d);
+                                                               intent.putExtra("post_id", docId);
+                                                               context.startActivity(intent);
+                                                           }
+                                                       });
 
 
-        // set time
+
+
+
+
+                // set time
         long currentTime = Calendar.getInstance().getTime().getTime();
         long uploadtime = questions.getTimestamp().getTime();
         long diff = currentTime-uploadtime;
@@ -200,23 +203,21 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
         }
 
 
-        //sets best answer
-        bestAnswer(i, questionHolder);
+                //sets best answer
+                bestAnswer(i, questionHolder);
 
-
-        if(url.equals("")){
-            questionHolder.displayPicture.setVisibility(View.GONE);
-        }
-        else{
-            questionHolder.displayPicture.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(context, questionView.class);
-                    intent.putExtra("image_url",url);
-                    intent.putExtra("activity","question");
-                    context.startActivity(intent);
-                }
-            });}
+if(url.equals("")){
+    questionHolder.displayPicture.setVisibility(View.GONE);
+}else{
+                questionHolder.displayPicture.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(context, questionView.class);
+                        intent.putExtra("image_url",url);
+                        intent.putExtra("activity","question");
+                        context.startActivity(intent);
+                    }
+                });}
 
     }
 
@@ -236,7 +237,6 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
 
         private TextView question;
 
-        private Button addAnswer;
 
         private TextView userName;
 
@@ -254,16 +254,19 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
 
         private ImageView displayPicture;
 
+        private CardView questionCard;
+
 
         public QuestionHolder(@NonNull View itemView) {
             super(itemView);
             mView = itemView;
-            addAnswer = mView.findViewById(R.id.Answers);
+
             userName = mView.findViewById(R.id.user_name);
             delete = mView.findViewById(R.id.delete);
             displayAnswers = mView.findViewById(R.id.answers);
             content = mView.findViewById(R.id.Content);
             displayPicture = mView.findViewById(R.id.answerImage);
+            questionCard = mView.findViewById(R.id.questionCard);
         }
 
         public void setQuestion(String message){
@@ -367,21 +370,21 @@ public class FirebaseQuestionRecyclerAdapter extends FirestoreRecyclerAdapter<Qu
     {
         //if no answers best answer will be "no answers"
         bestAnswer = "no answers";
-        getSnapshots().getSnapshot(position).getReference().collection("Answers").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                long max = 0;
-                for(QueryDocumentSnapshot documentSnapshot : task.getResult())
-                {
-                    long n  = (long) documentSnapshot.get("upvotes");
-                    if(n>max)
-                    {
-                        bestAnswer =  documentSnapshot.get("answer").toString();
-                        max=n;
-                    }
-                }
-                questionHolder.setBestAnswer(bestAnswer);
-            }
-        });
+       getSnapshots().getSnapshot(position).getReference().collection("Answers").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+           @Override
+           public void onComplete(@NonNull Task<QuerySnapshot> task) {
+               long max = 0;
+               for(QueryDocumentSnapshot documentSnapshot : task.getResult())
+               {
+                   long n  = (long) documentSnapshot.get("upvotes");
+                   if(n>max)
+                   {
+                       bestAnswer =  documentSnapshot.get("answer").toString();
+                       max=n;
+                   }
+               }
+               questionHolder.setBestAnswer(bestAnswer);
+           }
+       });
     }
 }
