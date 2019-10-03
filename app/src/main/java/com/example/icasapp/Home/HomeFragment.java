@@ -174,7 +174,11 @@ public class HomeFragment extends Fragment {
         if(!user.getProfilePhoto().isEmpty()) {
             BlurImageView blurImageView = homeView.findViewById(R.id.blurImage);
             Glide.with(this).load(user.getProfilePhoto()).into(blurImageView);
-        }}
+        }}catch (Exception e)
+        {
+            BlurImageView blurImageView = homeView.findViewById(R.id.blurImage);
+
+        }
 
         // LinearLayout
         for (List<String> element : list) {
