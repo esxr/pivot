@@ -231,6 +231,11 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
                         Log.i("Subjects of Faculty", String.valueOf(subject));
                     }
 
+                    if(subject.isEmpty())
+                    {
+                        subject = new ArrayList<>();
+                    }
+
 
                     subject.add(0,"General");
                     subject.add("Alumni");
