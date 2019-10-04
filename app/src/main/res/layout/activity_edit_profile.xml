@@ -7,7 +7,7 @@
     tools:context=".Menu_EditProfile.EditProfileActivity">
 
 
-    <com.example.icasapp.NonSwipeableViewpager
+    <com.theenigma.pivot.NonSwipeableViewpager
         android:id="@+id/editPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

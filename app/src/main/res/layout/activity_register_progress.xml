@@ -29,12 +29,12 @@
         app:sv_stepNumberTextSize="12sp"
         app:sv_animationType="Line" />
 
-    <com.example.icasapp.NonSwipeableViewpager
+    <com.theenigma.pivot.NonSwipeableViewpager
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="600dp">
 
-    </com.example.icasapp.NonSwipeableViewpager>
+    </com.theenigma.pivot.NonSwipeableViewpager>
 
 
 </LinearLayout>

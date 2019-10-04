@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.icasapp">
+    package="com.theenigma.pivot">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -9,86 +9,54 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application xmlns:tools="http://schemas.android.com/tools"
+        tools:replace="android:label"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label="@string/Pivot"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:overrideLibrary="com.andremion.floatingnavigationview">
-        <activity android:name=".TimeTableDisplay"></activity>
+        <activity android:name="com.theenigma.pivot.TimeTableDisplay"></activity>
         <activity
-            android:name=".DeveloperOptions.setOptions"
+            android:name="com.theenigma.pivot.DeveloperOptions.setOptions"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".DeveloperOptions.DeveloperOptions"
+            android:name="com.theenigma.pivot.DeveloperOptions.DeveloperOptions"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Auth.RegisterProgressActivity"
+            android:name="com.theenigma.pivot.Auth.RegisterProgressActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Auth.RegisterLandingActivity"
+            android:name="com.theenigma.pivot.Auth.RegisterLandingActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Notes.NotesForm"
+            android:name="com.theenigma.pivot.Notes.NotesForm"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Forums.ForumActivities.newAnswerActivity"
+            android:name="com.theenigma.pivot.Forums.ForumActivities.newAnswerActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Forums.ForumActivities.questionView"
+            android:name="com.theenigma.pivot.Forums.ForumActivities.questionView"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".University_Info.uni_info"
+            android:name="com.theenigma.pivot.University_Info.uni_info"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".DeveloperOptions.setUserPriveledge"
+            android:name="com.theenigma.pivot.DeveloperOptions.setUserPriveledge"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Front_End.SplashActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"></activity>
-        <activity
-            android:name=".Menu_EditProfile.EditProfileActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".Forums.ForumActivities.AnswersActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".Forums.ForumActivities.newQuestionActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".Forums.ForumActivities.QuestionsActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait" /> <!-- Profile display Activity -->
-        <activity
-            android:name=".Profile.ProfileDisplayActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait" /> <!--  -->
-        <activity
-            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:theme="@style/Base.Theme.AppCompat" />
-        <activity
-            android:name=".Forums.ForumActivities.NewDiscussionActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".MainActivity"
+            android:name="com.theenigma.pivot.Front_End.SplashActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -98,7 +66,42 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Auth.LoginActivity"
+            android:name="com.theenigma.pivot.Menu_EditProfile.EditProfileActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.theenigma.pivot.Forums.ForumActivities.AnswersActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.theenigma.pivot.Forums.ForumActivities.newQuestionActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.theenigma.pivot.Forums.ForumActivities.QuestionsActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" /> <!-- Profile display Activity -->
+        <activity
+            android:name="com.theenigma.pivot.Profile.ProfileDisplayActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" /> <!--  -->
+        <activity
+            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/Base.Theme.AppCompat" />
+        <activity
+            android:name="com.theenigma.pivot.Forums.ForumActivities.NewDiscussionActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.theenigma.pivot.MainActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait">
+
+        </activity>
+        <activity
+            android:name="com.theenigma.pivot.Auth.LoginActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
