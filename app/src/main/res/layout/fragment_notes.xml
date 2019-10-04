@@ -14,8 +14,8 @@
         tools:context=".Notes.NotesViewActivity">
 
     <!-- A RecyclerView with some commonly used attributes -->
-    <EditText
-        android:id="@+id/editText"
+    <AutoCompleteTextView
+        android:id="@+id/edit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"

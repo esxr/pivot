@@ -10,7 +10,7 @@
 
 
     <!-- A RecyclerView with some commonly used attributes -->
-    <EditText
+    <AutoCompleteTextView
         android:id="@+id/editText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

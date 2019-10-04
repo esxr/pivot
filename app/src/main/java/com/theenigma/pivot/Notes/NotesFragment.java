@@ -9,10 +9,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -40,7 +43,7 @@ public class NotesFragment extends Fragment {
 
     Query query;
     RecyclerView recyclerView;
-    EditText editText;
+    AutoCompleteTextView editText;
     RecyclerView.LayoutManager layoutManager;
     boolean isFilterActive;
     String buffer;
@@ -53,6 +56,7 @@ public class NotesFragment extends Fragment {
 
     public NotesFragment() {
         // Required empty public constructor
+
     }
 
     @Override
@@ -108,31 +112,46 @@ public class NotesFragment extends Fragment {
                 showFileChooser();
             }
         });
-
         setUpRecyclerView();
+        editText = notesView.findViewById(R.id.edit);
 
-        editText = notesView.findViewById(R.id.editText);
 
-        editText.addTextChangedListener(new TextWatcher() {
+        final ArrayAdapter<String> autoComplete = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1);
 
+        FirebaseFirestore.getInstance().collection("NOTES").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void afterTextChanged(Editable s) {
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                for (DocumentSnapshot documentSnapshot : task.getResult()) {
 
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start,
-                                          int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start,
-                                      int before, int count) {
-                isFilterActive = true;
-                setFilter(s.toString().trim());
-
+                    autoComplete.add(documentSnapshot.get("fileName").toString());
+                }
             }
         });
+
+        editText.setAdapter(autoComplete);
+
+
+
+//        editText.addTextChangedListener(new TextWatcher() {
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//
+//            }
+//
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start,
+//                                          int count, int after) {
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start,
+//                                      int before, int count) {
+//                isFilterActive = true;
+//                setFilter(s.toString().trim());
+//
+//            }
+//        });
         return notesView;
     }
 
