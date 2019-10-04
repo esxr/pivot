@@ -65,13 +65,13 @@ public class ProfileDisplayActivity extends AppCompatActivity {
         CircleImageView profilePhoto = findViewById(R.id.profile_profilePhoto);
         name.setText(user.getName());
         email.setText(user.getEmail());
-        Glide.with(this).load(user.getProfilePhoto()).into(profilePhoto);
 
-
-        if(!user.getProfilePhoto().isEmpty()) {
-            BlurImageView blurImageView = findViewById(R.id.profile_blurImage);
-            Glide.with(this).load(user.getProfilePhoto()).into(blurImageView);
-        }
+        try {
+            if(!user.getProfilePhoto().isEmpty()) {
+                BlurImageView blurImageView = findViewById(R.id.profile_blurImage);
+                Glide.with(this).load(user.getProfilePhoto()).into(profilePhoto);
+                Glide.with(this).load(user.getProfilePhoto()).into(blurImageView);
+        } } catch(Exception e) {}
 
         // LinearLayout
         for (List<String> element : list) {

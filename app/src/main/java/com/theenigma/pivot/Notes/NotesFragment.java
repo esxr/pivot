@@ -48,8 +48,8 @@ public class NotesFragment extends Fragment {
     private CollectionReference notesRef;
     private NotesAdapter adapter;
     private FloatingActionButton floatingActionButton;
-    //NotesAdapter notesAdapter;
-
+    //    //NotesAdapter notesAdapter;
+    FirestoreRecyclerOptions<Notes> options;
 
     public NotesFragment() {
         // Required empty public constructor
@@ -187,7 +187,7 @@ public class NotesFragment extends Fragment {
         }
         Log.i("msg", "QUERY:" + query.toString());
 
-        FirestoreRecyclerOptions<Notes> options = new FirestoreRecyclerOptions.Builder<Notes>()
+        options = new FirestoreRecyclerOptions.Builder<Notes>()
                 .setQuery(query, Notes.class)
                 .build();
 

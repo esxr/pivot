@@ -80,14 +80,6 @@ public class HomeFragment extends Fragment {
 
         new Thread(new Runnable() {
             public void run() {
-                setListView();
-            }
-        }).start();
-
-        setProfileSearch();
-
-        new Thread(new Runnable() {
-            public void run() {
                 populateView(FirebaseHelper.getUser().getUid());
             }
         }).start();
@@ -114,20 +106,12 @@ public class HomeFragment extends Fragment {
 
     //toggle functionality
     private void toggle() {
-        homeV = homeView.findViewById(R.id.homeV);
-        LinearLayout photoLayout = homeView.findViewById(R.id.photoLayout);
-        group.setVisibility(visibilityOf(visible));
-        homeV.setVisibility(visibilityOf(!visible));
-        photoLayout.setVisibility(visibilityOf(!visible));
-        visible = !visible;
+        startActivity(new Intent(getContext(), SearchActivity.class));
     }
-    private int visibilityOf(boolean visible) {
-        return visible ? View.VISIBLE : View.GONE;
-    }
+
 
     //set all functionality
     private void setSearchToggle() {
-        group = (Group) homeView.findViewById(R.id.group);
         ImageButton searchInitButton = homeView.findViewById(R.id.initSearch);
 
         searchInitButton.setOnClickListener(new View.OnClickListener() {
@@ -157,17 +141,14 @@ public class HomeFragment extends Fragment {
         CircleImageView profilePhoto = homeView.findViewById(R.id.profilePhoto);
         name.setText(user.getName());
         email.setText(user.getEmail());
-        Glide.with(this).load(user.getProfilePhoto()).into(profilePhoto);
 
         try{
-        if(!user.getProfilePhoto().isEmpty()) {
-            BlurImageView blurImageView = homeView.findViewById(R.id.blurImage);
-            Glide.with(this).load(user.getProfilePhoto()).into(blurImageView);
-        }}catch (Exception e)
-        {
-            BlurImageView blurImageView = homeView.findViewById(R.id.blurImage);
-
-        }
+            if(!user.getProfilePhoto().isEmpty()) {
+                BlurImageView blurImageView = homeView.findViewById(R.id.blurImage);
+                Glide.with(this).load(user.getProfilePhoto()).into(profilePhoto);
+                Glide.with(this).load(user.getProfilePhoto()).into(blurImageView);
+            }
+        } catch (Exception e) { }
 
         // LinearLayout
         for (List<String> element : list) {
@@ -212,69 +193,5 @@ public class HomeFragment extends Fragment {
             }
         });
     }
-
-    private void setListView() {
-        // intitialize the array and listview adapter
-        items = new ArrayList<>();
-        listView = (ListView) homeView.findViewById(R.id.profile_menu);
-        listView.setEmptyView(homeView.findViewById(R.id.emptyElement));
-        itemsAdapter = new ProfileAdapter(getContext(), items);
-        listView.setAdapter(itemsAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                try {
-                Intent intent = new Intent(getActivity(), ProfileDisplayActivity.class);
-                intent.putExtra("user", (User) listView.getItemAtPosition(position));
-                startActivity(intent); } catch(Exception e) { Log.e("mfc", e.getMessage()+""); }
-            }
-        });
-    }
-
-    private void setProfileSearch() {
-        query =  homeView.findViewById(R.id.query);
-
-        final ArrayAdapter<String> autoComplete = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1);
-
-        firebaseFirestore = FirebaseFirestore.getInstance();
-
-        firebaseFirestore.collection("USER").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                for (DocumentSnapshot documentSnapshot : task.getResult()) {
-
-                    autoComplete.add(documentSnapshot.get("name").toString());
-                }
-            }
-        });
-
-        query.setAdapter(autoComplete);
-
-        Button profileSearch = (Button) homeView.findViewById(R.id.profileSearch);
-        profileSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (query.length() == 0) return;
-                String queryValue =
-                        query.getText().toString().trim();
-                FirebaseHelper.getDocumentFromCollectionWhere(
-                        "USER",
-                        queryValue,
-                        new FirebaseHelper.CallbackObject<List<Map<String, Object>>>() {
-                            @Override
-                            public void callbackCall(List<Map<String, Object>> object) {
-                                items.clear();
-                                Log.d("Callback", "" + object);
-                                for (Map<String, Object> obj : object) {
-                                    items.add(new User(obj));
-                                    Log.i("Downloaded List Item", obj.toString());
-                                }
-                                itemsAdapter.notifyDataSetChanged();
-                            }
-                        });
-            }
-        });
-    }
-
 
 }

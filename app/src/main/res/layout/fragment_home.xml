@@ -9,7 +9,19 @@
         android:background="@color/white">
 
         <!--ONLY FOR DEBUGGING -->
-        <!--data binding-->
+
+        <!--Search Toggle-->
+
+        <ImageButton
+            android:background="@drawable/md_transparent"
+            android:id="@+id/initSearch"
+            android:elevation="59dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/search_icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <com.jgabrielfreitas.core.BlurImageView
             android:id="@+id/blurImage"
             android:layout_width="match_parent"
@@ -32,6 +44,7 @@
             android:id="@+id/photoLayout">
 
                 <de.hdodenhof.circleimageview.CircleImageView
+                    android:src="@drawable/pivot_back"
                     android:id="@+id/profilePhoto"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
@@ -39,7 +52,7 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="35dp"
                     android:elevation="2dp"
-                    android:src="@drawable/account_24dp" />
+                    />
 
                 <TextView
                     android:layout_marginTop="20dp"
@@ -71,84 +84,6 @@
             android:orientation="vertical">
 
         </LinearLayout>
-
-        <!--Group-->
-        <androidx.constraintlayout.widget.Group
-            android:id="@+id/group"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:constraint_referenced_ids="query, profileSearch, profile_menu, emptyElement" />
-
-                <!--<Button-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:text="test"-->
-                    <!--android:id="@+id/test_button"/>-->
-
-                <!--Search Toggle-->
-
-                <ImageButton
-                    android:id="@+id/initSearch"
-                    android:elevation="59dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/search_icon"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <!--Search Field-->
-                <AutoCompleteTextView
-                    android:id="@+id/query"
-                    android:singleLine="true"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    app:layout_constraintTop_toBottomOf="@id/initSearch" />
-
-                <!--Search Button-->
-                <Button
-                    android:id="@+id/profileSearch"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:background="@drawable/solid_button_black"
-                    android:clickable="true"
-                    android:drawableLeft="@drawable/search_icon"
-                    android:drawablePadding="20dp"
-                    android:elevation="2dp"
-                    android:focusable="true"
-                    android:foreground="?attr/selectableItemBackground"
-                    android:gravity="center"
-                    android:paddingStart="50pt"
-                    android:text="Search"
-                    android:textAlignment="viewStart"
-                    android:textColor="@color/white"
-                    app:layout_constraintTop_toBottomOf="@id/query"
-                    tools:ignore="RtlCompat" />
-
-                <!--Profile Results-->
-                <ListView
-                    android:id="@+id/profile_menu"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="40dp"
-                    android:scrollbars="vertical"
-                    android:paddingTop="15dp"
-                    app:layout_constraintTop_toBottomOf="@id/profileSearch" />
-
-                <!--Empty Element-->
-                <TextView
-                    android:id="@+id/emptyElement"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:gravity="center"
-                    android:text=""
-                    android:textColor="@color/gray"
-                    android:textSize="32sp"
-                    app:layout_constraintTop_toBottomOf="@id/profile_menu" />
-
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

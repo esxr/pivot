@@ -9,7 +9,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application xmlns:tools="http://schemas.android.com/tools"
-        tools:replace="android:label"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/Pivot"
@@ -17,46 +16,48 @@
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:overrideLibrary="com.andremion.floatingnavigationview">
-        <activity android:name="com.theenigma.pivot.TimeTableDisplay"></activity>
+        tools:overrideLibrary="com.andremion.floatingnavigationview"
+        tools:replace="android:label">
+        <activity android:name=".Home.SearchActivity"></activity>
+        <activity android:name=".TimeTableDisplay" />
         <activity
-            android:name="com.theenigma.pivot.DeveloperOptions.setOptions"
+            android:name=".DeveloperOptions.setOptions"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.theenigma.pivot.DeveloperOptions.DeveloperOptions"
+            android:name=".DeveloperOptions.DeveloperOptions"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.theenigma.pivot.Auth.RegisterProgressActivity"
+            android:name=".Auth.RegisterProgressActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.theenigma.pivot.Auth.RegisterLandingActivity"
+            android:name=".Auth.RegisterLandingActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.theenigma.pivot.Notes.NotesForm"
+            android:name=".Notes.NotesForm"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.theenigma.pivot.Forums.ForumActivities.newAnswerActivity"
+            android:name=".Forums.ForumActivities.newAnswerActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.theenigma.pivot.Forums.ForumActivities.questionView"
+            android:name=".Forums.ForumActivities.questionView"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.theenigma.pivot.University_Info.uni_info"
+            android:name=".University_Info.uni_info"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.theenigma.pivot.DeveloperOptions.setUserPriveledge"
+            android:name=".DeveloperOptions.setUserPriveledge"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.theenigma.pivot.Front_End.SplashActivity"
+            android:name=".Front_End.SplashActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -66,23 +67,23 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.theenigma.pivot.Menu_EditProfile.EditProfileActivity"
+            android:name=".Menu_EditProfile.EditProfileActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.theenigma.pivot.Forums.ForumActivities.AnswersActivity"
+            android:name=".Forums.ForumActivities.AnswersActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.theenigma.pivot.Forums.ForumActivities.newQuestionActivity"
+            android:name=".Forums.ForumActivities.newQuestionActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.theenigma.pivot.Forums.ForumActivities.QuestionsActivity"
+            android:name=".Forums.ForumActivities.QuestionsActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" /> <!-- Profile display Activity -->
         <activity
-            android:name="com.theenigma.pivot.Profile.ProfileDisplayActivity"
+            android:name=".Profile.ProfileDisplayActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" /> <!--  -->
         <activity
@@ -91,17 +92,15 @@
             android:screenOrientation="portrait"
             android:theme="@style/Base.Theme.AppCompat" />
         <activity
-            android:name="com.theenigma.pivot.Forums.ForumActivities.NewDiscussionActivity"
+            android:name=".Forums.ForumActivities.NewDiscussionActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.theenigma.pivot.MainActivity"
+            android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait">
-
-        </activity>
+            android:screenOrientation="portrait" />
         <activity
-            android:name="com.theenigma.pivot.Auth.LoginActivity"
+            android:name=".Auth.LoginActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/Pivot"
             android:screenOrientation="portrait" />

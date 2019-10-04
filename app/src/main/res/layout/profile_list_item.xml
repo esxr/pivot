@@ -16,6 +16,8 @@
         android:weightSum="3">
 
         <de.hdodenhof.circleimageview.CircleImageView
+            android:src="@drawable/pivot_back"
+            android:scaleType="centerCrop"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:id="@+id/list_profilePhoto"

@@ -25,6 +25,7 @@ import com.bumptech.glide.Glide;
 import com.theenigma.pivot.Auth.LoginActivity;
 import com.theenigma.pivot.DeveloperOptions.DeveloperOptions;
 import com.theenigma.pivot.Firebase.FirebaseHelper;
+import com.theenigma.pivot.Home.SearchActivity;
 import com.theenigma.pivot.Menu_EditProfile.EditProfileActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -223,6 +224,9 @@ public class MainActivity extends AppCompatActivity{
                 switch (item.getItemId()) {
                     case R.id.nav_edit_profile:
                         startActivity(new Intent(getApplicationContext(), EditProfileActivity.class));
+                        break;
+                    case R.id.nav_search_profile:
+                        startActivity(new Intent(getApplicationContext(), SearchActivity.class));
                         break;
                     case R.id.nav_sign_out:
                         signOut();

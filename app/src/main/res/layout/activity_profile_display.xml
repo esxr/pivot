@@ -30,6 +30,7 @@
         android:id="@+id/profile_photoLayout">
 
         <de.hdodenhof.circleimageview.CircleImageView
+            android:src="@drawable/pivot_back"
             android:id="@+id/profile_profilePhoto"
             android:layout_width="80dp"
             android:layout_height="80dp"
