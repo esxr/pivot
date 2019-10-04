@@ -233,7 +233,7 @@ public class MainActivity extends AppCompatActivity{
                         return true;
                     case R.id.nav_help:
                         Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
-                        emailIntent.setData(Uri.parse("mailto:com.theenigma.pivot.team@gmail.com"));
+                        emailIntent.setData(Uri.parse("mailto:icasapp.team@gmail.com"));
                         startActivity(Intent.createChooser(emailIntent, "Send feedback"));
                         break;
                     case R.id.nav_developer_options:
