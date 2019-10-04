@@ -23,7 +23,8 @@ public class Notes {
         this.downloadURL = downloadURL;
     }
 
-    String getFileName() {
+
+    public String getFileName() {
         return fileName;
     }
 
@@ -39,7 +40,7 @@ public class Notes {
         this.semester = semester;
     }
 
-    String getSessional() {
+    public String getSessional() {
         return sessional;
     }
 
@@ -47,16 +48,7 @@ public class Notes {
         this.sessional = sessional;
     }
 
-
-    String getDownloadURL() {
-        return downloadURL;
-    }
-
-    public void setDownloadURL(String downloadURL) {
-        this.downloadURL = downloadURL;
-    }
-
-    String getSubject() {
+    public String getSubject() {
         return subject;
     }
 
@@ -64,7 +56,7 @@ public class Notes {
         this.subject = subject;
     }
 
-    String getUsername() {
+    public String getUsername() {
         return username;
     }
 
@@ -72,5 +64,11 @@ public class Notes {
         this.username = username;
     }
 
+    public String getDownloadURL() {
+        return downloadURL;
+    }
 
+    public void setDownloadURL(String downloadURL) {
+        this.downloadURL = downloadURL;
+    }
 }
