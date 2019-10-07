@@ -11,16 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.theenigma.pivot.R;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -32,6 +29,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.theenigma.pivot.R;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -47,12 +45,12 @@ public class NotesFragment extends Fragment {
     RecyclerView.LayoutManager layoutManager;
     boolean isFilterActive;
     String buffer;
+    //    //NotesAdapter notesAdapter;
+    FirestoreRecyclerOptions<Notes> options;
     private FirebaseFirestore db;
     private CollectionReference notesRef;
     private NotesAdapter adapter;
     private FloatingActionButton floatingActionButton;
-    //    //NotesAdapter notesAdapter;
-    FirestoreRecyclerOptions<Notes> options;
 
     public NotesFragment() {
         // Required empty public constructor
@@ -131,27 +129,26 @@ public class NotesFragment extends Fragment {
         editText.setAdapter(autoComplete);
 
 
+        editText.addTextChangedListener(new TextWatcher() {
 
-//        editText.addTextChangedListener(new TextWatcher() {
-//
-//            @Override
-//            public void afterTextChanged(Editable s) {
-//
-//            }
-//
-//            @Override
-//            public void beforeTextChanged(CharSequence s, int start,
-//                                          int count, int after) {
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence s, int start,
-//                                      int before, int count) {
-//                isFilterActive = true;
-//                setFilter(s.toString().trim());
-//
-//            }
-//        });
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+                isFilterActive = true;
+                setFilter(s.toString().trim());
+
+            }
+        });
         return notesView;
     }
 
