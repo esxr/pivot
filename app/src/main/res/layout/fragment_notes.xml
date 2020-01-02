@@ -6,44 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".Notes.NotesFragment">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".Notes.NotesViewActivity">
-
-    <!-- A RecyclerView with some commonly used attributes -->
-    <AutoCompleteTextView
-        android:id="@+id/edit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="-2dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:background="@drawable/search_bar"
-        android:drawableLeft="@drawable/search_icon"
-        android:drawablePadding="5dp"
-        android:ems="10"
-        android:hint="SEARCH FOR NOTES"
-        android:inputType="textPersonName"
-        android:padding="10dp"
-        android:paddingStart="20dp"
-        android:textColor="@color/white"
-        android:textColorHint="@color/content_txt_color"
-        />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/edit"
-            android:layout_marginTop="2dp" />
-
-    </RelativeLayout>
-
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addNotes"
         android:layout_width="wrap_content"
@@ -59,8 +21,61 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/add" />
 
+    <Button
+        android:id="@+id/button5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="137dp"
+        android:layout_marginBottom="55dp"
+        android:onClick="first"
+        android:text="1"
+        app:layout_constraintBottom_toTopOf="@+id/button6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:id="@+id/button6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="55dp"
+        android:layout_marginBottom="71dp"
+        android:onClick="second"
+        android:text="2"
+        app:layout_constraintBottom_toTopOf="@+id/button7"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button5" />
 
+    <Button
+        android:id="@+id/button7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="44dp"
+        android:layout_marginBottom="59dp"
+        android:onClick="third"
+        android:text="3"
+        app:layout_constraintBottom_toTopOf="@+id/button8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button6" />
+
+    <Button
+        android:id="@+id/button8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="153dp"
+        android:onClick="fourth"
+        android:text="4"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button7" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
