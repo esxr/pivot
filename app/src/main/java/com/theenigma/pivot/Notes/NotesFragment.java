@@ -3,54 +3,51 @@ package com.theenigma.pivot.Notes;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.GridView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.theenigma.pivot.R;
+
+import java.util.ArrayList;
 
 import static android.app.Activity.RESULT_OK;
 
 public class NotesFragment extends Fragment {
 
-    View notesView;
+    private FirebaseFirestore db;
+
+    private static final int ROW_ITEMS = 1;
+
+    private String SEMESTER = "", STREAM = "";
+
+    private ArrayList<String> items;
 
     Uri DATA;
+    GridView grid;
 
-    Query query;
-    RecyclerView recyclerView;
-    AutoCompleteTextView editText;
-    RecyclerView.LayoutManager layoutManager;
-    boolean isFilterActive;
-    String buffer;
-    //    //NotesAdapter notesAdapter;
-    FirestoreRecyclerOptions<Notes> options;
-    private FirebaseFirestore db;
-    private CollectionReference notesRef;
-    private NotesAdapter adapter;
-    private FloatingActionButton floatingActionButton;
+    View notesView;
+
+    FloatingActionButton floatingActionButton;
+
+    String  buffer;
 
     public NotesFragment() {
         // Required empty public constructor
@@ -61,16 +58,39 @@ public class NotesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        // Inflate the layout for this fragment
+
         notesView = inflater.inflate(R.layout.fragment_notes, container, false);
+
+
+
         db = FirebaseFirestore.getInstance();
 
-        isFilterActive = false;
+        grid = notesView.findViewById(R.id.grid);
 
-        notesRef = db.collection("NOTES");
+        grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                        @Override
+                                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                            Log.i("msg", "CLICKED:" + items.get(i));
+                                            Intent intent = new Intent(getContext(), NotesActivity.class);
+                                            intent.putExtra("subject", items.get(i));
+                                            startActivity(intent);
+
+
+                                        }
+                                    });
+
+                items = new ArrayList<String>();
 
         floatingActionButton = notesView.findViewById(R.id.addNotes);
         floatingActionButton.hide();
+
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showFileChooser();
+            }
+        });
+
 
         db.collection("USER").document(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .get()
@@ -91,80 +111,57 @@ public class NotesFragment extends Fragment {
                     }
                 });
 
+
+
         db
-                .collection("NOTES")
+                .collection("USER")
+                .whereEqualTo("email", FirebaseAuth.getInstance().getCurrentUser().getEmail())
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult())
+                            for (QueryDocumentSnapshot document : task.getResult()) {
                                 Log.d("msg", document.getId() + " => " + document.getData());
+                                SEMESTER = document.get("semester").toString();
+                                STREAM = document.get("stream").toString();
+                                addItems();
+                            }
                         }
                     }
                 });
 
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showFileChooser();
-            }
-        });
-        setUpRecyclerView();
-        editText = notesView.findViewById(R.id.edit);
 
 
-        final ArrayAdapter<String> autoComplete = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1);
 
-        FirebaseFirestore.getInstance().collection("NOTES").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                for (DocumentSnapshot documentSnapshot : task.getResult()) {
-
-                    autoComplete.add(documentSnapshot.get("fileName").toString());
-                }
-            }
-        });
-
-        editText.setAdapter(autoComplete);
-
-
-        editText.addTextChangedListener(new TextWatcher() {
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start,
-                                          int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start,
-                                      int before, int count) {
-                isFilterActive = true;
-                setFilter(s.toString().trim());
-
-            }
-        });
-        return notesView;
+        return  notesView;
     }
 
-    private void setFilter(String s) {
-        query = notesRef.orderBy("fileName").startAt(s).endAt(s + "\uf8ff");
+    private void addItems() {
+        db.collection("Specific")
+                .whereEqualTo("semester", SEMESTER)
+                .whereEqualTo("stream", STREAM)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d("msg", document.getData().get("subjects").toString());
+                                ArrayList subjects = (ArrayList) document.getData().get("subjects");
+                                for(Object subject: subjects) {
+                                    items.add(subject.toString());
+                                }
+                                items.add("Others");
 
-        if (!s.trim().isEmpty()) {
-            setUpRecyclerView();
-            adapter.startListening();
-        } else {
-            isFilterActive = false;
-            setUpRecyclerView();
-            adapter.startListening();
-        }
+                                grid.setAdapter(new GridAdapter(items));
+                            }
+                        } else {
+                            Log.d("msg", "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
     }
-
 
     //ON UPLOAD BUTTON CLICK , CHOOSE FILE
     private void showFileChooser() {
@@ -196,41 +193,53 @@ public class NotesFragment extends Fragment {
         }
     }
 
-    private void setUpRecyclerView() {
+    private class GridAdapter extends BaseAdapter {
 
-        if (!isFilterActive) {
-            query = notesRef.orderBy("fileName", Query.Direction.ASCENDING);
+        final int mCount;
+
+        private GridAdapter(final ArrayList<String> items) {
+
+            mCount = items.size() * ROW_ITEMS;
+
         }
-        Log.i("msg", "QUERY:" + query.toString());
 
-        options = new FirestoreRecyclerOptions.Builder<Notes>()
-                .setQuery(query, Notes.class)
-                .build();
+        @Override
+        public int getCount() {
+            return mCount;
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return i;
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return i;
+        }
+
+        @Override
+        public View getView(final int i, View convertView, ViewGroup parent) {
+            View view = convertView;
 
 
-        adapter = new NotesAdapter(options);
-        recyclerView = notesView.findViewById(R.id.recycler_view);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(adapter);
 
+            if (view == null) {
+                view = LayoutInflater.from(parent.getContext()).inflate(android.R.layout.simple_list_item_1, parent, false);
+            }
+
+            final TextView text = (TextView) view.findViewById(android.R.id.text1);
+
+            text.setText(items.get(i));
+
+            return view;
+        }
     }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        adapter.startListening();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        adapter.stopListening();
-    }
-
-
 }
+
+
+
+
 
 
 

@@ -18,8 +18,16 @@
         android:theme="@style/AppTheme"
         tools:overrideLibrary="com.andremion.floatingnavigationview"
         tools:replace="android:label">
-        <activity android:name=".Home.SearchActivity"></activity>
-        <activity android:name=".TimeTableDisplay" />
+        <activity android:name=".Notes.NotesActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            ></activity>
+        <activity android:name=".Home.SearchActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" />
+        <activity android:name=".TimeTableDisplay"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".DeveloperOptions.setOptions"
             android:configChanges="orientation|keyboardHidden"

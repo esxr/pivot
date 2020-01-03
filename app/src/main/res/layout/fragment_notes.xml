@@ -6,42 +6,28 @@
     android:layout_height="match_parent"
     tools:context=".Notes.NotesFragment">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".Notes.NotesViewActivity">
+        >
 
-    <!-- A RecyclerView with some commonly used attributes -->
-    <AutoCompleteTextView
-        android:id="@+id/edit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="-2dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:background="@drawable/search_bar"
-        android:drawableLeft="@drawable/search_icon"
-        android:drawablePadding="5dp"
-        android:ems="10"
-        android:hint="SEARCH FOR NOTES"
-        android:inputType="textPersonName"
-        android:padding="10dp"
-        android:paddingStart="20dp"
-        android:textColor="@color/white"
-        android:textColorHint="@color/content_txt_color"
-        />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view"
+        <!-- A RecyclerView with some commonly used attributes -->
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/edit"
-            android:layout_marginTop="2dp" />
-
+            >
+            <GridView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/grid"
+                android:gravity="center"
+                android:horizontalSpacing="15dip"
+                android:numColumns="auto_fit"
+                android:stretchMode="columnWidth"
+                android:verticalSpacing="75dip"
+                android:background="@color/black2">
+            </GridView>
+        </RelativeLayout>
     </RelativeLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -49,8 +35,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="338dp"
-        android:layout_marginTop="560dp"
+        android:layout_marginLeft="338dp"
+        android:layout_marginTop="536dp"
         android:layout_marginEnd="17dp"
+        android:layout_marginRight="17dp"
         android:clickable="true"
         android:focusable="true"
         app:layout_constraintEnd_toEndOf="parent"
@@ -58,9 +46,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/add" />
-
-
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
