@@ -112,6 +112,7 @@ public class NotesFragment extends Fragment {
         });
         setUpRecyclerView();
         editText = notesView.findViewById(R.id.edit);
+        editText.setVisibility(View.GONE);
 
 
         final ArrayAdapter<String> autoComplete = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1);
