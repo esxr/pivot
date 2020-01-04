@@ -80,13 +80,13 @@
         android:id="@+id/add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="500dp"
-        android:layout_marginEnd="44dp"
+        android:layout_marginTop="550dp"
+        android:layout_marginEnd="20dp"
         android:layout_marginRight="44dp"
         android:clickable="true"
         android:foregroundGravity="bottom"
         app:layout_constraintEnd_toEndOf="@id/fab_const"
         app:layout_constraintTop_toTopOf="@id/fab_const"
-        app:srcCompat="@drawable/common_full_open_on_phone" />
+        app:srcCompat="@drawable/add" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
