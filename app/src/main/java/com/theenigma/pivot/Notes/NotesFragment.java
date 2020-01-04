@@ -1,6 +1,8 @@
 package com.theenigma.pivot.Notes;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -29,6 +32,7 @@ import com.theenigma.pivot.R;
 import java.util.ArrayList;
 
 import static android.app.Activity.RESULT_OK;
+import static com.theenigma.pivot.R.drawable.grid;
 
 public class NotesFragment extends Fragment {
 
@@ -60,8 +64,6 @@ public class NotesFragment extends Fragment {
 
 
         notesView = inflater.inflate(R.layout.fragment_notes, container, false);
-
-
 
         db = FirebaseFirestore.getInstance();
 
@@ -167,6 +169,7 @@ public class NotesFragment extends Fragment {
     private void showFileChooser() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("*/*");      //all files
+
         //intent.setType("file/pdf");   //PDF file only
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         try {
@@ -187,7 +190,10 @@ public class NotesFragment extends Fragment {
             DATA = data.getData();
 
             Intent intent = new Intent(getContext(), NotesForm.class);
+            intent.putExtra("SEMESTER", SEMESTER);
+            intent.putExtra("STREAM", STREAM);
             intent.putExtra("SELECTED_FILE_DATA", DATA.toString());
+            intent.putExtra("SUBJECTS", items);
             startActivity(intent);
 
         }
@@ -231,6 +237,16 @@ public class NotesFragment extends Fragment {
             final TextView text = (TextView) view.findViewById(android.R.id.text1);
 
             text.setText(items.get(i));
+            text.setAllCaps(true);
+            text.setTextSize(15);
+            text.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            text.setPadding(15,105,15,105);
+            view.setElevation(80);
+            view.setBackground(ContextCompat.getDrawable(getContext(),R.drawable.grid));
+            view.setMinimumHeight(400);
+
+
+
 
             return view;
         }

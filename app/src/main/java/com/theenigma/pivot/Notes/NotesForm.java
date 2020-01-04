@@ -26,6 +26,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.theenigma.pivot.Firebase.FirebaseHelper;
 
 import com.theenigma.pivot.MainActivity;
@@ -52,17 +54,16 @@ import java.util.Map;
 
 public class NotesForm extends AppCompatActivity {
 
-    String SEMESTER, SUBJECT, SUBJECT_ABR, SESSIONAL, FILE_NAME_BY_USER;
+    String SEMESTER, SUBJECT, SESSIONAL, STREAM,  FILE_NAME_BY_USER;
 
-    EditText SubjectText;
-    EditText SubjectAbrText;
     EditText FileName;
 
-    Spinner semesterSpinner;
+    Spinner subjectSpinner;
     Spinner sessionalSpinner;
 
-    List<String> semesterArrayList;
     List<String> sessionalArrayList;
+    List<String> subjectArrayList;
+
 
 
     ArrayAdapter<String> spinnerArrayAdapter;
@@ -85,8 +86,6 @@ public class NotesForm extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
 
-
-
         progressBar = new ProgressDialog(this);
         progressBar.setCancelable(false);//you can cancel it by pressing back button
         progressBar.setMessage("File UPLOADING ...");
@@ -98,6 +97,9 @@ public class NotesForm extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             v = bundle.getString("SELECTED_FILE_DATA");
+            SEMESTER = bundle.getString("SEMESTER");
+            STREAM = bundle.getString("STREAM");
+            subjectArrayList = bundle.getStringArrayList("SUBJECTS");
         }
 
         value = v;
@@ -113,21 +115,21 @@ public class NotesForm extends AppCompatActivity {
 
         storageRef = FirebaseStorage.getInstance().getReference();
 
-        SubjectText = findViewById(R.id.subject);
-        SubjectAbrText = findViewById(R.id.subject_abbreviation);
+
         FileName = findViewById(R.id.fileName);
 
-        semesterSpinner = findViewById(R.id.semesterSpinner);
+        subjectSpinner = findViewById(R.id.subjectSpinner);
         sessionalSpinner = findViewById(R.id.sessionalSpinner);
 
-        semesterArrayList = new ArrayList<>(Arrays.asList("SELECT SEMESTER...", "1", "2", "3", "4", "None"));
         sessionalArrayList = new ArrayList<>(Arrays.asList("SELECT SESSIONAL...", "1", "2", "Make Up", "None"));
+
+
 
         // Get reference of widgets from XML layout
 
         // Initializing an ArrayAdapter
         spinnerArrayAdapter = new ArrayAdapter<String>(
-                this, R.layout.support_simple_spinner_dropdown_item, semesterArrayList) {
+                this, R.layout.support_simple_spinner_dropdown_item, subjectArrayList) {
             @Override
             public boolean isEnabled(int position) {
                 if (position == 0) {
@@ -154,14 +156,14 @@ public class NotesForm extends AppCompatActivity {
             }
         };
         spinnerArrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-        semesterSpinner.setAdapter(spinnerArrayAdapter);
+        subjectSpinner.setAdapter(spinnerArrayAdapter);
 
-        semesterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        subjectSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selectedItemText = (String) parent.getItemAtPosition(position).toString();
                 Log.i("msg", parent.getItemAtPosition(position).toString());
-                SEMESTER = selectedItemText;
+                SUBJECT = selectedItemText;
 
                 // If user change the default selection
                 // First item is disable and it is used for hint
@@ -244,17 +246,12 @@ public class NotesForm extends AppCompatActivity {
 
     public void onUpload() {
 
-        SUBJECT = SubjectText.getText().toString();
-        SUBJECT_ABR = SubjectAbrText.getText().toString();
+
         FILE_NAME_BY_USER = FileName.getText().toString();
 
-        Log.i("msg", "SUBJECT DATA:" + SUBJECT + SUBJECT_ABR + FILE_NAME_BY_USER);
+        Log.i("msg", "SUBJECT DATA:" + SUBJECT  + FILE_NAME_BY_USER);
         if (SUBJECT == null || SUBJECT == "" || SUBJECT == " ") {
-            SubjectText.requestFocus();
             Toast.makeText(getApplicationContext(), "ENTER SUBJECT NAME.", Toast.LENGTH_LONG).show();
-        } else if (SUBJECT_ABR == null || SUBJECT_ABR == "" || SUBJECT_ABR == " ") {
-            SubjectAbrText.requestFocus();
-            Toast.makeText(getApplicationContext(), "ENTER SUBJECT ABBREVIARTION.", Toast.LENGTH_LONG).show();
         } else if (FILE_NAME_BY_USER == null || FILE_NAME_BY_USER == "" || FILE_NAME_BY_USER == " ") {
             FileName.requestFocus();
             Toast.makeText(getApplicationContext(), "ENTER FILE NAME.", Toast.LENGTH_LONG).show();
@@ -266,8 +263,8 @@ public class NotesForm extends AppCompatActivity {
 
             Log.i("msg", "SEMESTER ON CLICK: " + SEMESTER);
             Log.i("msg", "SESSIONAL ON CLICK: " + SESSIONAL);
+            Log.i("msg", "STREAM ON CLICK: " + STREAM);
             Log.i("msg", "SUBJECT ON CLICK: " + SUBJECT);
-            Log.i("msg", "SUBJECT_ABR ON CLICK: " + SUBJECT_ABR);
             Log.i("msg", "FILE NAME ON CLICK: " + FILE_NAME_BY_USER);
             uploadFile(FILE_NAME_BY_USER);
 
@@ -373,7 +370,7 @@ public class NotesForm extends AppCompatActivity {
                     Log.i("msg", downloadUri.toString());
                     Log.i("msg", "UPLOAD COMPLETED.");
                     //----------------------------------EXIT POINT OF UPLOAD --------------------------------------------------------
-                    uploadMetaToFirebase(SEMESTER, SESSIONAL, SUBJECT, SUBJECT_ABR, FILE_NAME_BY_USER, downloadUri);
+                    uploadMetaToFirebase(SEMESTER, SESSIONAL, SUBJECT, STREAM, FILE_NAME_BY_USER, downloadUri);
                     Toast.makeText(getApplicationContext(), "SUCCESSFULLY UPLOADED TO THE DATABASE.", Toast.LENGTH_LONG).show();
                     try {
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
@@ -394,14 +391,14 @@ public class NotesForm extends AppCompatActivity {
     }//END OF uploadFile() FUNCTION.
 
     //UPLOADING METADATA TO FIREBASE FIRESTOREBACKEND
-    public void uploadMetaToFirebase(String SEMESTER, String SESSIONAL, String SUBJECT, String SUBJECT_ABR, String FILE_NAME_BY_USER, Uri DOWNLOAD_URL) {
+    public void uploadMetaToFirebase(String SEMESTER, String SESSIONAL, String SUBJECT,String STREAM,  String FILE_NAME_BY_USER, Uri DOWNLOAD_URL) {
         // Update one field, creating the document if it does not already exist.
         Map<String, String> data = new HashMap<>();
         data.put("fileName", FILE_NAME_BY_USER);
         data.put("semester", SEMESTER);
         data.put("sessional", SESSIONAL);
+        data.put("stream", STREAM);
         data.put("subject", SUBJECT);
-        data.put("subject_abr", SUBJECT_ABR);
         data.put("downloadURL", DOWNLOAD_URL.toString());
         data.put("originalFileName", filename);
         data.put("username", FirebaseHelper.getUser().getDisplayName());
