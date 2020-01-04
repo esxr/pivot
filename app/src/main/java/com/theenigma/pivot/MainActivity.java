@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
@@ -38,6 +39,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import static com.theenigma.pivot.Feed.FeedFragment.webView;
+
 
 public class MainActivity extends AppCompatActivity{
 
@@ -53,6 +56,7 @@ public class MainActivity extends AppCompatActivity{
     private NavigationView mFloatingNavigationView;
     //declaring viewPager
     private ViewPager viewPager;
+    public static Boolean isBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -256,9 +260,12 @@ public class MainActivity extends AppCompatActivity{
 
     @Override
     public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+        if (!isBack && drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         } else {
+            if(isBack == true)
+                webView.goBack();
+            else
             super.onBackPressed();
         }
     }

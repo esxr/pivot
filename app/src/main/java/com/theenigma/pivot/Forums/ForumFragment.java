@@ -21,6 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.theenigma.pivot.Forums.ForumActivities.NewDiscussionActivity;
+import com.theenigma.pivot.MainActivity;
 import com.theenigma.pivot.ObjectClasses.DiscussionTopic;
 import com.theenigma.pivot.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -83,6 +84,8 @@ public class  ForumFragment extends Fragment implements AdapterView.OnItemClickL
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_forum, container, false);
+
+        MainActivity.isBack = false;
 
         addPost = view.findViewById(R.id.addPost);
 

@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.theenigma.pivot.Firebase.FirebaseHelper;
+import com.theenigma.pivot.MainActivity;
 import com.theenigma.pivot.Profile.ProfileAdapter;
 import com.theenigma.pivot.Profile.ProfileDisplayActivity;
 import com.theenigma.pivot.R;
@@ -71,6 +72,8 @@ public class HomeFragment extends Fragment {
 
         // Inflate the layout for this fragment
         homeView = inflater.inflate(R.layout.fragment_home, container, false);
+
+        MainActivity.isBack = false;
 
         new Thread(new Runnable() {
             public void run() {

@@ -126,6 +126,7 @@ public class NotesForm extends AppCompatActivity {
 
 
         // Get reference of widgets from XML layout
+        subjectArrayList.add(0, "SELECT SUBJECT");
 
         // Initializing an ArrayAdapter
         spinnerArrayAdapter = new ArrayAdapter<String>(

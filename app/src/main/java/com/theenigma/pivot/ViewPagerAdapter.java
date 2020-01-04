@@ -27,9 +27,9 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
             case 1:
                 return new NotesFragment();
             case 2:
-                return new HomeFragment();
-            case 3:
                 return new FeedFragment();
+            case 3:
+                return new HomeFragment();
             default:
                 return null;
         }
@@ -51,9 +51,9 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
             case 1:
                 return "NOTES";
             case 2:
-                return "HOME";
-            case 3:
                 return "FEED";
+            case 3:
+                return "HOME";
             default:
                 return null;
 

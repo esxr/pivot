@@ -27,6 +27,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.theenigma.pivot.MainActivity;
 import com.theenigma.pivot.R;
 
 import java.util.ArrayList;
@@ -64,6 +65,8 @@ public class NotesFragment extends Fragment {
 
 
         notesView = inflater.inflate(R.layout.fragment_notes, container, false);
+
+        MainActivity.isBack = false;
 
         db = FirebaseFirestore.getInstance();
 

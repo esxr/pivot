@@ -18,14 +18,18 @@
             >
             <GridView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/grid"
+                android:layout_height="match_parent"
                 android:gravity="center"
-                android:horizontalSpacing="15dip"
+                android:id="@+id/grid"
                 android:numColumns="auto_fit"
+                android:verticalSpacing="15dp"
+                android:horizontalSpacing="15dp"
                 android:stretchMode="columnWidth"
-                android:verticalSpacing="75dip"
-                android:background="@color/black2">
+                android:layout_margin="12dp"
+                android:elevation="8dp"
+                android:outlineSpotShadowColor="@color/black"
+                android:outlineAmbientShadowColor="@color/black"
+                >
             </GridView>
         </RelativeLayout>
     </RelativeLayout>
@@ -34,17 +38,14 @@
         android:id="@+id/addNotes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="338dp"
-        android:layout_marginLeft="338dp"
-        android:layout_marginTop="536dp"
-        android:layout_marginEnd="17dp"
-        android:layout_marginRight="17dp"
         android:clickable="true"
         android:focusable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.954"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.89"
         app:srcCompat="@drawable/add" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
